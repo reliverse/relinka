@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
@@ -47,7 +48,9 @@
     "vitest.config.ts",
     "src/**/*.ts",
     "addons/**/*.ts",
-    "examples/**/*.ts"
+    "examples/**/*.ts",
+    "build.publish.ts",
+    "bump.config.ts"
   ],
   "exclude": ["node_modules", "dist-jsr", "dist-npm"]
 }

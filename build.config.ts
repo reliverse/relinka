@@ -1,4 +1,3 @@
-import { MagicRegExpTransformPlugin } from "magic-regexp/transform";
 import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
@@ -16,15 +15,8 @@ export default defineBuildConfig({
     emitCJS: false,
     esbuild: {
       exclude: ["**/*.test.ts"],
-      target: "es2023",
+      target: "es2022",
       minify: true,
-    },
-  },
-  hooks: {
-    "rollup:options": (_options, config) => {
-      if (Array.isArray(config.plugins)) {
-        config.plugins.push(MagicRegExpTransformPlugin.rollup());
-      }
     },
   },
 });
