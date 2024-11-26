@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Relinka</title>
+</head>
+
+<body>
+  Open developer tools to see the magic!
+  <script type="module">
+    import relinka from "../src/browser.js";
+    relinka.level = 5;
+
+    relinka.wrapAll();
+
+    for (let type of Object.keys(relinka.options.types).sort()) {
+      relinka[type]("Open developer tools to see the magic!");
+    }
+
+    relinka.withTag("customTag").info("Im from custom world!");
+    relinka.withTag("customTag").log("Im from custom world!");
+
+    relinka.error(new Error("Whoo Haha"));
+  </script>
+</body>
+
+</html>

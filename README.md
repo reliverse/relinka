@@ -24,15 +24,23 @@
 
 @reliverse/relinka is a powerful logger for your terminal.
 
-@reliverse/relinka is a full-featured alternative to winston, unjs consola, pino, and similar libraries.
+@reliverse/relinka is a full-featured alternative to winston, unjs relinka, pino, bristol, node-bunyan, and similar libraries.
+
+Used by [@reliverse/prompts](https://github.com/reliverse/prompts#readme) and [@reliverse/cli](https://github.com/blefnk/reliverse#readme).
 
 ## Installation
 
 Install with your preferred package manager:
 
 ```sh
-bun add @reliverse/relinka # Replace 'bun' with npm, pnpm, or yarn if desired (deno and jsr support coming soon)
+bun add @reliverse/relinka # Replace 'bun' with npm, pnpm, or yarn if desired (deno and full jsr support coming soon)
 ```
+
+---
+
+> **Warning:** The @reliverse/relinka README.md was based on the @reliverse/prompts README.md. Some of the information may be not related to the current library. And will be updated soon.
+
+---
 
 ## Screenshot
 
@@ -80,7 +88,7 @@ Run `bun dev` to launch the [examples/run-example.ts](./examples/run-example.ts)
 2. **[2-mono-example.ts](./examples/2-mono-example.ts)**: A quiz game example inspired by Fireship's [video](https://youtube.com/watch?v=_oHByo8tiEY). It demonstrates the dynamic capabilities of @reliverse/relinka by using a prompt() that includes all prompt components, so you don't need to import each component separately.
 3. **[3-basic-example.ts](./examples/3-basic-example.ts)**: A simple example highlighting the core functionalities of @reliverse/relinka. The entire implementation is contained within a single file for easy understanding.
 
-## Prompts Library Comparison
+## Logger Library Comparison
 
 > **Note:** This table contains approximate and placeholder values. More detailed assessments will be provided as libraries continue to evolve.
 
@@ -91,41 +99,30 @@ Run `bun dev` to launch the [examples/run-example.ts](./examples/run-example.ts)
 - 🔵: Partially supported
 - 🔴: Not supported
 
-| **Feature**                                                | **@reliverse/relinka**                             | **@inquirer/prompts** | **@enquirer/enquirer** | **@clack/prompts** | **@terkelg/prompts** | **@cronvel/terminal-kit** | **@unjs/citty** | **@unjs/consola** |
-| ---------------------------------------------------------- | -------------------------------------------------- | --------------------- | ---------------------- | ------------------ | -------------------- | ------------------------- | --------------- | ----------------- |
-| **Full Node.js Modules Support**                           | 🟢 Native ES module package                        | 🟡                    | 🟡                     | 🟡                 | 🔴 CJS-only          | 🔴 CJS-only               | 🟡              | 🟡                |
-| **Works both in node, bun, and deno environments**         | 🔵 node+bun (deno support is coming soon)          | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟢                |
-| **Codebase typesafety with intellisense**                  | 🔵                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Runtime typesafety with schema validation**              | 🟢 TypeBox & Custom                                | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Usage Examples**                                         | 🟢                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Mono Component**                                         | 🟢 Mono (All-In-One) & Separate                    | 🟡                    | 🟡                     | 🟡                 | 🔵 Mono-only         | 🟡                        | 🟡              | 🟡                |
-| **Start Component**                                        | 🟢                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Text Component**                                         | 🟢                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Customization**                                          | 🟢 Colors, typography, variants, borders, and more | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Visual Components: Separator, Animated Text, ASCII Art** | 🟢 Includes 6 animations and 290 ASCII fonts       | 🔵 Separator only     | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Password Component**                                     | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Number Component**                                       | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Confirm Component**                                      | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Select Component**                                       | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Multiselect Component**                                  | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Search/Autocomplete Component**                          | 🔵                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Spinner & Progressbar Components**                       | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟢                        | 🟡              | 🟡                |
-| **Image Component**                                        | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟢                        | 🟡              | 🟡                |
-| **Custom Validation**                                      | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Error Handling**                                         | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Ease of Setup**                                          | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Crash Resilience**                                       | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **General DX**                                             | 🔵 Clean and understandable TypeScript code        | 🟡                    | 🟡                     | 🟡                 | 🔴 JS-only           | 🔴 JS-only                | 🟡              | 🟡                |
-| **DX: Classes**                                            | 🟢 Minimal number of classes as possible           | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Documentation**                                          | 🔵                                                 | 🟡                    | 🟡                     | 🟡                 | 🔵                   | 🟢                        | 🟡              | 🟡                |
-| **Designed With UX/DX in Mind**                            | 🟢                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟡              | 🟡                |
-| **Fast and lightweight argument parser**                   | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Smart value parsing with typecast**                      | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Boolean shortcuts and unknown flag handling**            | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Nested sub-commands**                                    | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Lazy and Async commands**                                | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Pluggable and composable API**                           | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
-| **Auto generated usage and help**                          | 🟡                                                 | 🟡                    | 🟡                     | 🟡                 | 🟡                   | 🟡                        | 🟢              | 🟡                |
+| **Feature**                                                | **@reliverse/relinka**                             | **@unjs/consola**      | **@klaudiosinani/signale**  | **pino**            | **@TomFrost/Bristol**  | **@trentm/node-bunyan**   | **winston**            | **log4js-node**    |
+| -----------------------------------------------------------|----------------------------------------------------|------------------------|-----------------------------|---------------------|------------------------|---------------------------|------------------------|--------------------|
+| **Full Node.js Modules Support**                           | 🟢 Native ES module package                        | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Works both in node, bun, and deno environments**         | 🔵 node+bun (deno support is coming soon)          | 🔵                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Codebase typesafety with intellisense**                  | 🔵                                                 | 🔵                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Runtime typesafety with schema validation**              | 🔵                                                 | 🔵                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Usage Examples**                                         | 🟢                                                 | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Prompts Components**                                     | 🟢 Can be enabled using @reliverse/prompts library | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Customization**                                          | 🟢 Colors, typography, variants, borders, and more | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Custom Validation**                                      | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Error Handling**                                         | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Ease of Setup**                                          | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Crash Resilience**                                       | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **General DX**                                             | 🔵 Clean and understandable TypeScript code        | 🔵                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **DX: Classes**                                            | 🟢 Minimal number of classes as possible           | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Documentation**                                          | 🔵                                                 | 🔵                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Designed With UX/DX in Mind**                            | 🟢                                                 | 🟢                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Fast and lightweight argument parser**                   | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Smart value parsing with typecast**                      | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Boolean shortcuts and unknown flag handling**            | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Nested sub-commands**                                    | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Lazy and Async commands**                                | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Pluggable and composable API**                           | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
+| **Auto generated usage and help**                          | 🟡                                                 | 🟡                    | 🟡                         | 🟡                 | 🟡                    | 🟡                        | 🟡                      | 🟡                |
 
 **Related Links**: [ESM/CJS](https://dev.to/iggredible/what-the-heck-are-cjs-amd-umd-and-esm-ikm), ["Pure ESM package"](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c), [Clean code](https://github.com/ryanmcdermott/clean-code-javascript#readme), ["UX patterns for CLI tools"](https://lucasfcosta.com/2022/06/01/ux-patterns-cli-tools.html), [DX (Developer Experience)](https://github.blog/enterprise-software/collaboration/developer-experience-what-is-it-and-why-should-you-care), [TypeBox](https://github.com/sinclairzx81/typebox#readme), ["ANSI Escape Sequences"](https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b)
 
@@ -159,14 +156,13 @@ const username = await textPrompt({
 
 ## Learn More
 
-- [Temporary Relinka Docs](.github/DOCS.md)
 - [Reliverse Docs](https://docs.reliverse.org)
 
 ## Special Thanks
 
-This project wouldn’t exist without the amazing work of the huge number of contributors to the list of projects below. Many of the @reliverse/relinka prompts are based on the incredible work of:
+This project wouldn’t exist without the amazing work of the huge number of contributors to the list of projects below. Many of the @reliverse/relinka features are based on the incredible work of:
 
-[@inquirer/prompts](https://github.com/SBoudrias/Inquirer.js#readme) | [terkelg/prompts](https://github.com/terkelg/prompts#readme) | [@clack/prompts](https://github.com/bombshell-dev/clack#readme) | [create-t3-app](https://github.com/t3-oss/create-t3-app#readme) | [create-astro](https://github.com/withastro/astro/tree/main/packages/create-astro#readme) | [cronvel/terminal-kit](https://github.com/cronvel/terminal-kit#readme) | [unjs/consola](https://github.com/unjs/consola#readme) | [nodejs/string_decoder](https://github.com/nodejs/string_decoder) | [TooTallNate/keypress](https://github.com/TooTallNate/keypress) | [derhuerst](https://github.com/derhuerst)
+[@reliverse/prompts](https://github.com/reliverse/prompts#readme) | [@unjs/consola](https://github.com/unjs/consola#readme)
 
 ## License
 

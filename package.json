@@ -1,6 +1,6 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "blefnk",
   "type": "module",
   "description": "@reliverse/relinka is a powerful logger for your terminal.",

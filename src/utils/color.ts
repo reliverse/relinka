@@ -1,7 +1,7 @@
 /**
  * Based on https://github.com/jorgebucaran/colorette
  * Read LICENSE file for more information
- * https://github.com/jorgebucaran/colorette/blob/20fc196d07d0f87c61e0256eadd7831c79b24108/index
+ * https://github.com/jorgebucaran/colorette/blob/20fc196d07d0f87c61e0256eadd7831c79b24108/index.js
  */
 
 import * as tty from "node:tty";
@@ -17,7 +17,8 @@ const isForced = "FORCE_COLOR" in env || argv.includes("--color");
 const isWindows = platform === "win32";
 const isDumbTerminal = env.TERM === "dumb";
 const isCompatibleTerminal =
-  tty?.isatty && tty.isatty(1) && env.TERM && !isDumbTerminal;
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  tty && tty.isatty && tty.isatty(1) && env.TERM && !isDumbTerminal;
 const isCI =
   "CI" in env &&
   ("GITHUB_ACTIONS" in env || "GITLAB_CI" in env || "CIRCLECI" in env);
