@@ -97,10 +97,10 @@ async function bumpNpmVersion() {
 async function main() {
   const { jsr, "dry-run": dryRun } = argv;
   if (jsr) {
-    await bumpJsrVersion();
+    // await bumpJsrVersion();
     await publishJsr(dryRun);
   } else {
-    await bumpNpmVersion();
+    // await bumpNpmVersion();
     await publishNpm(dryRun);
   }
 }
