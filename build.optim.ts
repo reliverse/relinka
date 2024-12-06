@@ -2,6 +2,7 @@ import glob from "fast-glob";
 import fs from "fs-extra";
 import path from "pathe";
 import strip from "strip-comments";
+import { fileURLToPath } from "url";
 
 import relinka from "~/main.js";
 
@@ -12,10 +13,13 @@ const debug = false;
 const args: string[] = process.argv.slice(2);
 const isJSR: boolean = args.includes("--jsr");
 
+// Get current directory using import.meta.url
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+
 // Define directories based on the presence of '--jsr' flag
-const sourceDir: string = path.resolve(__dirname, "src");
+const sourceDir: string = path.resolve(currentDir, "src");
 const outputDir: string = path.resolve(
-  __dirname,
+  currentDir,
   isJSR ? "dist-jsr" : "dist-npm",
 );
 
@@ -25,9 +29,11 @@ const npmFilesToDelete: string[] = [
   "**/*.test.d.ts",
   "types/internal.js",
   "types/internal.d.ts",
+  "**/*.temp.js",
+  "**/*.temp.d.ts",
 ];
 
-const jsrFilesToDelete: string[] = ["**/*.test.ts"];
+const jsrFilesToDelete: string[] = ["**/*.test.ts", "**/*.temp.ts"];
 
 /**
  * Deletes files matching the provided patterns within the base directory.

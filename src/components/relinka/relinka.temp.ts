@@ -11,9 +11,6 @@ import type {
 import { LogTypes } from "~/components/levels/levels.js";
 import { isLogObj } from "~/utils/log.js";
 
-const paused = false;
-const queue: any[] = [];
-
 /**
  * Relinka class for logging management with support for pause/resume, mocking and customizable reporting.
  * Provides flexible logging capabilities including level-based logging, custom reporters and integration options.
@@ -70,13 +67,8 @@ export class Relinka {
         ...this.options.defaults,
         ...types[type as LogType],
       };
-      // @ts-expect-error TODO: fix ts
-      (this as unknown as RelinkaInstance)[type as LogType] =
-        this._wrapLogFn(defaults);
-      (this as unknown as RelinkaInstance)[type].raw = this._wrapLogFn(
-        defaults,
-        true,
-      );
+      (this as any)[type as LogType] = this._wrapLogFn(defaults);
+      (this as any)[type as LogType].raw = this._wrapLogFn(defaults, true);
     }
 
     // Use _mockFn if is set
@@ -118,13 +110,13 @@ export class Relinka {
    * Creates a new instance of Relinka, inheriting options from the current instance, with possible overrides.
    *
    * @param {Partial<RelinkaOptions>} options - Optional overrides for the new instance. See {@link RelinkaOptions}.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {Relinka} A new Relinka instance.
    */
-  create(options: Partial<RelinkaOptions>): RelinkaInstance {
+  create(options: Partial<RelinkaOptions>): Relinka {
     const instance = new Relinka({
       ...this.options,
       ...options,
-    }) as RelinkaInstance;
+    });
 
     if (this._mockFn) {
       instance.mockTypes(this._mockFn);
@@ -137,9 +129,9 @@ export class Relinka {
    * Creates a new Relinka instance with the specified default log object properties.
    *
    * @param {InputLogObject} defaults - Default properties to include in any log from the new instance. See {@link InputLogObject}.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {Relinka} A new Relinka instance.
    */
-  withDefaults(defaults: InputLogObject): RelinkaInstance {
+  withDefaults(defaults: InputLogObject): Relinka {
     return this.create({
       ...this.options,
       defaults: {
@@ -153,9 +145,9 @@ export class Relinka {
    * Creates a new Relinka instance with a specified tag, which will be included in every log.
    *
    * @param {string} tag - The tag to include in each log of the new instance.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {Relinka} A new Relinka instance.
    */
-  withTag(tag: string): RelinkaInstance {
+  withTag(tag: string): Relinka {
     return this.withDefaults({
       tag: this.options.defaults.tag
         ? this.options.defaults.tag + ":" + tag
@@ -179,14 +171,14 @@ export class Relinka {
    * Removes a custom reporter from the Relinka instance.
    * If no reporter is specified, all reporters will be removed.
    *
-   * @param {RelinkaReporter} reporter - The reporter to remove. See {@link RelinkaReporter}.
+   * @param {RelinkaReporter} [reporter] - The reporter to remove. See {@link RelinkaReporter}.
    * @returns {Relinka} The current Relinka instance.
    */
-  removeReporter(reporter: RelinkaReporter) {
+  removeReporter(reporter?: RelinkaReporter) {
     if (reporter) {
       const i = this.options.reporters.indexOf(reporter);
       if (i >= 0) {
-        return this.options.reporters.splice(i, 1);
+        this.options.reporters.splice(i, 1);
       }
     } else {
       this.options.reporters.splice(0);
@@ -225,9 +217,7 @@ export class Relinka {
         (console as any)["__" + type] = (console as any)[type];
       }
       // Override
-      (console as any)[type] = (this as unknown as RelinkaInstance)[
-        type as LogType
-      ].raw;
+      (console as any)[type] = (this as any)[type as LogType].raw;
     }
   }
 
@@ -265,7 +255,7 @@ export class Relinka {
 
     // Override
     (stream as any).write = (data: any) => {
-      (this as unknown as RelinkaInstance)[type].raw(String(data).trim());
+      (this as any)[type].raw(String(data).trim());
     };
   }
 
@@ -305,8 +295,8 @@ export class Relinka {
     // Reset paused state
     this._paused = false;
 
-    // TODO: Remove all reporters
-    // this.removeReporter();
+    // Remove all reporters
+    this.removeReporter();
 
     // Optionally clear the actual console
     if (clearConsole && typeof console.clear === "function") {
@@ -337,7 +327,7 @@ export class Relinka {
   /**
    * Replaces logging methods with mocks if a mock function is provided.
    *
-   * @param {RelinkaOptions["mockFn"]} mockFn - The function to use for mocking logging methods. See {@link RelinkaOptions["mockFn"]}.
+   * @param {RelinkaOptions["mockFn"]} [mockFn] - The function to use for mocking logging methods. See {@link RelinkaOptions["mockFn"]}.
    */
   mockTypes(mockFn?: RelinkaOptions["mockFn"]) {
     const _mockFn = mockFn || this.options.mockFn;
@@ -349,13 +339,10 @@ export class Relinka {
     }
 
     for (const type in this.options.types) {
-      // @ts-expect-error TODO: fix ts
-      (this as unknown as RelinkaInstance)[type as LogType] =
+      (this as any)[type as LogType] =
         _mockFn(type as LogType, this.options.types[type as LogType]) ||
-        (this as unknown as RelinkaInstance)[type as LogType];
-      (this as unknown as RelinkaInstance)[type as LogType].raw = (
-        this as unknown as RelinkaInstance
-      )[type as LogType];
+        (this as any)[type as LogType];
+      (this as any)[type as LogType].raw = (this as any)[type as LogType];
     }
   }
 
@@ -428,10 +415,8 @@ export class Relinka {
 
       // Log
       if (newLog) {
-        // @ts-expect-error TODO: fix ts
-        this._lastLog.object = logObj;
-        // @ts-expect-error TODO: fix ts
-        this._log(logObj);
+        this._lastLog.object = logObj as LogObject;
+        this._log(logObj as LogObject);
       }
     };
 
@@ -495,38 +480,27 @@ function _normalizeLogLevel(
   }
   return defaultLevel;
 }
-
 export type LogFn = {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  (message: InputLogObject | any, ...args: any[]): void;
-  raw: (...args: any[]) => void;
+  (message: InputLogObject, ...args: unknown[]): void;
+  raw: (...args: unknown[]) => void;
 };
 export type RelinkaInstance = Relinka & Record<LogType, LogFn>;
 
 // Legacy support
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.add = Relinka.prototype.addReporter;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.remove = Relinka.prototype.removeReporter;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.clear = Relinka.prototype.removeReporter;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.withScope = Relinka.prototype.withTag;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.mock = Relinka.prototype.mockTypes;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.pause = Relinka.prototype.pauseLogs;
-// @ts-expect-error TODO: fix ts
-Relinka.prototype.resume = Relinka.prototype.resumeLogs;
+(Relinka.prototype as any).add = Relinka.prototype.addReporter;
+(Relinka.prototype as any).remove = Relinka.prototype.removeReporter;
+(Relinka.prototype as any).clear = Relinka.prototype.removeReporter;
+(Relinka.prototype as any).withScope = Relinka.prototype.withTag;
+(Relinka.prototype as any).mock = Relinka.prototype.mockTypes;
+(Relinka.prototype as any).pause = Relinka.prototype.pauseLogs;
+(Relinka.prototype as any).resume = Relinka.prototype.resumeLogs;
 
 /**
  * Utility for creating a new Relinka instance with optional configuration.
  *
  * @param {Partial<RelinkaOptions>} [options={}] - Optional configuration options for the new Relinka instance. See {@link RelinkaOptions}.
- * @returns {RelinkaInstance} A new instance of Relinka. See {@link RelinkaInstance}.
+ * @returns {Relinka} A new instance of Relinka.
  */
-export function createRelinka(
-  options: Partial<RelinkaOptions> = {},
-): RelinkaInstance {
-  return new Relinka(options) as RelinkaInstance;
+export function createRelinka(options: Partial<RelinkaOptions> = {}): Relinka {
+  return new Relinka(options);
 }

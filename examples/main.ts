@@ -6,6 +6,10 @@ import { formatTree } from "~/utils/tree.js";
 import { reporterDemo } from "./src/utils/index.js";
 
 async function detailedExample() {
+  // TODO: implement relinka.clear
+  // relinka.box("=== 🥷 you can't see me 🥷 ===");
+  // relinka.clear(true);
+
   // box
   relinka.box("=== box ===");
 
