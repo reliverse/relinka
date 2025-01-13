@@ -1,9 +1,9 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 function main() {
-  relinka.box(`I am the default banner`);
+  relinkaInstance.box(`I am the default banner`);
 
-  relinka.box({
+  relinkaInstance.box({
     title: "Box with options",
     message: `I am a banner with different options`,
     style: {
@@ -13,7 +13,7 @@ function main() {
     },
   });
 
-  relinka.box({
+  relinkaInstance.box({
     title: "Update available for `relinka`",
     message: `\`v1.0.2\` → \`v2.0.0\`\n\nRun \`npm install -g relinka\` to update`,
     style: {

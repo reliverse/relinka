@@ -11,16 +11,13 @@ import type {
 import { LogTypes } from "~/components/levels/levels.js";
 import { isLogObj } from "~/utils/log.js";
 
-const paused = false;
-const queue: any[] = [];
-
 /**
  * Relinka class for logging management with support for pause/resume, mocking and customizable reporting.
  * Provides flexible logging capabilities including level-based logging, custom reporters and integration options.
  *
  * @class Relinka
  */
-export class Relinka {
+export class RelinkaInterface {
   options: RelinkaOptions;
   _lastLog: {
     serialized?: string;
@@ -121,7 +118,7 @@ export class Relinka {
    * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
    */
   create(options: Partial<RelinkaOptions>): RelinkaInstance {
-    const instance = new Relinka({
+    const instance = new RelinkaInterface({
       ...this.options,
       ...options,
     }) as RelinkaInstance;
@@ -246,7 +243,7 @@ export class Relinka {
   }
 
   /**
-   * Overrides standard output and error streams to redirect them through Relinka.
+   * Overrides standard output and error streams to redirect them through RelinkaInterface.
    */
   wrapStd() {
     this._wrapStream(this.options.stdout, "log");
@@ -364,7 +361,7 @@ export class Relinka {
     return (...args: any[]) => {
       if (this._paused) {
         this._queue.push([this, defaults, args, isRaw]);
-        return;
+        return false;
       }
       return this._logFn(defaults, args, isRaw);
     };
@@ -459,15 +456,17 @@ export class Relinka {
               resolveLog,
               this.options.throttle,
             );
-            return; // SPAM!
+            return false; // SPAM!
           }
         }
       } catch {
         // Circular References
+        return true;
       }
     }
 
     resolveLog(true);
+    return true;
   }
 
   _log(logObj: LogObject) {
@@ -501,32 +500,32 @@ export type LogFn = {
   (message: InputLogObject | any, ...args: any[]): void;
   raw: (...args: any[]) => void;
 };
-export type RelinkaInstance = Relinka & Record<LogType, LogFn>;
+export type RelinkaInstance = RelinkaInterface & Record<LogType, LogFn>;
 
 // Legacy support
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.add = Relinka.prototype.addReporter;
+RelinkaInterface.prototype.add = RelinkaInterface.prototype.addReporter;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.remove = Relinka.prototype.removeReporter;
+RelinkaInterface.prototype.remove = RelinkaInterface.prototype.removeReporter;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.clear = Relinka.prototype.removeReporter;
+RelinkaInterface.prototype.clear = RelinkaInterface.prototype.removeReporter;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.withScope = Relinka.prototype.withTag;
+RelinkaInterface.prototype.withScope = RelinkaInterface.prototype.withTag;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.mock = Relinka.prototype.mockTypes;
+RelinkaInterface.prototype.mock = RelinkaInterface.prototype.mockTypes;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.pause = Relinka.prototype.pauseLogs;
+RelinkaInterface.prototype.pause = RelinkaInterface.prototype.pauseLogs;
 // @ts-expect-error TODO: fix ts
-Relinka.prototype.resume = Relinka.prototype.resumeLogs;
+RelinkaInterface.prototype.resume = RelinkaInterface.prototype.resumeLogs;
 
 /**
  * Utility for creating a new Relinka instance with optional configuration.
  *
  * @param {Partial<RelinkaOptions>} [options={}] - Optional configuration options for the new Relinka instance. See {@link RelinkaOptions}.
- * @returns {RelinkaInstance} A new instance of Relinka. See {@link RelinkaInstance}.
+ * @returns {RelinkaInstance} A new instance of RelinkaInterface. See {@link RelinkaInstance}.
  */
 export function createRelinka(
   options: Partial<RelinkaOptions> = {},
 ): RelinkaInstance {
-  return new Relinka(options) as RelinkaInstance;
+  return new RelinkaInterface(options) as RelinkaInstance;
 }

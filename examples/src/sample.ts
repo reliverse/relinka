@@ -1,11 +1,13 @@
-import { relinka } from "~/main.js";
+import { relinkaInstance } from "~/main.js";
 
 async function main() {
-  relinka.warn("A new version of relinka is available: 3.0.1");
-  relinka.error(new Error("This is an example error. Everything is fine!"));
-  relinka.info("Using relinka 3.0.0");
-  relinka.start("Building project...");
-  relinka.success("Project built!");
+  relinkaInstance.warn("A new version of relinka is available: 3.0.1");
+  relinkaInstance.error(
+    new Error("This is an example error. Everything is fine!"),
+  );
+  relinkaInstance.info("Using relinka 3.0.0");
+  relinkaInstance.start("Building project...");
+  relinkaInstance.success("Project built!");
 }
 
 await main();

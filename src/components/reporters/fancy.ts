@@ -1,5 +1,5 @@
 import isUnicodeSupported from "is-unicode-supported";
-import _stringWidth from "string-width";
+import stringWidth from "string-width";
 
 import type { LogLevel, LogType } from "~/components/levels/levels.js";
 import type { FormatOptions, LogObject } from "~/types/mod.js";
@@ -40,11 +40,11 @@ const TYPE_ICONS: Partial<Record<LogType, string>> = {
   log: "",
 };
 
-function stringWidth(str: string) {
+function getStringWidth(str: string) {
   if (!Intl.Segmenter) {
     return stripAnsi(str).length;
   }
-  return _stringWidth(str);
+  return stringWidth(str);
 }
 
 export class FancyReporter extends BasicReporter {
@@ -63,7 +63,7 @@ export class FancyReporter extends BasicReporter {
     );
   }
 
-  formatType(logObj: LogObject, isBadge: boolean, opts: FormatOptions) {
+  formatType(logObj: LogObject, isBadge: boolean) {
     const typeColor =
       (TYPE_COLOR_MAP as any)[logObj.type] ||
       (LEVEL_COLOR_MAP as any)[logObj.level] ||
@@ -94,10 +94,10 @@ export class FancyReporter extends BasicReporter {
           message + (additional.length > 0 ? "\n" + additional.join("\n") : ""),
         ),
         {
-          title: logObj.title
-            ? characterFormat(logObj.title as string)
+          title: logObj["title"]
+            ? characterFormat(logObj["title"] as string)
             : undefined,
-          style: logObj.style as BoxOpts["style"],
+          style: logObj["style"] as BoxOpts["style"],
         },
       );
     }
@@ -105,16 +105,16 @@ export class FancyReporter extends BasicReporter {
     const date = this.formatDate(logObj.date, opts);
     const coloredDate = date && colors.gray(date);
 
-    const isBadge = (logObj.badge as boolean) ?? logObj.level < 2;
-    const type = this.formatType(logObj, isBadge, opts);
+    const isBadge = (logObj["badge"] as boolean) ?? logObj.level < 2;
+    const type = this.formatType(logObj, isBadge);
 
     const tag = logObj.tag ? colors.gray(logObj.tag) : "";
 
-    let line;
+    let line: string;
     const left = this.filterAndJoin([type, characterFormat(message)]);
     const right = this.filterAndJoin(opts.columns ? [tag, coloredDate] : [tag]);
     const space =
-      (opts.columns || 0) - stringWidth(left) - stringWidth(right) - 2;
+      (opts.columns || 0) - getStringWidth(left) - getStringWidth(right) - 2;
 
     line =
       space > 0 && (opts.columns || 0) >= 80

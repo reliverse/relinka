@@ -1,7 +1,7 @@
 import type { TreeItem } from "~/utils/tree.js";
 
+import { relinkaInstance } from "~/main.js";
 import { formatTree } from "~/utils/tree.js";
-import { relinka } from "./utils/index.js";
 
 function main() {
   const keywords = [
@@ -19,16 +19,16 @@ function main() {
     "stacktrace",
   ];
 
-  relinka.log(formatTree(keywords));
+  relinkaInstance.log(formatTree(keywords));
 
-  relinka.log(
+  relinkaInstance.log(
     formatTree(keywords, {
       color: "cyan",
       prefix: "  |  ",
     }),
   );
 
-  relinka.log(
+  relinkaInstance.log(
     formatTree(
       [
         {
@@ -52,7 +52,7 @@ function main() {
   );
 
   // Deep tree
-  relinka.log(
+  relinkaInstance.log(
     formatTree([
       {
         text: "format",

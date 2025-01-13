@@ -13,21 +13,19 @@ import { writeStream } from "~/utils/stream.js";
 const bracket = (x: string) => (x ? `[${x}]` : "");
 
 export class BasicReporter implements RelinkaReporter {
-  formatStack(stack: string, opts: FormatOptions) {
+  formatStack(stack: string) {
     return "  " + parseStack(stack).join("\n  ");
   }
 
   formatArgs(args: any[], opts: FormatOptions) {
-    const _args = args.map((arg) => {
+    const formattedArgs = args.map((arg) => {
       if (arg && typeof arg.stack === "string") {
-        return arg.message + "\n" + this.formatStack(arg.stack, opts);
+        return arg.message + "\n" + this.formatStack(arg.stack);
       }
       return arg;
     });
 
-    // Only supported with Node >= 10
-    // https://nodejs.org/api/util.html#util_util_inspect_object_options
-    return formatWithOptions(opts, ..._args);
+    return formatWithOptions(opts, ...formattedArgs);
   }
 
   formatDate(date: Date, opts: FormatOptions) {
@@ -46,7 +44,7 @@ export class BasicReporter implements RelinkaReporter {
         "\n" +
         [
           bracket(logObj.tag),
-          logObj.title && logObj.title,
+          logObj["title"] && logObj["title"],
           ...message.split("\n"),
         ]
           .filter(Boolean)

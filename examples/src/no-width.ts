@@ -1,11 +1,11 @@
-import { createRelinka } from "~/main.js";
+import { createRelinka } from "~/components/relinka/mod.js";
 
 function main() {
-  const relinka = createRelinka({
+  const relinkaWrapper = createRelinka({
     formatOptions: { columns: 0 },
   });
-  relinka.info("Foobar");
-  const scoped = relinka.withTag("test");
+  relinkaWrapper.info("Foobar");
+  const scoped = relinkaWrapper.withTag("test");
   scoped.success("Foobar");
 }
 

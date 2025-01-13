@@ -1,11 +1,11 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 function foo() {
   console.info("console foo");
   process.stderr.write("called from stderr\n");
 }
 
-relinka.wrapAll();
+relinkaInstance.wrapAll();
 foo();
-relinka.restoreAll();
+relinkaInstance.restoreAll();
 foo();

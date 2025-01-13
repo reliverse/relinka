@@ -1,4 +1,4 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 function foo() {
   console.info("foo");
@@ -13,9 +13,9 @@ function trace() {
 }
 
 foo();
-relinka.wrapConsole();
+relinkaInstance.wrapConsole();
 foo();
 trace();
-relinka.restoreConsole();
+relinkaInstance.restoreConsole();
 foo();
 trace();

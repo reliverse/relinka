@@ -1,35 +1,35 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
-relinka.error({
+relinkaInstance.error({
   message: "Foobar",
 });
 
-relinka.log({
+relinkaInstance.log({
   AAA: "BBB",
 });
 
-// relinka.log(relinka)
+// relinkaInstance.log(relinka)
 
-relinka.log("%d", 12);
+relinkaInstance.log("%d", 12);
 
-relinka.error({ type: "CSSError", message: "Use scss" });
+relinkaInstance.error({ type: "CSSError", message: "Use scss" });
 
-relinka.error(undefined, null, false, true, Number.NaN);
+relinkaInstance.error(undefined, null, false, true, Number.NaN);
 
-relinka.log("We can `monospace` keyword using grave accent character!");
+relinkaInstance.log("We can `monospace` keyword using grave accent character!");
 
-relinka.log(
+relinkaInstance.log(
   "We can also _underline_ words but not_this or this should_not_be_underlined!",
 );
 
 // Nonstandard error
 const { message, stack } = new Error("Custom Error!");
-relinka.error({ message, stack });
+relinkaInstance.error({ message, stack });
 
 // Circular object
 const a = { foo: 1, bar: undefined as any };
 a.bar = a;
-relinka.log(a);
+relinkaInstance.log(a);
 
 // Multiline
-relinka.log("`Hello` the `JS`\n`World` and `Beyond`!");
+relinkaInstance.log("`Hello` the `JS`\n`World` and `Beyond`!");

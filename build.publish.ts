@@ -1,18 +1,28 @@
+// 👉 usage example: `bun pub --bump=1.2.3`
+
+import { destr } from "destr";
 import { execaCommand } from "execa";
 import fs from "fs-extra";
+import { globby } from "globby";
 import mri from "mri";
+import path from "pathe";
 
-import relinka from "~/main.js";
+import { relinka } from "~/main.js";
 
 function showHelp() {
-  relinka.info(`Usage: bun tsx build.publish.ts [options]
+  relinka(
+    "info",
+    `Usage: bun tsx build.publish.ts [newVersion] [options]
 
+Arguments:
+  newVersion        The new version to set (e.g. 1.2.3)
+  
 Options:
-  no options      Publish to npm registry
-  --jsr           Publish to JSR registry
-  --dry-run       Perform a dry run of the publish process
-  -h, --help      Show help
-`);
+  --jsr             Publish to JSR registry
+  --dry-run         Perform a dry run of the publish process
+  -h, --help        Show help
+`,
+  );
 }
 
 const argv = mri(process.argv.slice(2), {
@@ -28,7 +38,7 @@ const argv = mri(process.argv.slice(2), {
 });
 
 // If help flag is present, display help and exit
-if (argv.help) {
+if (argv["help"]) {
   showHelp();
   process.exit(0);
 }
@@ -40,7 +50,7 @@ const unknownFlags = Object.keys(argv).filter(
 );
 
 if (unknownFlags.length > 0) {
-  relinka.error(`❌ Unknown flag(s): ${unknownFlags.join(", ")}`);
+  relinka("error", `❌ Unknown flag(s): ${unknownFlags.join(", ")}`);
   showHelp();
   process.exit(1);
 }
@@ -53,9 +63,13 @@ async function publishNpm(dryRun: boolean) {
       await execaCommand("bun build:npm", { stdio: "inherit" });
       await execaCommand("npm publish", { stdio: "inherit" });
     }
-    relinka.success("Published to npm successfully.");
+    relinka("success", "Published to npm successfully.");
   } catch (error) {
-    relinka.error("❌ Failed to publish to npm:", error);
+    relinka(
+      "error",
+      "❌ Failed to publish to npm:",
+      error instanceof Error ? error.message : String(error),
+    );
     process.exit(1);
   }
 }
@@ -64,48 +78,93 @@ async function publishJsr(dryRun: boolean) {
   try {
     if (dryRun) {
       await execaCommand(
-        "bunx jsr publish --allow-slow-types --allow-dirty --dry-run",
-        { stdio: "inherit" },
+        "bunx jsr publish --allow-dirty --dry-run --allow-slow-types",
+        {
+          stdio: "inherit",
+        },
       );
     } else {
-      await execaCommand("bun build:jsr", { stdio: "inherit" });
-      await execaCommand("bunx jsr publish --allow-slow-types --allow-dirty", {
+      await execaCommand("bun build:jsr", {
+        stdio: "inherit",
+      });
+      await execaCommand("bunx jsr publish --allow-dirty --allow-slow-types", {
         stdio: "inherit",
       });
     }
-    relinka.success("Published to JSR successfully.");
+    relinka("success", "Published to JSR successfully.");
   } catch (error) {
-    relinka.error("❌ Failed to publish to JSR:", error);
+    relinka(
+      "error",
+      "❌ Failed to publish to JSR:",
+      error instanceof Error ? error.message : String(error),
+    );
     process.exit(1);
   }
 }
 
-async function bumpJsrVersion(disable?: boolean) {
-  if (disable) {
-    return;
-  }
-  const pkg = JSON.parse(await fs.readFile("package.json", "utf-8"));
-  const jsrConfig = JSON.parse(await fs.readFile("jsr.jsonc", "utf-8"));
-  jsrConfig.version = pkg.version;
-  await fs.writeFile("jsr.jsonc", JSON.stringify(jsrConfig, null, 2));
-}
+async function bumpVersions(oldVersion: string, newVersion: string) {
+  // Update package.json
+  const pkgPath = path.resolve("package.json");
+  const pkg = destr<{ version: string }>(await fs.readFile(pkgPath, "utf-8"));
+  pkg.version = newVersion;
+  await fs.writeFile(pkgPath, JSON.stringify(pkg, null, 2));
 
-async function bumpNpmVersion() {
-  await execaCommand("bun bumpp", { stdio: "inherit" });
+  // Update jsr.jsonc
+  const jsrPath = path.resolve("jsr.jsonc");
+  if (await fs.pathExists(jsrPath)) {
+    const jsrConfig = destr<{ version: string }>(
+      await fs.readFile(jsrPath, "utf-8"),
+    );
+    jsrConfig.version = newVersion;
+    await fs.writeFile(jsrPath, JSON.stringify(jsrConfig, null, 2));
+  }
+
+  // Replace version in src/**/*.ts and examples/**/*.ts
+  const tsFiles = await globby(["src/**/*.ts", "examples/**/*.ts"]);
+  for (const file of tsFiles) {
+    const content = await fs.readFile(file, "utf-8");
+    if (content.includes(oldVersion)) {
+      const updated = content.replaceAll(oldVersion, newVersion);
+      await fs.writeFile(file, updated);
+    }
+  }
+
+  relinka("success", `Version updated from ${oldVersion} to ${newVersion}`);
 }
 
 async function main() {
-  const { jsr, "dry-run": dryRun } = argv;
+  const { jsr, "dry-run": dryRun } = argv as unknown as {
+    jsr: boolean;
+    "dry-run": boolean;
+  };
+  const newVersion = argv._[0]; // The new version provided by the user (if any)
+
+  if (newVersion) {
+    // Perform version bump
+    const pkg = destr<{ version: string }>(
+      await fs.readFile("package.json", "utf-8"),
+    );
+    const oldVersion = pkg.version;
+    if (oldVersion !== newVersion) {
+      await bumpVersions(oldVersion, newVersion);
+    } else {
+      relinka("info", `No version change required: already at ${oldVersion}`);
+    }
+  }
+
+  // After potential bump, proceed with publishing
   if (jsr) {
-    // await bumpJsrVersion();
     await publishJsr(dryRun);
   } else {
-    // await bumpNpmVersion();
     await publishNpm(dryRun);
   }
 }
 
 main().catch((error) => {
-  relinka.error("❌ An unexpected error occurred:", error);
+  relinka(
+    "error",
+    "❌ An unexpected error occurred:",
+    error instanceof Error ? error.message : String(error),
+  );
   process.exit(1);
 });

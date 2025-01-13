@@ -1,9 +1,9 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
-relinka.log('relinka.log({ message: "hello" })');
+relinkaInstance.log('relinkaInstance.log({ message: "hello" })');
 // Prints "hello"
-relinka.log({ message: "hello" });
+relinkaInstance.log({ message: "hello" });
 
-relinka.log('relinka.log.raw({ message: "hello" })');
+relinkaInstance.log('relinkaInstance.log.raw({ message: "hello" })');
 // Prints "{ message: 'hello' }"
-relinka.log.raw({ message: "hello" });
+relinkaInstance.log.raw({ message: "hello" });

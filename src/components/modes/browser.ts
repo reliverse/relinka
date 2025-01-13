@@ -1,6 +1,7 @@
-import { BrowserReporter } from "~/components/reporters/browser.js";
-import { createRelinka as _createRelinka } from "~/components/relinka/relinka.js";
 import type { RelinkaOptions } from "~/types/mod.js";
+
+import { createRelinka as _createRelinka } from "~/components/relinka/relinka.js";
+import { BrowserReporter } from "~/components/reporters/browser.js";
 
 export * from "./shared.js";
 
@@ -26,6 +27,6 @@ export function createRelinka(options: Partial<RelinkaOptions> = {}) {
  *
  * @type {RelinkaInstance} relinka - The default browser-configured Relinka instance.
  */
-export const relinka = createRelinka();
+export const relinkaBrowser = createRelinka();
 
-export default relinka;
+export default relinkaBrowser;

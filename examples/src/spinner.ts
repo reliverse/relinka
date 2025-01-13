@@ -1,9 +1,9 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 async function main() {
-  relinka.start("Creating project...");
+  relinkaInstance.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinka.success("Project created!");
+  relinkaInstance.success("Project created!");
 }
 
 await main();

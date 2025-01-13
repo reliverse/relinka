@@ -238,7 +238,7 @@ export function box(text: string, _opts: BoxOpts = {}) {
   const _color = getColor(opts.style.borderColor);
   const borderStyle = {
     ...(typeof opts.style.borderStyle === "string"
-      ? boxStylePresets[opts.style.borderStyle] || boxStylePresets.solid
+      ? boxStylePresets[opts.style.borderStyle] || boxStylePresets["solid"]
       : opts.style.borderStyle),
   };
   if (_color) {

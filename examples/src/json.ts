@@ -1,6 +1,6 @@
-import { createRelinka } from "~/main.js";
+import { createRelinka } from "~/components/relinka/mod.js";
 
-const relinka = createRelinka({
+const relinkaWrapper = createRelinka({
   reporters: [
     {
       log: (logObj) => {
@@ -10,4 +10,4 @@ const relinka = createRelinka({
   ],
 });
 
-relinka.log("foo bar");
+relinkaWrapper.log("foo bar");

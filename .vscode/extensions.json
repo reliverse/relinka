@@ -1,5 +1,3 @@
 {
-    "recommendations": [
-        "fabiospampinato.vscode-open-multiple-files"
-    ]
+  "recommendations": ["fabiospampinato.vscode-open-multiple-files"]
 }

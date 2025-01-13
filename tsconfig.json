@@ -1,45 +1,39 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
       "#/*": ["./addons/*"],
       "@/*": ["./examples/*"]
     },
-    "outDir": "dist-npm",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "moduleDetection": "force",
-    "esModuleInterop": true,
     "target": "ES2023",
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "nodenext",
     "lib": ["DOM", "DOM.Iterable", "ES2023"],
     "resolveJsonModule": true,
-    "jsx": "react",
-    "declaration": true,
-    "newLine": "lf",
-    "stripInternal": true,
-    "strict": true,
-    "noImplicitReturns": false,
-    "noImplicitOverride": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": false,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,
-    "strictNullChecks": false,
     "isolatedModules": true,
-    "noImplicitAny": false,
-    "noEmitOnError": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
+    "jsx": "preserve",
     "allowJs": true,
-    "noEmit": true
-  },
-  "ts-node": {
-    "esm": true
+    "strict": true,
+    "noEmit": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "exactOptionalPropertyTypes": false
   },
   "include": [
     "build.optim.ts",
@@ -50,7 +44,8 @@
     "addons/**/*.ts",
     "examples/**/*.ts",
     "build.publish.ts",
-    "bump.config.ts"
+    "bump.config.ts",
+    "publish.ts"
   ],
   "exclude": ["node_modules", "dist-jsr", "dist-npm"]
 }

@@ -1,13 +1,9 @@
-import glob from "fast-glob";
 import fs from "fs-extra";
+import { globby } from "globby";
 import path from "pathe";
-import strip from "strip-comments";
 import { fileURLToPath } from "url";
 
-import relinka from "~/main.js";
-
-// Verbose logging
-const debug = false;
+import { relinka } from "~/main.js";
 
 // Parse command-line arguments to check for '--jsr' flag
 const args: string[] = process.argv.slice(2);
@@ -16,7 +12,7 @@ const isJSR: boolean = args.includes("--jsr");
 // Get current directory using import.meta.url
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
-// Define directories based on the presence of '--jsr' flag
+// Directories based on the presence of '--jsr' flag
 const sourceDir: string = path.resolve(currentDir, "src");
 const outputDir: string = path.resolve(
   currentDir,
@@ -37,43 +33,43 @@ const jsrFilesToDelete: string[] = ["**/*.test.ts", "**/*.temp.ts"];
 
 /**
  * Deletes files matching the provided patterns within the base directory.
- * @param patterns - Array of glob patterns to match files for deletion.
- * @param baseDir - The base directory to search for files.
  */
 async function deleteFiles(patterns: string[], baseDir: string): Promise<void> {
   try {
-    const files: string[] = await glob(patterns, {
+    const files: string[] = await globby(patterns, {
       cwd: baseDir,
       absolute: true,
     });
 
     if (files.length === 0) {
-      console.log("No files matched the deletion patterns.");
+      relinka("info", "No files matched the deletion patterns.");
       return;
     }
 
     for (const filePath of files) {
       try {
         await fs.remove(filePath);
-        if (debug) {
-          console.log(`Deleted: ${filePath}`);
-        }
+        relinka("info-verbose", `Deleted: ${filePath}`);
       } catch (error) {
-        console.error(`Error deleting file ${filePath}:`, error);
+        relinka(
+          "error",
+          `Error deleting file ${filePath}:`,
+          error instanceof Error ? error.message : String(error),
+        );
       }
     }
   } catch (error) {
-    console.error("Error processing deletion patterns:", error);
+    relinka(
+      "error",
+      "Error processing deletion patterns:",
+      error instanceof Error ? error.message : String(error),
+    );
   }
 }
 
 /**
  * Replaces import paths that use '~/' with relative paths.
  * If `isJSR` is true, also replaces '.js' extensions with '.ts'.
- * @param content - The file content.
- * @param fileDir - The directory of the current file.
- * @param rootDir - The root directory to resolve relative paths.
- * @param isJSR - Flag indicating whether to apply JSR-specific transformations.
  * @returns The updated file content with modified import paths.
  */
 function replaceImportPaths(
@@ -86,12 +82,12 @@ function replaceImportPaths(
     // Matches both static and dynamic imports
     /(from\s+['"]|import\s*\(\s*['"])(~\/?[^'"]*)(['"]\s*\)?)/g,
     (
-      match: string,
+      _match: string,
       prefix: string,
       importPath: string,
       suffix: string,
     ): string => {
-      const relativePathToRoot: string = path.relative(fileDir, rootDir) || ".";
+      const relativePathToRoot: string = path.relative(fileDir, rootDir) ?? ".";
       // Remove leading '~/' or '~' from importPath
       importPath = importPath.replace(/^~\/?/, "");
       let newPath: string = path.join(relativePathToRoot, importPath);
@@ -110,9 +106,7 @@ function replaceImportPaths(
     // @see https://jsr.io/docs/publishing-packages#relative-imports
     updatedContent = updatedContent.replace(/(\.js)(?=['";])/g, ".ts");
 
-    if (debug) {
-      console.log("Replaced '.js' with '.ts' in import paths.");
-    }
+    relinka("info-verbose", "Replaced '.js' with '.ts' in import paths.");
   }
 
   return updatedContent;
@@ -121,31 +115,29 @@ function replaceImportPaths(
 /**
  * Removes comments from the given content string.
  * - Strips block comments using `strip-comments`.
- * @param content - The file content.
- * @param filePath - The path of the file being processed.
  * @returns The content without unwanted comments.
  */
-function removeComments(content: string, filePath: string): string {
+// function removeComments(content: string, filePath: string): string {
+function removeComments(content: string): string {
   // When not in JSR mode, strip all comments using strip-comments
-  const stripped = strip(content, {
-    line: true,
-    block: true,
-    keepProtected: true,
-    preserveNewlines: false,
-  });
+  // const stripped = strip(content, {
+  //   line: true,
+  //   block: true,
+  //   keepProtected: true,
+  //   preserveNewlines: false,
+  // });
 
-  if (debug) {
-    console.log(`\nProcessing file: ${filePath}`);
-    console.log("Stripped all comments.");
-  }
+  // if (debug) {
+  //   relinka("info", `\nProcessing file: ${filePath}`);
+  //   relinka("info", "Stripped all comments.");
+  // }
 
-  return stripped;
+  return content; // return stripped;
 }
 
 /**
  * Processes all relevant files in the given directory
  * by replacing import paths and removing comments.
- * @param dir - The directory to process.
  */
 async function processFiles(dir: string): Promise<void> {
   const files: string[] = await fs.readdir(dir);
@@ -167,9 +159,8 @@ async function processFiles(dir: string): Promise<void> {
       filePath.endsWith(".mts") ||
       filePath.endsWith(".cts")
     ) {
-      if (debug) {
-        console.log(`\nProcessing file: ${filePath}`);
-      }
+      relinka("info-verbose", `\nProcessing file: ${filePath}`);
+
       try {
         const content: string = await fs.readFile(filePath, "utf8");
 
@@ -181,17 +172,20 @@ async function processFiles(dir: string): Promise<void> {
         );
 
         if (!isJSR) {
-          updatedContent = removeComments(updatedContent, filePath);
+          // updatedContent = removeComments(updatedContent, filePath);
+          updatedContent = removeComments(updatedContent);
         }
 
         if (content !== updatedContent) {
           await fs.writeFile(filePath, updatedContent, "utf8");
-          if (debug) {
-            console.log(`Updated file: ${filePath}`);
-          }
+          relinka("info-verbose", `Updated file: ${filePath}`);
         }
       } catch (error) {
-        console.error(`Error processing file ${filePath}:`, error);
+        relinka(
+          "error",
+          `Error processing file ${filePath}:`,
+          error instanceof Error ? error.message : String(error),
+        );
       }
     }
   }
@@ -205,12 +199,14 @@ async function removeOutputDirectory(): Promise<void> {
     const exists: boolean = await fs.pathExists(outputDir);
     if (exists) {
       await fs.remove(outputDir);
-      if (debug) {
-        console.log(`Removed existing '${outputDir}' directory.`);
-      }
+      relinka("info-verbose", `Removed existing '${outputDir}' directory.`);
     }
   } catch (error) {
-    console.error(`Error removing '${outputDir}' directory:`, error);
+    relinka(
+      "error",
+      `Error removing '${outputDir}' directory:`,
+      error instanceof Error ? error.message : String(error),
+    );
     throw error;
   }
 }
@@ -224,33 +220,61 @@ async function copySrcToOutput(): Promise<void> {
       overwrite: true,
       errorOnExist: false,
     });
-    if (debug) {
-      console.log(`Copied 'src' to '${outputDir}'`);
-    }
+    relinka("info-verbose", `Copied 'src' to '${outputDir}'`);
   } catch (error) {
-    console.error(`Error copying 'src' to '${outputDir}':`, error);
+    relinka(
+      "error",
+      `Error copying 'src' to '${outputDir}':`,
+      error instanceof Error ? error.message : String(error),
+    );
     throw error;
   }
 }
 
 /**
+ * Renames all .tsx files to -tsx.txt in the specified directory and its subdirectories.
+ */
+async function renameTsxFiles(dir: string): Promise<void> {
+  try {
+    const files = await globby("**/*.tsx", {
+      cwd: dir,
+      absolute: true,
+    });
+
+    for (const filePath of files) {
+      const newPath = filePath.replace(/\.tsx$/, "-tsx.txt");
+      await fs.rename(filePath, newPath);
+      relinka("info-verbose", `Renamed: ${filePath} -> ${newPath}`);
+    }
+  } catch (error) {
+    relinka(
+      "error",
+      "Error renaming .tsx files:",
+      error instanceof Error ? error.message : String(error),
+    );
+  }
+}
+
+/**
  * Optimizes the build for production by processing files and deleting unnecessary ones.
- * @param dir - The directory to optimize.
  */
 async function optimizeBuildForProduction(dir: string): Promise<void> {
   if (isJSR) {
-    relinka.info(
+    relinka(
+      "info",
       "Preparing JSR build by removing existing output directory...",
     );
     await removeOutputDirectory(); // Remove outputDir before copying
-    relinka.info("Copying 'src' to output directory...");
+    relinka("info", "Copying 'src' to output directory...");
     await copySrcToOutput();
-    relinka.info("Processing copied files to replace import paths...");
+    relinka("info", "Processing copied files to replace import paths...");
     await processFiles(outputDir); // Process files after copying
+    relinka("info", "Renaming .tsx files to -tsx.txt for JSR compatibility...");
+    await renameTsxFiles(outputDir);
   } else {
-    relinka.info("Creating an optimized production build...");
+    relinka("info", "Creating an optimized production build...");
     await processFiles(dir);
-    relinka.info("Cleaning up unnecessary files...");
+    relinka("info", "Cleaning up unnecessary files...");
     const filesToDelete: string[] = isJSR ? jsrFilesToDelete : npmFilesToDelete;
     await deleteFiles(filesToDelete, dir);
   }
@@ -278,12 +302,15 @@ await optimizeBuildForProduction(outputDir)
   .then(() => {
     getDirectorySize(outputDir)
       .then((size) => {
-        relinka.info(`Total size of ${outputDir}: ${size} bytes`);
+        relinka("info", `Total size of ${outputDir}: ${size} bytes`);
       })
       .catch((error) => {
-        relinka.error(
+        relinka(
+          "error",
           `Error calculating directory size for ${outputDir}: ${error instanceof Error ? error.message : "Unknown error"}`,
         );
       });
   })
-  .catch((error: Error) => console.error(error.message));
+  .catch((error: unknown) => {
+    relinka("error", error instanceof Error ? error.message : String(error));
+  });

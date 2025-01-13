@@ -1,6 +1,6 @@
-import type { RelinkaOptions } from "~/main.js";
+import type { RelinkaOptions } from "~/components/relinka/mod.js";
 
-import { createRelinka } from "~/main.js";
+import relinkaInstance, { createRelinka } from "~/components/relinka/mod.js";
 
 import { randomSentence } from "./sentence.js";
 
@@ -11,22 +11,22 @@ export function reporterDemo(
     ...opts,
   });
 
-  for (const type of Object.keys(relinka.options.types).sort()) {
+  for (const type of Object.keys(relinkaInstance.options.types).sort()) {
     relinka[type](randomSentence());
   }
 
-  relinka.info("JSON", {
+  relinkaInstance.info("JSON", {
     name: "Cat",
     color: "#454545",
   });
 
-  relinka.error(new Error(randomSentence()));
+  relinkaInstance.error(new Error(randomSentence()));
 
-  const tagged = relinka.withTag("reliverse").withTag("cli");
+  const tagged = relinkaInstance.withTag("reliverse").withTag("cli");
 
-  for (const type of Object.keys(relinka.options.types).sort()) {
+  for (const type of Object.keys(relinkaInstance.options.types).sort()) {
     tagged[type](randomSentence());
   }
 }
 
-export const relinka = createRelinka();
+export const relinkaExample = createRelinka();

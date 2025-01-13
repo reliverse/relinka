@@ -19,8 +19,8 @@ export function createRelinka(
 ): RelinkaInstance {
   // Log level
   let level: LogLevel = LogLevels.info;
-  if (process.env.RELINKA_LEVEL) {
-    level = Number.parseInt(process.env.RELINKA_LEVEL) ?? level;
+  if (process.env["RELINKA_LEVEL"]) {
+    level = Number.parseInt(process.env["RELINKA_LEVEL"]) ?? level;
   }
 
   // Create new relinka instance
@@ -42,6 +42,6 @@ export function createRelinka(
  *
  * @type {RelinkaInstance} relinka - The default instance of Relinka.
  */
-export const relinka = createRelinka();
+export const relinkaBasic = createRelinka();
 
-export default relinka;
+export default relinkaBasic;

@@ -1,23 +1,23 @@
 import type { TreeItem } from "~/utils/tree.js";
 
-import { relinka, createRelinka } from "~/main.js";
+import { relinkaInstance, createRelinka } from "~/components/relinka/mod.js";
 import { formatTree } from "~/utils/tree.js";
 
 import { reporterDemo } from "./src/utils/index.js";
 
 async function detailedExample() {
-  // TODO: implement relinka.clear
-  // relinka.box("=== 🥷 you can't see me 🥷 ===");
-  // relinka.clear(true);
+  // TODO: implement relinkaInstance.clear
+  // relinkaInstance.box("=== 🥷 you can't see me 🥷 ===");
+  // relinkaInstance.clear(true);
 
   // box
-  relinka.box("=== box ===");
+  relinkaInstance.box("=== box ===");
 
-  relinka.box(
+  relinkaInstance.box(
     `Welcome to @reliverse/prompts! You're going to test an 'experimental' example.`,
   );
 
-  relinka.box({
+  relinkaInstance.box({
     title: "Box with options",
     message: `You'll see an example of errors, but it's not a real error 😉`,
     style: {
@@ -28,16 +28,16 @@ async function detailedExample() {
   });
 
   // reporter
-  relinka.box("=== reporter 'basic' ===");
+  relinkaInstance.box("=== reporter 'basic' ===");
   reporterDemo({
     fancy: false,
   });
-  relinka.box("=== reporter 'fancy' ===");
+  relinkaInstance.box("=== reporter 'fancy' ===");
   reporterDemo({
     fancy: true,
   });
 
-  relinka.box({
+  relinkaInstance.box({
     title: "By the way",
     // message: `\`v1.0.2\` → \`v2.0.0\`\n\nRun \`npm install -g relinka\` to update`,
     message: `You can check \`@reliverse/prompts\` in the production usage\n\nJust run \`bunx -g reliverse@latest\``,
@@ -49,12 +49,12 @@ async function detailedExample() {
   });
 
   // sleep
-  relinka.start("Creating project...");
+  relinkaInstance.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinka.success("Project created!");
+  relinkaInstance.success("Project created!");
 
   // json
-  relinka.box("=== json ===");
+  relinkaInstance.box("=== json ===");
 
   const jsonRelinka = createRelinka({
     reporters: [
@@ -69,7 +69,7 @@ async function detailedExample() {
   jsonRelinka.log("foo bar");
 
   // mock
-  relinka.box("=== mock ===");
+  relinkaInstance.box("=== mock ===");
 
   function mockFn(type) {
     if (type === "info") {
@@ -77,26 +77,30 @@ async function detailedExample() {
         this.log("(mocked fn with info tag)");
       };
     }
+    return undefined;
   }
 
-  relinka.info("before");
-  relinka.mockTypes((type) => {
+  relinkaInstance.info("before");
+  relinkaInstance.mockTypes((type) => {
     if (type === "info") {
-      return () => relinka.log("(mocked fn with info tag)");
+      return () => {
+        relinkaInstance.log("(mocked fn with info tag)");
+      };
     }
+    return undefined;
   });
 
-  relinka.mockTypes(mockFn);
+  relinkaInstance.mockTypes(mockFn);
 
-  const tagged = relinka.withTag("newTag");
+  const tagged = relinkaInstance.withTag("newTag");
 
-  relinka.log("log is not mocked!");
+  relinkaInstance.log("log is not mocked!");
 
-  relinka.info("Dont see me");
+  relinkaInstance.info("Dont see me");
   tagged.info("Dont see me too");
 
   // no-width
-  relinka.box("=== no-width ===");
+  relinkaInstance.box("=== no-width ===");
 
   const noWidthRelinka = createRelinka({
     formatOptions: { columns: 0 },
@@ -106,7 +110,7 @@ async function detailedExample() {
   scoped.success("Foobar");
 
   // with-width
-  relinka.box("=== with-width ===");
+  relinkaInstance.box("=== with-width ===");
 
   const withWidthRelinka = createRelinka({
     formatOptions: { columns: 10 },
@@ -116,12 +120,12 @@ async function detailedExample() {
   scopedWithWidth.success("Foobar");
 
   // pause
-  relinka.box("=== pause ===");
+  relinkaInstance.box("=== pause ===");
 
-  const c1 = relinka.withTag("foo");
-  const c2 = relinka.withTag("bar");
+  const c1 = relinkaInstance.withTag("foo");
+  const c2 = relinkaInstance.withTag("bar");
 
-  relinka.log("before pause");
+  relinkaInstance.log("before pause");
 
   // @ts-expect-error TODO: fix ts
   c2.pause();
@@ -131,32 +135,34 @@ async function detailedExample() {
 
   setTimeout(() => {
     // @ts-expect-error TODO: fix ts
-    relinka.resume();
-    relinka.log("Yo!");
+    relinkaInstance.resume();
+    relinkaInstance.log("Yo!");
   }, 1000);
 
   // raw
-  relinka.box("=== raw ===");
+  relinkaInstance.box("=== raw ===");
 
-  relinka.log('relinka.log({ message: "hello" })');
+  relinkaInstance.log('relinkaInstance.log({ message: "hello" })');
   // Prints "hello"
-  relinka.log({ message: "hello" });
+  relinkaInstance.log({ message: "hello" });
 
-  relinka.log('relinka.log.raw({ message: "hello" })');
+  relinkaInstance.log('relinkaInstance.log.raw({ message: "hello" })');
   // Prints "{ message: 'hello' }"
-  relinka.log.raw({ message: "hello" });
+  relinkaInstance.log.raw({ message: "hello" });
 
   // sample
-  relinka.box("=== sample ===");
+  relinkaInstance.box("=== sample ===");
 
-  relinka.warn("A new version of relinka is available: 3.0.1");
-  relinka.error(new Error("This is an example error. Everything is fine!"));
-  relinka.info("Using relinka 3.0.0");
-  relinka.start("Building project...");
-  relinka.success("Project built!");
+  relinkaInstance.warn("A new version of relinka is available: 3.0.1");
+  relinkaInstance.error(
+    new Error("This is an example error. Everything is fine!"),
+  );
+  relinkaInstance.info("Using relinka 3.0.0");
+  relinkaInstance.start("Building project...");
+  relinkaInstance.success("Project built!");
 
   // spam
-  relinka.box("=== spam ===");
+  relinkaInstance.box("=== spam ===");
 
   function waitFor(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -165,7 +171,7 @@ async function detailedExample() {
   async function spam({ count, delay }) {
     for (let i = 0; i < count; i++) {
       await waitFor(delay);
-      relinka.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
+      relinkaInstance.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
     }
   }
 
@@ -177,51 +183,53 @@ async function detailedExample() {
   })();
 
   // special
-  relinka.box("=== special ===");
+  relinkaInstance.box("=== special ===");
 
-  relinka.error({
+  relinkaInstance.error({
     message: "Foobar",
   });
 
-  relinka.log({
+  relinkaInstance.log({
     AAA: "BBB",
   });
 
-  // relinka.log(relinka)
+  // relinkaInstance.log(relinka)
 
-  relinka.log("%d", 12);
+  relinkaInstance.log("%d", 12);
 
-  relinka.error({ type: "CSSError", message: "Use scss" });
+  relinkaInstance.error({ type: "CSSError", message: "Use scss" });
 
-  relinka.error(undefined, null, false, true, Number.NaN);
+  relinkaInstance.error(undefined, null, false, true, Number.NaN);
 
-  relinka.log("We can `monospace` keyword using grave accent character!");
+  relinkaInstance.log(
+    "We can `monospace` keyword using grave accent character!",
+  );
 
-  relinka.log(
+  relinkaInstance.log(
     "We can also _underline_ words but not_this or this should_not_be_underlined!",
   );
 
   // Nonstandard error
   const { message, stack } = new Error("Custom Error!");
-  relinka.error({ message, stack });
+  relinkaInstance.error({ message, stack });
 
   // Circular object
   const a = { foo: 1, bar: undefined as any };
   a.bar = a;
-  relinka.log(a);
+  relinkaInstance.log(a);
 
   // Multiline
-  relinka.log("`Hello` the `JS`\n`World` and `Beyond`!");
+  relinkaInstance.log("`Hello` the `JS`\n`World` and `Beyond`!");
 
   // spinner
-  relinka.box("=== spinner ===");
+  relinkaInstance.box("=== spinner ===");
 
-  relinka.start("Creating project...");
+  relinkaInstance.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinka.success("Project created!");
+  relinkaInstance.success("Project created!");
 
   // tree
-  relinka.box("=== tree ===");
+  relinkaInstance.box("=== tree ===");
 
   function treeDemo() {
     const keywords = [
@@ -241,16 +249,16 @@ async function detailedExample() {
       "stacktrace",
     ];
 
-    relinka.log(formatTree(keywords));
+    relinkaInstance.log(formatTree(keywords));
 
-    relinka.log(
+    relinkaInstance.log(
       formatTree(keywords, {
         color: "cyan",
         prefix: "  |  ",
       }),
     );
 
-    relinka.log(
+    relinkaInstance.log(
       formatTree(
         [
           {
@@ -274,7 +282,7 @@ async function detailedExample() {
     );
 
     // Deep tree
-    relinka.log(
+    relinkaInstance.log(
       formatTree([
         {
           text: "format",
@@ -313,16 +321,16 @@ async function detailedExample() {
   treeDemo();
 
   // wrap-all
-  relinka.box("=== wrap-all ===");
+  relinkaInstance.box("=== wrap-all ===");
 
   function fooWrapAll() {
     console.info("console foo");
     process.stderr.write("called from stderr\n");
   }
 
-  relinka.wrapAll();
+  relinkaInstance.wrapAll();
   fooWrapAll();
-  relinka.restoreAll();
+  relinkaInstance.restoreAll();
   fooWrapAll();
 
   // wrap-console
@@ -340,15 +348,15 @@ async function detailedExample() {
   }
 
   fooWrapConsole();
-  relinka.wrapConsole();
+  relinkaInstance.wrapConsole();
   fooWrapConsole();
   trace();
-  relinka.restoreConsole();
+  relinkaInstance.restoreConsole();
   fooWrapConsole();
   trace();
 
   // wrap-std
-  relinka.box("=== wrap-std ===");
+  relinkaInstance.box("=== wrap-std ===");
 
   function fooWrapStd() {
     console.info("console foo");
@@ -356,9 +364,9 @@ async function detailedExample() {
     process.stderr.write("called from stderr foo\n");
   }
 
-  relinka.wrapStd();
+  relinkaInstance.wrapStd();
   fooWrapStd();
-  relinka.restoreStd();
+  relinkaInstance.restoreStd();
   fooWrapStd();
 }
 

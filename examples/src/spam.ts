@@ -1,4 +1,4 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 function waitFor(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,7 +7,7 @@ function waitFor(ms) {
 async function spam({ count, delay }) {
   for (let i = 0; i < count; i++) {
     await waitFor(delay);
-    relinka.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
+    relinkaInstance.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
   }
 }
 

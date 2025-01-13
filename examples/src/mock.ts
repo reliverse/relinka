@@ -1,21 +1,23 @@
-import { relinka } from "./utils/index.js";
+import { relinkaInstance } from "~/main.js";
 
 function mockFn(type) {
   if (type === "info") {
     return function () {
       // @ts-expect-error TODO: fix ts
       this.log("(mocked fn with info tag)");
+      return true;
     };
   }
+  return undefined;
 }
 
-relinka.info("before");
+relinkaInstance.info("before");
 
-relinka.mockTypes(mockFn);
+relinkaInstance.mockTypes(mockFn);
 
-const tagged = relinka.withTag("newTag");
+const tagged = relinkaInstance.withTag("newTag");
 
-relinka.log("log is not mocked!");
+relinkaInstance.log("log is not mocked!");
 
-relinka.info("Dont see me");
+relinkaInstance.info("Dont see me");
 tagged.info("Dont see me too");

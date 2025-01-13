@@ -22,18 +22,12 @@
   --->
 </p>
 
-@reliverse/relinka is a powerful logger for your terminal.
-
-@reliverse/relinka is a full-featured alternative to winston, unjs relinka, pino, bristol, node-bunyan, and similar libraries.
-
-Used by [@reliverse/prompts](https://github.com/reliverse/prompts#readme) and [@reliverse/cli](https://github.com/blefnk/reliverse#readme).
+**Style your terminal or browser console like never before.** @reliverse/relinka is your next powerful logger. It's a full-featured alternative to winston, unjs relinka, pino, bristol, node-bunyan, and similar libraries. Used by [@reliverse/prompts](https://github.com/reliverse/prompts#readme) and [@reliverse/cli](https://github.com/blefnk/reliverse#readme).
 
 ## Installation
 
-Install with your preferred package manager:
-
 ```sh
-bun add @reliverse/relinka # Replace 'bun' with npm, pnpm, or yarn if desired (deno and full jsr support coming soon)
+bun add @reliverse/relinka # Replace 'bun' with npm, pnpm, or yarn if desired
 ```
 
 ---
