@@ -1,6 +1,6 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "author": "blefnk",
   "type": "module",
   "description": "@reliverse/relinka is a powerful logger for your terminal.",
@@ -42,9 +42,17 @@
     "url": "https://github.com/reliverse/relinka/issues",
     "email": "blefnk@gmail.com"
   },
-  "files": ["package.json", "README.md", "LICENSE.md", "dist-npm"],
+  "files": [
+    "package.json",
+    "README.md",
+    "LICENSE.md",
+    "dist-npm"
+  ],
   "homepage": "https://github.com/reliverse/relinka",
-  "keywords": ["cli", "reliverse"],
+  "keywords": [
+    "cli",
+    "reliverse"
+  ],
   "license": "MIT",
   "dependencies": {
     "@figliolia/chalk-animation": "^1.0.4",
@@ -86,13 +94,13 @@
     "wrap-ansi": "^9.0.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.17.2",
+    "@arethetypeswrong/cli": "^0.17.3",
     "@biomejs/biome": "1.9.4",
     "@cspell/dict-npm": "^5.1.22",
     "@eslint/js": "^9.18.0",
     "@eslint/json": "^0.9.0",
     "@eslint/markdown": "^6.2.1",
-    "@stylistic/eslint-plugin": "^2.12.1",
+    "@stylistic/eslint-plugin": "^2.13.0",
     "@types/ansi-diff-stream": "^1.2.3",
     "@types/bun": "^1.1.16",
     "@types/chalk-animation": "^1.6.3",
@@ -100,7 +108,7 @@
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/mute-stream": "^0.0.4",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.10.6",
     "@types/sentencer": "^0.2.3",
     "@types/signal-exit": "^3.0.4",
     "@types/strip-comments": "^2.0.4",
@@ -118,8 +126,8 @@
     "strip-comments": "^2.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.19.1",
-    "unbuild": "^3.3.0",
+    "typescript-eslint": "^8.20.0",
+    "unbuild": "^3.3.1",
     "vitest": "^2.1.8"
   }
 }
