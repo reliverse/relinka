@@ -1,8 +1,14 @@
 {
-  "version": "0.2",
+  "version": "1.2.9",
   "language": "en",
-  "import": ["@cspell/dict-npm/cspell-ext.json"],
-  "ignorePaths": ["examples/deprecated", "dist-jsr", "dist-npm"],
+  "import": [
+    "@cspell/dict-npm/cspell-ext.json"
+  ],
+  "ignorePaths": [
+    "examples/deprecated",
+    "dist-jsr",
+    "dist-npm"
+  ],
   "words": [
     "alacritty",
     "alternar",
@@ -87,7 +93,6 @@
     "outro",
     "pagedown",
     "pageup",
-    "picocolors",
     "polski",
     "printj",
     "rawlist",

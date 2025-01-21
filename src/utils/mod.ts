@@ -1,5 +1,5 @@
 export * from "~/utils/box.js";
-export * from "~/utils/color.js";
+export * from "~/utils/deprecatedColors.js";
 export {
   stripAnsi,
   centerAlign,

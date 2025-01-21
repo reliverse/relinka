@@ -1,4 +1,4 @@
-import pc from "picocolors";
+import { re } from "@reliverse/relico";
 import wrapAnsi from "wrap-ansi";
 
 import type { MsgConfig, TypographyName } from "./types.js";
@@ -294,7 +294,7 @@ export function fmt(opts: FmtMsgOptions): { text: string; lineCount: number } {
   // Decide which symbol (if any) to render
   const computedSymbol =
     getColoredSymbol(opts.customSymbol, opts.symbol, opts.symbolColor) ??
-    pc.green(symbols.step_active);
+    re.green(symbols.step_active);
 
   // Pre-define config for each MsgType
   const MESSAGE_CONFIG_MAP: Record<MsgType, MsgConfig> = {
@@ -350,14 +350,14 @@ export function fmt(opts: FmtMsgOptions): { text: string; lineCount: number } {
       newLineAfter: opts.addNewLineAfter ?? false,
     },
     M_INFO: {
-      symbol: computedSymbol || pc.green(symbols.info),
+      symbol: computedSymbol || re.green(symbols.info),
       prefix: borderTwoSpaces,
       suffix: "",
       newLineBefore: opts.addNewLineBefore ?? false,
       newLineAfter: opts.addNewLineAfter ?? true,
     },
     M_ERROR: {
-      symbol: computedSymbol || pc.redBright(symbols.step_error),
+      symbol: computedSymbol || re.redBright(symbols.step_error),
       prefix: borderTwoSpaces,
       suffix: "",
       newLineBefore: opts.addNewLineBefore ?? false,
@@ -499,8 +499,8 @@ export function msgUndoAll(): void {
  */
 export function printLineBar(text: string, indent = 2): void {
   if (text === "") {
-    console.log(pc.dim("│"));
+    console.log(re.dim("│"));
     return;
   }
-  console.log(`${pc.dim("│")}${" ".repeat(indent)}${text}`);
+  console.log(`${re.dim("│")}${" ".repeat(indent)}${text}`);
 }

@@ -7,7 +7,7 @@ import type { BoxOpts } from "~/utils/box.js";
 
 import { BasicReporter } from "~/components/reporters/basic.js";
 import { box } from "~/utils/box.js";
-import { colors } from "~/utils/color.js";
+import { colors } from "~/utils/deprecatedColors.js";
 import { parseStack } from "~/utils/error.js";
 import { stripAnsi } from "~/utils/string.js";
 

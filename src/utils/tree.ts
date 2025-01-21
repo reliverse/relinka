@@ -1,4 +1,4 @@
-import { type ColorName, colorize } from "./color.js";
+import { type ColorName, colorize } from "./deprecatedColors.js";
 
 export type TreeItemObject = {
   /**

@@ -3,8 +3,6 @@
 import { defineCommand, runMain } from "citty";
 import { execa } from "execa";
 
-import { relinka } from "~/main.js";
-
 const main = defineCommand({
   meta: {
     name: "pub",
@@ -30,31 +28,31 @@ const main = defineCommand({
   },
   run: async ({ args }) => {
     if (args.jsr) {
-      relinka("info", "Publishing the JSR version");
+      console.log("Publishing the JSR version");
       await execa("bun", ["build.publish.ts", args.bump, "--jsr"], {
         stdio: "inherit",
       });
     } else if (args.npm) {
-      relinka("info", "Publishing the NPM version");
+      console.log("Publishing the NPM version");
       await execa("bun", ["build.publish.ts", args.bump], { stdio: "inherit" });
     } else if (args.dryRun) {
-      relinka("info", "Dry run the publish process");
+      console.log("Dry run the publish process");
       await execa("bun", ["pub:jsr", "--dry-run"], { stdio: "inherit" });
       await execa("bun", ["pub:npm", "--dry-run"], { stdio: "inherit" });
     } else {
-      relinka("info", "Publishing the JSR version");
+      console.log("Publishing the JSR version");
       await execa("bun", ["build.publish.ts", args.bump, "--jsr"], {
         stdio: "inherit",
       });
-      relinka("info", "Publishing the NPM version");
+      console.log("Publishing the NPM version");
       await execa("bun", ["pub:npm", args.bump], { stdio: "inherit" });
     }
   },
 });
 
 function errorHandler(error: unknown, message: string) {
-  relinka("error", message);
-  relinka("error", error instanceof Error ? error.message : String(error));
+  console.error(message);
+  console.error(error instanceof Error ? error.message : String(error));
 }
 
 await runMain(main).catch((error: unknown) => {

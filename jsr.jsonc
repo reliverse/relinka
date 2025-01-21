@@ -1,6 +1,6 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "author": "blefnk",
   "license": "MIT",
   "exports": "./dist-jsr/main.ts",

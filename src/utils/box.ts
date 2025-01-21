@@ -1,4 +1,4 @@
-import { getColor } from "./color.js";
+import { getColor } from "./deprecatedColors.js";
 import { stripAnsi } from "./string.js";
 
 export type BoxBorderStyle = {
