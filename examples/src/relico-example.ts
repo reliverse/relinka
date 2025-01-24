@@ -5,7 +5,7 @@ import {
   setColorLevel,
   rgb,
   colorSupport,
-} from "../../src/components/messages/relico.js";
+} from "@reliverse/relico";
 
 // Print color support information
 console.log("Color Support Info:");

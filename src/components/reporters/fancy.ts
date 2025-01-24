@@ -1,4 +1,4 @@
-import isUnicodeSupported from "is-unicode-supported";
+import { isUnicodeSupported } from "@reliverse/runtime";
 import stringWidth from "string-width";
 
 import type { LogLevel, LogType } from "~/components/levels/levels.js";

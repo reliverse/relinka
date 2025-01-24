@@ -1,11 +1,11 @@
 import { re } from "@reliverse/relico";
+import { isUnicodeSupported } from "@reliverse/runtime";
 import wrapAnsi from "wrap-ansi";
 
 import type { MsgConfig, TypographyName } from "./types.js";
 import type { ColorName, MsgType } from "./types.js";
 
 import { colorMap, typographyMap } from "./mapping.js";
-import { isUnicodeSupported } from "./platforms.js";
 import {
   deleteLastLines,
   getExactTerminalWidth,
