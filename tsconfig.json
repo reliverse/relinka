@@ -1,51 +1,33 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "paths": { "~/*": ["./src/*"] },
     "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"],
-      "#/*": ["./addons/*"],
-      "@/*": ["./examples/*"]
-    },
-    "target": "ES2023",
-    "module": "NodeNext",
-    "moduleDetection": "force",
-    "moduleResolution": "nodenext",
-    "lib": ["DOM", "DOM.Iterable", "ES2023"],
-    "resolveJsonModule": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "jsx": "preserve",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "strict": true,
-    "noEmit": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "strictNullChecks": false,
+    "noImplicitOverride": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+
+    "allowSyntheticDefaultImports": true,
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": false,
     "noImplicitAny": false,
-    "exactOptionalPropertyTypes": false
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": false
   },
-  "include": [
-    "build.optim.ts",
-    "build.config.ts",
-    "eslint.config.js",
-    "vitest.config.ts",
-    "src/**/*.ts",
-    "addons/**/*.ts",
-    "examples/**/*.ts",
-    "build.publish.ts",
-    "bump.config.ts",
-    "publish.ts"
-  ],
-  "exclude": ["node_modules", "dist-jsr", "dist-npm"]
+
+  "include": ["**/*.ts", "reset.d.ts", "eslint.config.js"],
+  "exclude": ["node_modules", "dist-jsr", "dist-npm", "dist-libs"]
 }

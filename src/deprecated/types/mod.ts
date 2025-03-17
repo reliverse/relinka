@@ -1,4 +1,7 @@
-import type { LogLevel, LogType } from "~/components/levels/levels.js";
+import type {
+  LogLevel,
+  LogType,
+} from "~/deprecated/components/levels/levels.js";
 
 export type RelinkaOptions = {
   /**

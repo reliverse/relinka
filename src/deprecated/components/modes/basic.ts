@@ -1,10 +1,10 @@
-import type { LogLevel } from "~/components/levels/levels.js";
-import type { RelinkaInstance } from "~/components/relinka/relinka.js";
+import type { LogLevel } from "~/deprecated/components/levels/levels.js";
+import type { RelinkaInstance } from "~/deprecated/components/relinka/relinka.js";
 import type { RelinkaOptions } from "~/types/mod.js";
 
-import { LogLevels } from "~/components/levels/levels.js";
-import { createRelinka as _createRelinka } from "~/components/relinka/relinka.js";
-import { BasicReporter } from "~/components/reporters/basic.js";
+import { LogLevels } from "~/deprecated/components/levels/levels.js";
+import { createRelinka as _createRelinka } from "~/deprecated/components/relinka/relinka.js";
+import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
 
 export * from "./shared.js";
 

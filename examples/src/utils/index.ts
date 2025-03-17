@@ -1,6 +1,8 @@
-import type { RelinkaOptions } from "~/components/relinka/mod.js";
+import type { RelinkaOptions } from "~/deprecated/components/relinka/mod.js";
 
-import relinkaInstance, { createRelinka } from "~/components/relinka/mod.js";
+import relinkaInstance, {
+  createRelinka,
+} from "~/deprecated/components/relinka/mod.js";
 
 import { randomSentence } from "./sentence.js";
 

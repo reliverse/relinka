@@ -1,6 +1,9 @@
 import { defu } from "defu";
 
-import type { LogType, LogLevel } from "~/components/levels/levels.js";
+import type {
+  LogType,
+  LogLevel,
+} from "~/deprecated/components/levels/levels.js";
 import type {
   RelinkaReporter,
   InputLogObject,
@@ -8,7 +11,7 @@ import type {
   RelinkaOptions,
 } from "~/types/mod.js";
 
-import { LogTypes } from "~/components/levels/levels.js";
+import { LogTypes } from "~/deprecated/components/levels/levels.js";
 import { isLogObj } from "~/utils/log.js";
 
 /**

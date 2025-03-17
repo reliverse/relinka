@@ -7,11 +7,11 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["node_modules/", "dist-jsr/", "dist-npm/", "bun.lock"]
   },
   "formatter": {
     "enabled": true,
-    "ignore": [".git/", "node_modules/", "dist-jsr/", "dist-npm/"],
+    "ignore": ["node_modules/", "dist-jsr/", "dist-npm/", "bun.lock"],
     "indentStyle": "space",
     "attributePosition": "auto",
     "formatWithErrors": false,
@@ -29,7 +29,8 @@
       "node_modules/",
       "dist-jsr/",
       "dist-npm/",
-      "examples/deprecated/**/*.ts"
+      "tests-runtime/",
+      "bun.lock"
     ],
     "rules": {
       "recommended": true,
@@ -45,7 +46,6 @@
       "complexity": {
         "noBannedTypes": "off",
         "noForEach": "off",
-        "noUselessFragments": "off",
         "noUselessLoneBlockStatements": "off",
         "useArrowFunction": "off",
         "useFlatMap": "off",
@@ -90,11 +90,15 @@
         "noDangerouslySetInnerHtml": "off"
       },
       "style": {
+        "useConst": {
+          "level": "warn",
+          "fix": "unsafe"
+        },
+        "useTemplate": "off",
+        "noUnusedTemplateLiteral": "off",
+        "useDefaultParameterLast": "off",
         "useSingleVarDeclarator": "off",
         "useExponentiationOperator": "off",
-        "useTemplate": "off",
-        "useConst": "off",
-        "noUnusedTemplateLiteral": "off",
         "noInferrableTypes": "off",
         "noNonNullAssertion": "off",
         "noParameterAssign": "off",
@@ -109,6 +113,7 @@
         "useWhile": "off"
       },
       "suspicious": {
+        "noControlCharactersInRegex": "off",
         "noConfusingVoidType": "off",
         "noApproximativeNumericConstant": "off",
         "noArrayIndexKey": "off",

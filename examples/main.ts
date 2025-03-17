@@ -1,6 +1,9 @@
 import type { TreeItem } from "~/utils/tree.js";
 
-import { relinkaInstance, createRelinka } from "~/components/relinka/mod.js";
+import {
+  relinkaInstance,
+  createRelinka,
+} from "~/deprecated/components/relinka/mod.js";
 import { formatTree } from "~/utils/tree.js";
 
 import { reporterDemo } from "./src/utils/index.js";

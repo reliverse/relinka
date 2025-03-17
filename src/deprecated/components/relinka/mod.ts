@@ -9,7 +9,7 @@ import { BasicReporter } from "../reporters/basic.js";
 import { FancyReporter } from "../reporters/fancy.js";
 import { createRelinka as _createRelinka } from "./relinka.js";
 
-export * from "~/components/modes/shared.js";
+export * from "~/deprecated/components/modes/shared.js";
 
 /**
  * Factory function to create a new Relinka instance tailored for use in different environments.

@@ -1,11 +1,14 @@
 import { isUnicodeSupported } from "@reliverse/runtime";
 import stringWidth from "string-width";
 
-import type { LogLevel, LogType } from "~/components/levels/levels.js";
+import type {
+  LogLevel,
+  LogType,
+} from "~/deprecated/components/levels/levels.js";
 import type { FormatOptions, LogObject } from "~/types/mod.js";
 import type { BoxOpts } from "~/utils/box.js";
 
-import { BasicReporter } from "~/components/reporters/basic.js";
+import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
 import { box } from "~/utils/box.js";
 import { colors } from "~/utils/deprecatedColors.js";
 import { parseStack } from "~/utils/error.js";

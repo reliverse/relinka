@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "project": ["**/*.{ts,js}"],
+  "entry": [
+    "reliverse.ts",
+    "src/main.ts",
+    "src/**/*-main.ts",
+    "*.{config,cfg}.{ts,js}"
+  ]
+}

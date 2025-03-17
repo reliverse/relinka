@@ -1,7 +1,7 @@
 import type { RelinkaOptions } from "~/types/mod.js";
 
-import { createRelinka as _createRelinka } from "~/components/relinka/relinka.js";
-import { BrowserReporter } from "~/components/reporters/browser.js";
+import { createRelinka as _createRelinka } from "~/deprecated/components/relinka/relinka.js";
+import { BrowserReporter } from "~/deprecated/components/reporters/browser.js";
 
 export * from "./shared.js";
 

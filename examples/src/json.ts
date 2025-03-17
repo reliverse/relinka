@@ -1,4 +1,4 @@
-import { createRelinka } from "~/components/relinka/mod.js";
+import { createRelinka } from "~/deprecated/components/relinka/mod.js";
 
 const relinkaWrapper = createRelinka({
   reporters: [
