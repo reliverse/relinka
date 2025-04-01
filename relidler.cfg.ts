@@ -7,7 +7,7 @@ import { defineConfig } from "@reliverse/relidler-cfg";
  */
 export default defineConfig({
   // Bump configuration
-  bumpDisable: false,
+  bumpDisable: true,
   bumpFilter: ["package.json", "reliverse.ts"],
   bumpMode: "autoPatch",
 
@@ -46,12 +46,12 @@ export default defineConfig({
   libsDirDist: "dist-libs",
   libsDirSrc: "src/libs",
   libsList: {
-    "@reliverse/relinka-core": {
+    "@reliverse/relinka": {
       libDeclarations: true,
       libDescription:
         "@reliverse/relinka is a powerful logger for your terminal.",
-      libDirName: "core",
-      libMainFile: "core/core-main.ts",
+      libDirName: "relinka",
+      libMainFile: "relinka/relinka-main.ts",
       libPkgKeepDeps: true,
       libTranspileMinify: true,
     },

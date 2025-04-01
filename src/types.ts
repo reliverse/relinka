@@ -1,13 +1,81 @@
-import type {
-  LogLevelDeprecated,
-  LogTypeDeprecated,
-} from "~/libs/core/core-impl/deprecated/components/levels/levels.js";
+/** Configuration for special directory handling. */
+export type RelinkaSpecialDirsConfig = {
+  distDirNames?: string[];
+  useParentConfigInDist?: boolean;
+};
 
-export type RelinkaOptions = {
+/** Configuration for directory-related settings. */
+export type RelinkaDirsConfig = {
+  dailyLogs?: boolean;
+  logDir?: string;
+  maxLogFiles?: number;
+  specialDirs?: RelinkaSpecialDirsConfig;
+};
+
+/**
+ * Configuration options for the Relinka logger.
+ * All properties are optional to allow for partial configuration.
+ * Defaults will be applied during initialization.
+ */
+export type RelinkaConfig = {
+  debug?: boolean;
+  dirs?: RelinkaDirsConfig;
+  disableColors?: boolean;
+  logFilePath?: string;
+  saveLogsToFile?: boolean;
+  withTimestamp?: boolean;
+};
+
+/** Represents information about a log file for cleanup purposes. */
+export type LogFileInfo = {
+  path: string;
+  mtime: number;
+};
+
+/** Log level types used by the logger. */
+export type LogLevel = "error" | "info" | "success" | "verbose" | "warn";
+
+/* ======= DEPRECATED ======= */
+
+/**
+ * Defines the level of logs as specific numbers or special number types.
+ *
+ * @type {0 | 1 | 2 | 3 | 4 | 5 | (number & {})} LogLevelDeprecated - Represents the log level.
+ * @default 0 - Represents the default log level.
+ */
+export type LogLevelDeprecated = 0 | 1 | 2 | 3 | 4 | 5 | (number & {});
+
+/**
+ * Lists the types of log messages supported by the system.
+ *
+ * @type {"silent" | "fatal" | "error" | "warn" | "log" | "info" | "success" | "fail" | "ready" | "start" | "box" | "debug" | "trace" | "verbose"} LogTypeDeprecated - Represents the specific type of log message.
+ */
+export type LogTypeDeprecated =
+  // 0
+  | "silent"
+  | "fatal"
+  | "error"
+  // 1
+  | "warn"
+  // 2
+  | "log"
+  // 3
+  | "info"
+  | "success"
+  | "fail"
+  | "ready"
+  | "start"
+  | "box"
+  // Verbose
+  | "debug"
+  | "trace"
+  | "verbose";
+
+export type RelinkaOptionsDeprecated = {
   /**
-   * An array of RelinkaReporter instances used to handle and output log messages.
+   * An array of RelinkaReporterDeprecated instances used to handle and output log messages.
    */
-  reporters: RelinkaReporter[];
+  reporters: RelinkaReporterDeprecated[];
 
   /**
    * A record mapping LogTypeDeprecated to InputLogObject, defining the log configuration for each log type.
@@ -172,16 +240,16 @@ export type LogObject = {
   [key: string]: unknown;
 } & InputLogObject;
 
-export type RelinkaReporter = {
+export type RelinkaReporterDeprecated = {
   /**
    * Defines how a log message is processed and displayed by this reporter.
    * @param logObj The LogObject containing the log information to process. See {@link LogObject}.
-   * @param ctx An object containing context information such as options. See {@link RelinkaOptions}.
+   * @param ctx An object containing context information such as options. See {@link RelinkaOptionsDeprecated}.
    */
   log: (
     logObj: LogObject,
     ctx: {
-      options: RelinkaOptions;
+      options: RelinkaOptionsDeprecated;
     },
   ) => void;
 };

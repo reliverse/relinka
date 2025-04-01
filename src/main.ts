@@ -1,1 +1,2 @@
-export * from "./libs/core/core-main.js";
+export * from "./types.js";
+export * from "./libs/relinka/relinka-main.js";
