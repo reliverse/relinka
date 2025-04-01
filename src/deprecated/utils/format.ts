@@ -27,8 +27,8 @@ export function compileFormat(format: string) {
   let _format = format;
   for (const arg of FORMAT_ARGS) {
     _format = _format.replace(
-      new RegExp("([%-])" + arg[0], "g"),
-      "$1" + arg[1],
+      new RegExp(`([%-])${arg[0]}`, "g"),
+      `$1${arg[1]}`,
     );
   }
 

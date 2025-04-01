@@ -1,10 +1,10 @@
-import type { TreeItem } from "~/utils/tree.js";
+import type { TreeItem } from "~/deprecated/utils/tree.js";
 
 import {
   relinkaInstance,
   createRelinka,
 } from "~/deprecated/components/relinka/mod.js";
-import { formatTree } from "~/utils/tree.js";
+import { formatTree } from "~/deprecated/utils/tree.js";
 
 import { reporterDemo } from "./src/utils/index.js";
 
@@ -43,7 +43,7 @@ async function detailedExample() {
   relinkaInstance.box({
     title: "By the way",
     // message: `\`v1.0.2\` → \`v2.0.0\`\n\nRun \`npm install -g relinka\` to update`,
-    message: `You can check \`@reliverse/prompts\` in the production usage\n\nJust run \`bunx -g reliverse@latest\``,
+    message: `You can check '@reliverse/prompts' in the production usage\n\nJust run 'bunx -g reliverse@latest'`,
     style: {
       padding: 2,
       borderColor: "yellow",

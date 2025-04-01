@@ -5,22 +5,22 @@ import type {
   RelinkaReporter,
   FormatOptions,
   RelinkaOptions,
-} from "~/types/mod.js";
+} from "~/deprecated/types/mod.js";
 
-import { parseStack } from "~/utils/error.js";
-import { writeStream } from "~/utils/stream.js";
+import { parseStack } from "~/deprecated/utils/error.js";
+import { writeStream } from "~/deprecated/utils/stream.js";
 
 const bracket = (x: string) => (x ? `[${x}]` : "");
 
 export class BasicReporter implements RelinkaReporter {
   formatStack(stack: string) {
-    return "  " + parseStack(stack).join("\n  ");
+    return `  ${parseStack(stack).join("\n  ")}`;
   }
 
   formatArgs(args: any[], opts: FormatOptions) {
     const formattedArgs = args.map((arg) => {
       if (arg && typeof arg.stack === "string") {
-        return arg.message + "\n" + this.formatStack(arg.stack);
+        return `${arg.message}\n${this.formatStack(arg.stack)}`;
       }
       return arg;
     });
@@ -40,18 +40,14 @@ export class BasicReporter implements RelinkaReporter {
     const message = this.formatArgs(logObj.args, opts);
 
     if (logObj.type === "box") {
-      return (
-        "\n" +
-        [
-          bracket(logObj.tag),
-          logObj["title"] && logObj["title"],
-          ...message.split("\n"),
-        ]
-          .filter(Boolean)
-          .map((l) => " > " + l)
-          .join("\n") +
-        "\n"
-      );
+      return `\n${[
+        bracket(logObj.tag),
+        logObj.title && logObj.title,
+        ...message.split("\n"),
+      ]
+        .filter(Boolean)
+        .map((l) => ` > ${l}`)
+        .join("\n")}\n`;
     }
 
     return this.filterAndJoin([
@@ -68,7 +64,7 @@ export class BasicReporter implements RelinkaReporter {
     });
 
     return writeStream(
-      line + "\n",
+      `${line}\n`,
       logObj.level < 2
         ? ctx.options.stderr || process.stderr
         : ctx.options.stdout || process.stdout,

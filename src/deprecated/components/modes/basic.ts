@@ -1,6 +1,6 @@
 import type { LogLevel } from "~/deprecated/components/levels/levels.js";
 import type { RelinkaInstance } from "~/deprecated/components/relinka/relinka.js";
-import type { RelinkaOptions } from "~/types/mod.js";
+import type { RelinkaOptions } from "~/deprecated/types/mod.js";
 
 import { LogLevels } from "~/deprecated/components/levels/levels.js";
 import { createRelinka as _createRelinka } from "~/deprecated/components/relinka/relinka.js";
@@ -19,8 +19,8 @@ export function createRelinka(
 ): RelinkaInstance {
   // Log level
   let level: LogLevel = LogLevels.info;
-  if (process.env["RELINKA_LEVEL"]) {
-    level = Number.parseInt(process.env["RELINKA_LEVEL"]) ?? level;
+  if (process.env.RELINKA_LEVEL) {
+    level = Number.parseInt(process.env.RELINKA_LEVEL) ?? level;
   }
 
   // Create new relinka instance

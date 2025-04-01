@@ -9,10 +9,10 @@ import {
 
 // Print color support information
 console.log("Color Support Info:");
-console.log(re.cyan("Terminal: " + colorSupport.terminalName));
-console.log(re.green("Colors Supported: " + colorSupport.isColorSupported));
-console.log(re.yellow("Colors Forced: " + colorSupport.isForced));
-console.log(re.red("Colors Disabled: " + colorSupport.isDisabled));
+console.log(re.cyan(`Terminal: ${colorSupport.terminalName}`));
+console.log(re.green(`Colors Supported: ${colorSupport.isColorSupported}`));
+console.log(re.yellow(`Colors Forced: ${colorSupport.isForced}`));
+console.log(re.red(`Colors Disabled: ${colorSupport.isDisabled}`));
 console.log();
 
 // Basic color examples

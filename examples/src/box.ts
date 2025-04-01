@@ -1,11 +1,11 @@
 import { relinkaInstance } from "~/main.js";
 
 function main() {
-  relinkaInstance.box(`I am the default banner`);
+  relinkaInstance.box("I am the default banner");
 
   relinkaInstance.box({
     title: "Box with options",
-    message: `I am a banner with different options`,
+    message: "I am a banner with different options",
     style: {
       padding: 1,
       borderColor: "magenta",
@@ -15,7 +15,7 @@ function main() {
 
   relinkaInstance.box({
     title: "Update available for `relinka`",
-    message: `\`v1.0.2\` → \`v2.0.0\`\n\nRun \`npm install -g relinka\` to update`,
+    message: "`v1.0.2` → `v2.0.0`\n\nRun `npm install -g relinka` to update",
     style: {
       padding: 2,
       borderColor: "yellow",

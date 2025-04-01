@@ -1,4 +1,4 @@
-import type { RelinkaOptions } from "~/deprecated/components/relinka/mod.js";
+import type { RelinkaOptions } from "~/deprecated/types/mod.js";
 
 import relinkaInstance, {
   createRelinka,

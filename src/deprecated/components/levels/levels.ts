@@ -1,4 +1,4 @@
-import type { LogObject } from "~/types/mod.js";
+import type { LogObject } from "~/main.js";
 
 /**
  * Defines the level of logs as specific numbers or special number types.

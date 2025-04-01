@@ -5,14 +5,13 @@ import type {
   LogLevel,
   LogType,
 } from "~/deprecated/components/levels/levels.js";
-import type { FormatOptions, LogObject } from "~/types/mod.js";
-import type { BoxOpts } from "~/utils/box.js";
+import type { FormatOptions, LogObject } from "~/main.js";
 
 import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
-import { box } from "~/utils/box.js";
-import { colors } from "~/utils/deprecatedColors.js";
-import { parseStack } from "~/utils/error.js";
-import { stripAnsi } from "~/utils/string.js";
+import { box, type BoxOpts } from "~/deprecated/utils/box.js";
+import { colors } from "~/deprecated/utils/deprecatedColors.js";
+import { parseStack } from "~/deprecated/utils/error.js";
+import { stripAnsi } from "~/deprecated/utils/string.js";
 
 export const TYPE_COLOR_MAP: Partial<Record<LogType, string>> = {
   info: "cyan",
@@ -52,18 +51,14 @@ function getStringWidth(str: string) {
 
 export class FancyReporter extends BasicReporter {
   override formatStack(stack: string) {
-    return (
-      "\n" +
-      parseStack(stack)
-        .map(
-          (line) =>
-            "  " +
-            line
-              .replace(/^at +/, (m) => colors.gray(m))
-              .replace(/\((.+)\)/, (_, m) => `(${colors.cyan(m)})`),
-        )
-        .join("\n")
-    );
+    return `\n${parseStack(stack)
+      .map(
+        (line) =>
+          `  ${line
+            .replace(/^at +/, (m) => colors.gray(m))
+            .replace(/\((.+)\)/, (_, m) => `(${colors.cyan(m)})`)}`,
+      )
+      .join("\n")}`;
   }
 
   formatType(logObj: LogObject, isBadge: boolean) {
@@ -94,13 +89,13 @@ export class FancyReporter extends BasicReporter {
     if (logObj.type === "box") {
       return box(
         characterFormat(
-          message + (additional.length > 0 ? "\n" + additional.join("\n") : ""),
+          message + (additional.length > 0 ? `\n${additional.join("\n")}` : ""),
         ),
         {
-          title: logObj["title"]
-            ? characterFormat(logObj["title"] as string)
+          title: logObj.title
+            ? characterFormat(logObj.title as string)
             : undefined,
-          style: logObj["style"] as BoxOpts["style"],
+          style: logObj.style as BoxOpts["style"],
         },
       );
     }
@@ -108,7 +103,7 @@ export class FancyReporter extends BasicReporter {
     const date = this.formatDate(logObj.date, opts);
     const coloredDate = date && colors.gray(date);
 
-    const isBadge = (logObj["badge"] as boolean) ?? logObj.level < 2;
+    const isBadge = (logObj.badge as boolean) ?? logObj.level < 2;
     const type = this.formatType(logObj, isBadge);
 
     const tag = logObj.tag ? colors.gray(logObj.tag) : "";
@@ -125,15 +120,15 @@ export class FancyReporter extends BasicReporter {
         : (right ? `${colors.gray(`[${right}]`)} ` : "") + left;
 
     line += characterFormat(
-      additional.length > 0 ? "\n" + additional.join("\n") : "",
+      additional.length > 0 ? `\n${additional.join("\n")}` : "",
     );
 
     if (logObj.type === "trace") {
-      const _err = new Error("Trace: " + logObj.message);
+      const _err = new Error(`Trace: ${logObj.message}`);
       line += this.formatStack(_err.stack || "");
     }
 
-    return isBadge ? "\n" + line + "\n" : line;
+    return isBadge ? `\n${line}\n` : line;
   }
 }
 

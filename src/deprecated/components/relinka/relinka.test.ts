@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import type { RelinkaReporter, LogObject } from "~/types/mod.js";
+import type { RelinkaReporter, LogObject } from "~/deprecated/types/mod.js";
 
 import {
   LogLevels,

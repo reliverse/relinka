@@ -1,18 +1,18 @@
 import { defu } from "defu";
 
 import type {
-  LogType,
-  LogLevel,
-} from "~/deprecated/components/levels/levels.js";
-import type {
-  RelinkaReporter,
   InputLogObject,
   LogObject,
   RelinkaOptions,
-} from "~/types/mod.js";
+  RelinkaReporter,
+} from "~/deprecated/types/mod.js";
 
-import { LogTypes } from "~/deprecated/components/levels/levels.js";
-import { isLogObj } from "~/utils/log.js";
+import {
+  type LogType,
+  type LogLevel,
+  LogTypes,
+} from "~/deprecated/components/levels/levels.js";
+import { isLogObj } from "~/deprecated/utils/log.js";
 
 /**
  * Relinka class for logging management with support for pause/resume, mocking and customizable reporting.
@@ -158,7 +158,7 @@ export class RelinkaInterface {
   withTag(tag: string): RelinkaInstance {
     return this.withDefaults({
       tag: this.options.defaults.tag
-        ? this.options.defaults.tag + ":" + tag
+        ? `${this.options.defaults.tag}:${tag}`
         : tag,
     });
   }
@@ -221,8 +221,8 @@ export class RelinkaInterface {
   wrapConsole() {
     for (const type in this.options.types) {
       // Backup original value
-      if (!(console as any)["__" + type]) {
-        (console as any)["__" + type] = (console as any)[type];
+      if (!(console as any)[`__${type}`]) {
+        (console as any)[`__${type}`] = (console as any)[type];
       }
       // Override
       (console as any)[type] = (this as unknown as RelinkaInstance)[
@@ -237,10 +237,10 @@ export class RelinkaInterface {
   restoreConsole() {
     for (const type in this.options.types) {
       // Restore if backup is available
-      if ((console as any)["__" + type]) {
-        (console as any)[type] = (console as any)["__" + type];
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete (console as any)["__" + type];
+      if ((console as any)[`__${type}`]) {
+        (console as any)[type] = (console as any)[`__${type}`];
+
+        delete (console as any)[`__${type}`];
       }
     }
   }
@@ -284,7 +284,7 @@ export class RelinkaInterface {
 
     if ((stream as any).__write) {
       stream.write = (stream as any).__write;
-      delete (stream as any).__write;
+      (stream as any).__write = undefined;
     }
   }
 
@@ -393,15 +393,15 @@ export class RelinkaInterface {
     // Aliases
     if (logObj.message) {
       logObj.args.unshift(logObj.message);
-      delete logObj.message;
+      logObj.message = undefined;
     }
     if (logObj.additional) {
       if (!Array.isArray(logObj.additional)) {
         logObj.additional = logObj.additional.split("\n");
       }
 
-      logObj.args.push("\n" + logObj.additional.join("\n"));
-      delete logObj.additional;
+      logObj.args.push(`\n${logObj.additional.join("\n")}`);
+      logObj.additional = undefined;
     }
 
     // Normalize type to lowercase
