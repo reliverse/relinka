@@ -1,7 +1,7 @@
-import type { TreeItem } from "~/deprecated/utils/tree.js";
+import type { TreeItem } from "~/libs/core/core-impl/deprecated/utils/tree.js";
 
-import { formatTree } from "~/deprecated/utils/tree.js";
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
+import { formatTree } from "~/libs/core/core-impl/deprecated/utils/tree.js";
 
 function main() {
   const keywords = [
@@ -19,16 +19,16 @@ function main() {
     "stacktrace",
   ];
 
-  relinkaInstance.log(formatTree(keywords));
+  relinkaInstanceDeprecated.log(formatTree(keywords));
 
-  relinkaInstance.log(
+  relinkaInstanceDeprecated.log(
     formatTree(keywords, {
       color: "cyan",
       prefix: "  |  ",
     }),
   );
 
-  relinkaInstance.log(
+  relinkaInstanceDeprecated.log(
     formatTree(
       [
         {
@@ -52,7 +52,7 @@ function main() {
   );
 
   // Deep tree
-  relinkaInstance.log(
+  relinkaInstanceDeprecated.log(
     formatTree([
       {
         text: "format",

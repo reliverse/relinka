@@ -1,4 +1,4 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
 
 function foo() {
   console.info("foo");
@@ -13,9 +13,9 @@ function trace() {
 }
 
 foo();
-relinkaInstance.wrapConsole();
+relinkaInstanceDeprecated.wrapConsole();
 foo();
 trace();
-relinkaInstance.restoreConsole();
+relinkaInstanceDeprecated.restoreConsole();
 foo();
 trace();

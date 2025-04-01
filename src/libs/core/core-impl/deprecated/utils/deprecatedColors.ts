@@ -16,9 +16,7 @@ const isDisabled = "NO_COLOR" in env || argv.includes("--no-color");
 const isForced = "FORCE_COLOR" in env || argv.includes("--color");
 const isWindows = platform === "win32";
 const isDumbTerminal = env.TERM === "dumb";
-const isCompatibleTerminal =
-  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-  tty?.isatty?.(1) && env.TERM && !isDumbTerminal;
+const isCompatibleTerminal = tty?.isatty?.(1) && env.TERM && !isDumbTerminal;
 const isCI =
   "CI" in env &&
   ("GITHUB_ACTIONS" in env || "GITLAB_CI" in env || "CIRCLECI" in env);
@@ -63,7 +61,7 @@ function filterEmpty(
 ) {
   return (string: string) =>
     string || !(string === "" || string === undefined)
-      ? clearBleed(`${string}`.indexOf(close, at), string, open, close, replace)
+      ? clearBleed(string.indexOf(close, at), string, open, close, replace)
       : "";
 }
 

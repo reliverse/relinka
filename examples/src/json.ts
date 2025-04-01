@@ -1,6 +1,6 @@
-import { createRelinka } from "~/deprecated/components/relinka/mod.js";
+import { createRelinkaDeprecated } from "~/libs/core/core-main.js";
 
-const relinkaWrapper = createRelinka({
+const relinkaWrapper = createRelinkaDeprecated({
   reporters: [
     {
       log: (logObj) => {

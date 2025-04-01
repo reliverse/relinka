@@ -1,9 +1,9 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-main.js";
 
-const c1 = relinkaInstance.withTag("foo");
-const c2 = relinkaInstance.withTag("bar");
+const c1 = relinkaInstanceDeprecated.withTag("foo");
+const c2 = relinkaInstanceDeprecated.withTag("bar");
 
-relinkaInstance.log("before pause");
+relinkaInstanceDeprecated.log("before pause");
 
 // @ts-expect-error TODO: fix ts
 c2.pause();
@@ -13,6 +13,6 @@ c2.log("C2 is ready");
 
 setTimeout(() => {
   // @ts-expect-error TODO: fix ts
-  relinkaInstance.resume();
-  relinkaInstance.log("Yo!");
+  relinkaInstanceDeprecated.resume();
+  relinkaInstanceDeprecated.log("Yo!");
 }, 1000);

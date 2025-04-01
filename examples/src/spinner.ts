@@ -1,9 +1,9 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-main.js";
 
 async function main() {
-  relinkaInstance.start("Creating project...");
+  relinkaInstanceDeprecated.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinkaInstance.success("Project created!");
+  relinkaInstanceDeprecated.success("Project created!");
 }
 
 await main();

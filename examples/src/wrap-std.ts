@@ -1,4 +1,4 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-main.js";
 
 function foo() {
   console.info("console foo");
@@ -6,7 +6,7 @@ function foo() {
   process.stderr.write("called from stderr foo\n");
 }
 
-relinkaInstance.wrapStd();
+relinkaInstanceDeprecated.wrapStd();
 foo();
-relinkaInstance.restoreStd();
+relinkaInstanceDeprecated.restoreStd();
 foo();

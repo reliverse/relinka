@@ -1,18 +1,18 @@
 import { defu } from "defu";
 
 import type {
+  LogLevelDeprecated,
+  LogTypeDeprecated,
+} from "~/libs/core/core-impl/deprecated/components/levels/levels.js";
+import type {
   InputLogObject,
   LogObject,
   RelinkaOptions,
   RelinkaReporter,
-} from "~/deprecated/types/mod.js";
+} from "~/libs/core/core-types.js";
 
-import {
-  type LogType,
-  type LogLevel,
-  LogTypes,
-} from "~/deprecated/components/levels/levels.js";
-import { isLogObj } from "~/deprecated/utils/log.js";
+import { LogTypesDeprecated } from "~/libs/core/core-impl/deprecated/components/modes/shared.js";
+import { isLogObj } from "~/libs/core/core-impl/deprecated/utils/log.js";
 
 /**
  * Relinka class for logging management with support for pause/resume, mocking and customizable reporting.
@@ -43,16 +43,16 @@ export class RelinkaInterface {
    */
   constructor(options: Partial<RelinkaOptions> = {}) {
     // Options
-    const types = options.types || LogTypes;
+    const types = options.types || LogTypesDeprecated;
     this.options = defu(
       {
         ...options,
         defaults: { ...options.defaults },
-        level: _normalizeLogLevel(options.level, types),
+        level: _normalizeLogLevelDeprecated(options.level, types),
         reporters: [...(options.reporters || [])],
       } as RelinkaOptions,
       {
-        types: LogTypes,
+        types: LogTypesDeprecated,
         throttle: 1000,
         throttleMin: 5,
         formatOptions: {
@@ -66,17 +66,16 @@ export class RelinkaInterface {
     // Create logger functions for current instance
     for (const type in types) {
       const defaults: InputLogObject = {
-        type: type as LogType,
+        type: type as LogTypeDeprecated,
         ...this.options.defaults,
-        ...types[type as LogType],
+        ...types[type as LogTypeDeprecated],
       };
       // @ts-expect-error TODO: fix ts
-      (this as unknown as RelinkaInstance)[type as LogType] =
-        this._wrapLogFn(defaults);
-      (this as unknown as RelinkaInstance)[type].raw = this._wrapLogFn(
-        defaults,
-        true,
-      );
+      (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
+      ] = this._wrapLogFn(defaults);
+      (this as unknown as RelinkaInstanceDeprecated)[type].raw =
+        this._wrapLogFn(defaults, true);
     }
 
     // Use _mockFn if is set
@@ -107,7 +106,7 @@ export class RelinkaInterface {
    * @param {number} level - The new log level to set.
    */
   set level(level) {
-    this.options.level = _normalizeLogLevel(
+    this.options.level = _normalizeLogLevelDeprecated(
       level,
       this.options.types,
       this.options.level,
@@ -118,13 +117,13 @@ export class RelinkaInterface {
    * Creates a new instance of Relinka, inheriting options from the current instance, with possible overrides.
    *
    * @param {Partial<RelinkaOptions>} options - Optional overrides for the new instance. See {@link RelinkaOptions}.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {RelinkaInstanceDeprecated} A new Relinka instance. See {@link RelinkaInstanceDeprecated}.
    */
-  create(options: Partial<RelinkaOptions>): RelinkaInstance {
+  create(options: Partial<RelinkaOptions>): RelinkaInstanceDeprecated {
     const instance = new RelinkaInterface({
       ...this.options,
       ...options,
-    }) as RelinkaInstance;
+    }) as RelinkaInstanceDeprecated;
 
     if (this._mockFn) {
       instance.mockTypes(this._mockFn);
@@ -137,9 +136,9 @@ export class RelinkaInterface {
    * Creates a new Relinka instance with the specified default log object properties.
    *
    * @param {InputLogObject} defaults - Default properties to include in any log from the new instance. See {@link InputLogObject}.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {RelinkaInstanceDeprecated} A new Relinka instance. See {@link RelinkaInstanceDeprecated}.
    */
-  withDefaults(defaults: InputLogObject): RelinkaInstance {
+  withDefaults(defaults: InputLogObject): RelinkaInstanceDeprecated {
     return this.create({
       ...this.options,
       defaults: {
@@ -153,9 +152,9 @@ export class RelinkaInterface {
    * Creates a new Relinka instance with a specified tag, which will be included in every log.
    *
    * @param {string} tag - The tag to include in each log of the new instance.
-   * @returns {RelinkaInstance} A new Relinka instance. See {@link RelinkaInstance}.
+   * @returns {RelinkaInstanceDeprecated} A new Relinka instance. See {@link RelinkaInstanceDeprecated}.
    */
-  withTag(tag: string): RelinkaInstance {
+  withTag(tag: string): RelinkaInstanceDeprecated {
     return this.withDefaults({
       tag: this.options.defaults.tag
         ? `${this.options.defaults.tag}:${tag}`
@@ -225,8 +224,8 @@ export class RelinkaInterface {
         (console as any)[`__${type}`] = (console as any)[type];
       }
       // Override
-      (console as any)[type] = (this as unknown as RelinkaInstance)[
-        type as LogType
+      (console as any)[type] = (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
       ].raw;
     }
   }
@@ -253,7 +252,7 @@ export class RelinkaInterface {
     this._wrapStream(this.options.stderr, "log");
   }
 
-  _wrapStream(stream: NodeJS.WriteStream | undefined, type: LogType) {
+  _wrapStream(stream: NodeJS.WriteStream | undefined, type: LogTypeDeprecated) {
     if (!stream) {
       return;
     }
@@ -265,7 +264,9 @@ export class RelinkaInterface {
 
     // Override
     (stream as any).write = (data: any) => {
-      (this as unknown as RelinkaInstance)[type].raw(String(data).trim());
+      (this as unknown as RelinkaInstanceDeprecated)[type].raw(
+        String(data).trim(),
+      );
     };
   }
 
@@ -350,12 +351,21 @@ export class RelinkaInterface {
 
     for (const type in this.options.types) {
       // @ts-expect-error TODO: fix ts
-      (this as unknown as RelinkaInstance)[type as LogType] =
-        _mockFn(type as LogType, this.options.types[type as LogType]) ||
-        (this as unknown as RelinkaInstance)[type as LogType];
-      (this as unknown as RelinkaInstance)[type as LogType].raw = (
-        this as unknown as RelinkaInstance
-      )[type as LogType];
+      (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
+      ] =
+        _mockFn(
+          type as LogTypeDeprecated,
+          this.options.types[type as LogTypeDeprecated],
+        ) ||
+        (this as unknown as RelinkaInstanceDeprecated)[
+          type as LogTypeDeprecated
+        ];
+      (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
+      ].raw = (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
+      ];
     }
   }
 
@@ -380,7 +390,7 @@ export class RelinkaInterface {
       date: new Date(),
       args: [],
       ...defaults,
-      level: _normalizeLogLevel(defaults.level, this.options.types),
+      level: _normalizeLogLevelDeprecated(defaults.level, this.options.types),
     };
 
     // Consume arguments
@@ -407,7 +417,7 @@ export class RelinkaInterface {
     // Normalize type to lowercase
     logObj.type = (
       typeof logObj.type === "string" ? logObj.type.toLowerCase() : "log"
-    ) as LogType;
+    ) as LogTypeDeprecated;
     logObj.tag = typeof logObj.tag === "string" ? logObj.tag : "";
 
     // Resolve log
@@ -481,8 +491,8 @@ export class RelinkaInterface {
   }
 }
 
-function _normalizeLogLevel(
-  input: LogLevel | LogType | undefined,
+function _normalizeLogLevelDeprecated(
+  input: LogLevelDeprecated | LogTypeDeprecated | undefined,
   types: any = {},
   defaultLevel = 3,
 ) {
@@ -503,7 +513,8 @@ export type LogFn = {
   (message: InputLogObject | any, ...args: any[]): void;
   raw: (...args: any[]) => void;
 };
-export type RelinkaInstance = RelinkaInterface & Record<LogType, LogFn>;
+export type RelinkaInstanceDeprecated = RelinkaInterface &
+  Record<LogTypeDeprecated, LogFn>;
 
 // Legacy support
 // @ts-expect-error TODO: fix ts
@@ -525,10 +536,10 @@ RelinkaInterface.prototype.resume = RelinkaInterface.prototype.resumeLogs;
  * Utility for creating a new Relinka instance with optional configuration.
  *
  * @param {Partial<RelinkaOptions>} [options={}] - Optional configuration options for the new Relinka instance. See {@link RelinkaOptions}.
- * @returns {RelinkaInstance} A new instance of RelinkaInterface. See {@link RelinkaInstance}.
+ * @returns {RelinkaInstanceDeprecated} A new instance of RelinkaInterface. See {@link RelinkaInstanceDeprecated}.
  */
-export function createRelinka(
+export function createRelinkaDeprecated(
   options: Partial<RelinkaOptions> = {},
-): RelinkaInstance {
-  return new RelinkaInterface(options) as RelinkaInstance;
+): RelinkaInstanceDeprecated {
+  return new RelinkaInterface(options) as RelinkaInstanceDeprecated;
 }

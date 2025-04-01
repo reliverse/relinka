@@ -1,7 +1,7 @@
-import { createRelinka } from "~/deprecated/components/relinka/mod.js";
+import { createRelinkaDeprecated } from "~/libs/core/core-main.js";
 
 function main() {
-  const relinkaWrapper = createRelinka({
+  const relinkaWrapper = createRelinkaDeprecated({
     formatOptions: { columns: 0 },
   });
   relinkaWrapper.info("Foobar");

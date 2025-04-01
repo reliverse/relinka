@@ -1,34 +1,35 @@
-import type { RelinkaOptions } from "~/deprecated/types/mod.js";
+import type { RelinkaOptions } from "~/libs/core/core-types.js";
 
-import relinkaInstance, {
-  createRelinka,
-} from "~/deprecated/components/relinka/mod.js";
+import { createRelinkaDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/relinka.js";
+import { relinkaInstanceDeprecated } from "~/main.js";
 
 import { randomSentence } from "./sentence.js";
 
 export function reporterDemo(
   opts: Partial<RelinkaOptions & { fancy: boolean }>,
 ) {
-  const relinka = createRelinka({
+  const relinka = createRelinkaDeprecated({
     ...opts,
   });
 
-  for (const type of Object.keys(relinkaInstance.options.types).sort()) {
+  for (const type of Object.keys(
+    relinkaInstanceDeprecated.options.types,
+  ).sort()) {
     relinka[type](randomSentence());
   }
 
-  relinkaInstance.info("JSON", {
+  relinkaInstanceDeprecated.info("JSON", {
     name: "Cat",
     color: "#454545",
   });
 
-  relinkaInstance.error(new Error(randomSentence()));
+  relinkaInstanceDeprecated.error(new Error(randomSentence()));
 
-  const tagged = relinkaInstance.withTag("reliverse").withTag("cli");
+  const tagged = relinkaInstanceDeprecated.withTag("reliverse").withTag("cli");
 
-  for (const type of Object.keys(relinkaInstance.options.types).sort()) {
+  for (const type of Object.keys(
+    relinkaInstanceDeprecated.options.types,
+  ).sort()) {
     tagged[type](randomSentence());
   }
 }
-
-export const relinkaExample = createRelinka();

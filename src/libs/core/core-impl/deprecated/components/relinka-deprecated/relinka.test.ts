@@ -1,15 +1,16 @@
 import { describe, test, expect } from "vitest";
 
-import type { RelinkaReporter, LogObject } from "~/deprecated/types/mod.js";
+import { createRelinkaDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/relinka.js";
 
 import {
-  LogLevels,
-  createRelinka,
-} from "~/deprecated/components/relinka/mod.js";
+  type RelinkaReporter,
+  type LogObject,
+  LogLevelsDeprecated,
+} from "./mod.js";
 
 describe("relinka", () => {
   test("can set level", () => {
-    const relinka = createRelinka();
+    const relinka = createRelinkaDeprecated();
     expect(relinka.level).toBe(1);
 
     for (let i = 0; i <= 5; i++) {
@@ -26,9 +27,9 @@ describe("relinka", () => {
       },
     };
 
-    const relinka = createRelinka({
+    const relinka = createRelinkaDeprecated({
       throttle: 100,
-      level: LogLevels.silent,
+      level: LogLevelsDeprecated.silent,
       reporters: [TestReporter],
     });
 
@@ -48,9 +49,9 @@ describe("relinka", () => {
       },
     };
 
-    const relinka = createRelinka({
+    const relinka = createRelinkaDeprecated({
       throttle: 100,
-      level: LogLevels.info,
+      level: LogLevelsDeprecated.info,
       reporters: [TestReporter],
     });
     for (let i = 0; i < 10; i++) {

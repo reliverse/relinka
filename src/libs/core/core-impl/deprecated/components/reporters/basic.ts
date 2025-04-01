@@ -5,10 +5,10 @@ import type {
   RelinkaReporter,
   FormatOptions,
   RelinkaOptions,
-} from "~/deprecated/types/mod.js";
+} from "~/libs/core/core-types.js";
 
-import { parseStack } from "~/deprecated/utils/error.js";
-import { writeStream } from "~/deprecated/utils/stream.js";
+import { parseStack } from "~/libs/core/core-impl/deprecated/utils/error.js";
+import { writeStream } from "~/libs/core/core-impl/deprecated/utils/stream.js";
 
 const bracket = (x: string) => (x ? `[${x}]` : "");
 

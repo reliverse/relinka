@@ -30,7 +30,7 @@ Want to test Relinka before integrating it into your project? Clone the repo and
 git clone https://github.com/reliverse/relinka-logger.git
 cd relinka-logger
 bun i
-bun dev # bun examples/main.ts
+bun dev # bun examples/e-main.ts
 ```
 
 ### Relidler Usage

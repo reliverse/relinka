@@ -1,26 +1,24 @@
-import type { TreeItem } from "~/deprecated/utils/tree.js";
+import type { TreeItem } from "~/libs/core/core-impl/deprecated/utils/tree.js";
 
-import {
-  relinkaInstance,
-  createRelinka,
-} from "~/deprecated/components/relinka/mod.js";
-import { formatTree } from "~/deprecated/utils/tree.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
+import { createRelinkaDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/relinka.js";
+import { formatTree } from "~/libs/core/core-main.js";
 
 import { reporterDemo } from "./src/utils/index.js";
 
 async function detailedExample() {
-  // TODO: implement relinkaInstance.clear
-  // relinkaInstance.box("=== 🥷 you can't see me 🥷 ===");
-  // relinkaInstance.clear(true);
+  // TODO: implement relinkaInstanceDeprecated.clear
+  // relinkaInstanceDeprecated.box("=== 🥷 you can't see me 🥷 ===");
+  // relinkaInstanceDeprecated.clear(true);
 
   // box
-  relinkaInstance.box("=== box ===");
+  relinkaInstanceDeprecated.box("=== box ===");
 
-  relinkaInstance.box(
+  relinkaInstanceDeprecated.box(
     `Welcome to @reliverse/prompts! You're going to test an 'experimental' example.`,
   );
 
-  relinkaInstance.box({
+  relinkaInstanceDeprecated.box({
     title: "Box with options",
     message: `You'll see an example of errors, but it's not a real error 😉`,
     style: {
@@ -31,16 +29,16 @@ async function detailedExample() {
   });
 
   // reporter
-  relinkaInstance.box("=== reporter 'basic' ===");
+  relinkaInstanceDeprecated.box("=== reporter 'basic' ===");
   reporterDemo({
     fancy: false,
   });
-  relinkaInstance.box("=== reporter 'fancy' ===");
+  relinkaInstanceDeprecated.box("=== reporter 'fancy' ===");
   reporterDemo({
     fancy: true,
   });
 
-  relinkaInstance.box({
+  relinkaInstanceDeprecated.box({
     title: "By the way",
     // message: `\`v1.0.2\` → \`v2.0.0\`\n\nRun \`npm install -g relinka\` to update`,
     message: `You can check '@reliverse/prompts' in the production usage\n\nJust run 'bunx -g reliverse@latest'`,
@@ -52,14 +50,14 @@ async function detailedExample() {
   });
 
   // sleep
-  relinkaInstance.start("Creating project...");
+  relinkaInstanceDeprecated.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinkaInstance.success("Project created!");
+  relinkaInstanceDeprecated.success("Project created!");
 
   // json
-  relinkaInstance.box("=== json ===");
+  relinkaInstanceDeprecated.box("=== json ===");
 
-  const jsonRelinka = createRelinka({
+  const jsonRelinka = createRelinkaDeprecated({
     reporters: [
       {
         log: (logObj) => {
@@ -72,7 +70,7 @@ async function detailedExample() {
   jsonRelinka.log("foo bar");
 
   // mock
-  relinkaInstance.box("=== mock ===");
+  relinkaInstanceDeprecated.box("=== mock ===");
 
   function mockFn(type) {
     if (type === "info") {
@@ -83,29 +81,29 @@ async function detailedExample() {
     return undefined;
   }
 
-  relinkaInstance.info("before");
-  relinkaInstance.mockTypes((type) => {
+  relinkaInstanceDeprecated.info("before");
+  relinkaInstanceDeprecated.mockTypes((type) => {
     if (type === "info") {
       return () => {
-        relinkaInstance.log("(mocked fn with info tag)");
+        relinkaInstanceDeprecated.log("(mocked fn with info tag)");
       };
     }
     return undefined;
   });
 
-  relinkaInstance.mockTypes(mockFn);
+  relinkaInstanceDeprecated.mockTypes(mockFn);
 
-  const tagged = relinkaInstance.withTag("newTag");
+  const tagged = relinkaInstanceDeprecated.withTag("newTag");
 
-  relinkaInstance.log("log is not mocked!");
+  relinkaInstanceDeprecated.log("log is not mocked!");
 
-  relinkaInstance.info("Dont see me");
+  relinkaInstanceDeprecated.info("Dont see me");
   tagged.info("Dont see me too");
 
   // no-width
-  relinkaInstance.box("=== no-width ===");
+  relinkaInstanceDeprecated.box("=== no-width ===");
 
-  const noWidthRelinka = createRelinka({
+  const noWidthRelinka = createRelinkaDeprecated({
     formatOptions: { columns: 0 },
   });
   noWidthRelinka.info("Foobar");
@@ -113,9 +111,9 @@ async function detailedExample() {
   scoped.success("Foobar");
 
   // with-width
-  relinkaInstance.box("=== with-width ===");
+  relinkaInstanceDeprecated.box("=== with-width ===");
 
-  const withWidthRelinka = createRelinka({
+  const withWidthRelinka = createRelinkaDeprecated({
     formatOptions: { columns: 10 },
   });
   withWidthRelinka.info("Foobar");
@@ -123,12 +121,12 @@ async function detailedExample() {
   scopedWithWidth.success("Foobar");
 
   // pause
-  relinkaInstance.box("=== pause ===");
+  relinkaInstanceDeprecated.box("=== pause ===");
 
-  const c1 = relinkaInstance.withTag("foo");
-  const c2 = relinkaInstance.withTag("bar");
+  const c1 = relinkaInstanceDeprecated.withTag("foo");
+  const c2 = relinkaInstanceDeprecated.withTag("bar");
 
-  relinkaInstance.log("before pause");
+  relinkaInstanceDeprecated.log("before pause");
 
   // @ts-expect-error TODO: fix ts
   c2.pause();
@@ -138,34 +136,40 @@ async function detailedExample() {
 
   setTimeout(() => {
     // @ts-expect-error TODO: fix ts
-    relinkaInstance.resume();
-    relinkaInstance.log("Yo!");
+    relinkaInstanceDeprecated.resume();
+    relinkaInstanceDeprecated.log("Yo!");
   }, 1000);
 
   // raw
-  relinkaInstance.box("=== raw ===");
+  relinkaInstanceDeprecated.box("=== raw ===");
 
-  relinkaInstance.log('relinkaInstance.log({ message: "hello" })');
+  relinkaInstanceDeprecated.log(
+    'relinkaInstanceDeprecated.log({ message: "hello" })',
+  );
   // Prints "hello"
-  relinkaInstance.log({ message: "hello" });
+  relinkaInstanceDeprecated.log({ message: "hello" });
 
-  relinkaInstance.log('relinkaInstance.log.raw({ message: "hello" })');
+  relinkaInstanceDeprecated.log(
+    'relinkaInstanceDeprecated.log.raw({ message: "hello" })',
+  );
   // Prints "{ message: 'hello' }"
-  relinkaInstance.log.raw({ message: "hello" });
+  relinkaInstanceDeprecated.log.raw({ message: "hello" });
 
   // sample
-  relinkaInstance.box("=== sample ===");
+  relinkaInstanceDeprecated.box("=== sample ===");
 
-  relinkaInstance.warn("A new version of relinka is available: 3.0.1");
-  relinkaInstance.error(
+  relinkaInstanceDeprecated.warn(
+    "A new version of relinka is available: 3.0.1",
+  );
+  relinkaInstanceDeprecated.error(
     new Error("This is an example error. Everything is fine!"),
   );
-  relinkaInstance.info("Using relinka 3.0.0");
-  relinkaInstance.start("Building project...");
-  relinkaInstance.success("Project built!");
+  relinkaInstanceDeprecated.info("Using relinka 3.0.0");
+  relinkaInstanceDeprecated.start("Building project...");
+  relinkaInstanceDeprecated.success("Project built!");
 
   // spam
-  relinkaInstance.box("=== spam ===");
+  relinkaInstanceDeprecated.box("=== spam ===");
 
   function waitFor(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -174,7 +178,9 @@ async function detailedExample() {
   async function spam({ count, delay }) {
     for (let i = 0; i < count; i++) {
       await waitFor(delay);
-      relinkaInstance.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
+      relinkaInstanceDeprecated.log(
+        `Spam (Count: ${count} Delay: ${delay} ms)`,
+      );
     }
   }
 
@@ -186,53 +192,53 @@ async function detailedExample() {
   })();
 
   // special
-  relinkaInstance.box("=== special ===");
+  relinkaInstanceDeprecated.box("=== special ===");
 
-  relinkaInstance.error({
+  relinkaInstanceDeprecated.error({
     message: "Foobar",
   });
 
-  relinkaInstance.log({
+  relinkaInstanceDeprecated.log({
     AAA: "BBB",
   });
 
-  // relinkaInstance.log(relinka)
+  // relinkaInstanceDeprecated.log(relinka)
 
-  relinkaInstance.log("%d", 12);
+  relinkaInstanceDeprecated.log("%d", 12);
 
-  relinkaInstance.error({ type: "CSSError", message: "Use scss" });
+  relinkaInstanceDeprecated.error({ type: "CSSError", message: "Use scss" });
 
-  relinkaInstance.error(undefined, null, false, true, Number.NaN);
+  relinkaInstanceDeprecated.error(undefined, null, false, true, Number.NaN);
 
-  relinkaInstance.log(
+  relinkaInstanceDeprecated.log(
     "We can `monospace` keyword using grave accent character!",
   );
 
-  relinkaInstance.log(
+  relinkaInstanceDeprecated.log(
     "We can also _underline_ words but not_this or this should_not_be_underlined!",
   );
 
   // Nonstandard error
   const { message, stack } = new Error("Custom Error!");
-  relinkaInstance.error({ message, stack });
+  relinkaInstanceDeprecated.error({ message, stack });
 
   // Circular object
   const a = { foo: 1, bar: undefined as any };
   a.bar = a;
-  relinkaInstance.log(a);
+  relinkaInstanceDeprecated.log(a);
 
   // Multiline
-  relinkaInstance.log("`Hello` the `JS`\n`World` and `Beyond`!");
+  relinkaInstanceDeprecated.log("`Hello` the `JS`\n`World` and `Beyond`!");
 
   // spinner
-  relinkaInstance.box("=== spinner ===");
+  relinkaInstanceDeprecated.box("=== spinner ===");
 
-  relinkaInstance.start("Creating project...");
+  relinkaInstanceDeprecated.start("Creating project...");
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  relinkaInstance.success("Project created!");
+  relinkaInstanceDeprecated.success("Project created!");
 
   // tree
-  relinkaInstance.box("=== tree ===");
+  relinkaInstanceDeprecated.box("=== tree ===");
 
   function treeDemo() {
     const keywords = [
@@ -252,16 +258,16 @@ async function detailedExample() {
       "stacktrace",
     ];
 
-    relinkaInstance.log(formatTree(keywords));
+    relinkaInstanceDeprecated.log(formatTree(keywords));
 
-    relinkaInstance.log(
+    relinkaInstanceDeprecated.log(
       formatTree(keywords, {
         color: "cyan",
         prefix: "  |  ",
       }),
     );
 
-    relinkaInstance.log(
+    relinkaInstanceDeprecated.log(
       formatTree(
         [
           {
@@ -285,7 +291,7 @@ async function detailedExample() {
     );
 
     // Deep tree
-    relinkaInstance.log(
+    relinkaInstanceDeprecated.log(
       formatTree([
         {
           text: "format",
@@ -324,16 +330,16 @@ async function detailedExample() {
   treeDemo();
 
   // wrap-all
-  relinkaInstance.box("=== wrap-all ===");
+  relinkaInstanceDeprecated.box("=== wrap-all ===");
 
   function fooWrapAll() {
     console.info("console foo");
     process.stderr.write("called from stderr\n");
   }
 
-  relinkaInstance.wrapAll();
+  relinkaInstanceDeprecated.wrapAll();
   fooWrapAll();
-  relinkaInstance.restoreAll();
+  relinkaInstanceDeprecated.restoreAll();
   fooWrapAll();
 
   // wrap-console
@@ -351,15 +357,15 @@ async function detailedExample() {
   }
 
   fooWrapConsole();
-  relinkaInstance.wrapConsole();
+  relinkaInstanceDeprecated.wrapConsole();
   fooWrapConsole();
   trace();
-  relinkaInstance.restoreConsole();
+  relinkaInstanceDeprecated.restoreConsole();
   fooWrapConsole();
   trace();
 
   // wrap-std
-  relinkaInstance.box("=== wrap-std ===");
+  relinkaInstanceDeprecated.box("=== wrap-std ===");
 
   function fooWrapStd() {
     console.info("console foo");
@@ -367,9 +373,9 @@ async function detailedExample() {
     process.stderr.write("called from stderr foo\n");
   }
 
-  relinkaInstance.wrapStd();
+  relinkaInstanceDeprecated.wrapStd();
   fooWrapStd();
-  relinkaInstance.restoreStd();
+  relinkaInstanceDeprecated.restoreStd();
   fooWrapStd();
 }
 

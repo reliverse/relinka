@@ -1,9 +1,13 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
 
-relinkaInstance.log('relinkaInstance.log({ message: "hello" })');
+relinkaInstanceDeprecated.log(
+  'relinkaInstanceDeprecated.log({ message: "hello" })',
+);
 // Prints "hello"
-relinkaInstance.log({ message: "hello" });
+relinkaInstanceDeprecated.log({ message: "hello" });
 
-relinkaInstance.log('relinkaInstance.log.raw({ message: "hello" })');
+relinkaInstanceDeprecated.log(
+  'relinkaInstanceDeprecated.log.raw({ message: "hello" })',
+);
 // Prints "{ message: 'hello' }"
-relinkaInstance.log.raw({ message: "hello" });
+relinkaInstanceDeprecated.log.raw({ message: "hello" });

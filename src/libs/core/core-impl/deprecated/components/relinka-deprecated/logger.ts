@@ -40,7 +40,7 @@ type AllKinds = MessageKind | VerboseKind;
 //   },
 // };
 
-export const deprecatedRelinka = (
+export const relinkaDeprecated = (
   _kind: AllKinds,
   title: string,
   content?: string,

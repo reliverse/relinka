@@ -1,4 +1,4 @@
-import type { LogObject } from "~/main.js";
+import type { LogObject } from "~/libs/core/core-types.js";
 
 export class BrowserReporter {
   options: any;

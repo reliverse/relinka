@@ -1,11 +1,11 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
 
 function foo() {
   console.info("console foo");
   process.stderr.write("called from stderr\n");
 }
 
-relinkaInstance.wrapAll();
+relinkaInstanceDeprecated.wrapAll();
 foo();
-relinkaInstance.restoreAll();
+relinkaInstanceDeprecated.restoreAll();
 foo();

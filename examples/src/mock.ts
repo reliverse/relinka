@@ -1,4 +1,4 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-main.js";
 
 function mockFn(type) {
   if (type === "info") {
@@ -11,13 +11,13 @@ function mockFn(type) {
   return undefined;
 }
 
-relinkaInstance.info("before");
+relinkaInstanceDeprecated.info("before");
 
-relinkaInstance.mockTypes(mockFn);
+relinkaInstanceDeprecated.mockTypes(mockFn);
 
-const tagged = relinkaInstance.withTag("newTag");
+const tagged = relinkaInstanceDeprecated.withTag("newTag");
 
-relinkaInstance.log("log is not mocked!");
+relinkaInstanceDeprecated.log("log is not mocked!");
 
-relinkaInstance.info("Dont see me");
+relinkaInstanceDeprecated.info("Dont see me");
 tagged.info("Dont see me too");

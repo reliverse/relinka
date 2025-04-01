@@ -1,7 +1,7 @@
 import type {
-  LogLevel,
-  LogType,
-} from "~/deprecated/components/levels/levels.js";
+  LogLevelDeprecated,
+  LogTypeDeprecated,
+} from "~/libs/core/core-impl/deprecated/components/levels/levels.js";
 
 export type RelinkaOptions = {
   /**
@@ -10,15 +10,15 @@ export type RelinkaOptions = {
   reporters: RelinkaReporter[];
 
   /**
-   * A record mapping LogType to InputLogObject, defining the log configuration for each log type.
-   * See {@link LogType} and {@link InputLogObject}.
+   * A record mapping LogTypeDeprecated to InputLogObject, defining the log configuration for each log type.
+   * See {@link LogTypeDeprecated} and {@link InputLogObject}.
    */
-  types: Record<LogType, InputLogObject>;
+  types: Record<LogTypeDeprecated, InputLogObject>;
 
   /**
-   * The minimum log level to output. See {@link LogLevel}.
+   * The minimum log level to output. See {@link LogLevelDeprecated}.
    */
-  level: LogLevel;
+  level: LogLevelDeprecated;
 
   /**
    * Default properties applied to all log messages unless overridden. See {@link InputLogObject}.
@@ -51,7 +51,10 @@ export type RelinkaOptions = {
    * A function that allows you to mock log messages for testing purposes.
    * @optional
    */
-  mockFn?: (type: LogType, defaults: InputLogObject) => (...args: any) => void;
+  mockFn?: (
+    type: LogTypeDeprecated,
+    defaults: InputLogObject,
+  ) => (...args: any) => void;
 
   /**
    * Configuration options for formatting log messages. See {@link FormatOptions}.
@@ -95,10 +98,10 @@ export type FormatOptions = {
 
 export type InputLogObject = {
   /**
-   * The logging level of the message. See {@link LogLevel}.
+   * The logging level of the message. See {@link LogLevelDeprecated}.
    * @optional
    */
-  level?: LogLevel;
+  level?: LogLevelDeprecated;
 
   /**
    * A string tag to categorize or identify the log message.
@@ -107,10 +110,10 @@ export type InputLogObject = {
   tag?: string;
 
   /**
-   * The type of log message, which affects how it's processed and displayed. See {@link LogType}.
+   * The type of log message, which affects how it's processed and displayed. See {@link LogTypeDeprecated}.
    * @optional
    */
-  type?: LogType;
+  type?: LogTypeDeprecated;
 
   /**
    * The main log message text.
@@ -139,14 +142,14 @@ export type InputLogObject = {
 
 export type LogObject = {
   /**
-   * The logging level of the message, overridden if required. See {@link LogLevel}.
+   * The logging level of the message, overridden if required. See {@link LogLevelDeprecated}.
    */
-  level: LogLevel;
+  level: LogLevelDeprecated;
 
   /**
-   * The type of log message, overridden if required. See {@link LogType}.
+   * The type of log message, overridden if required. See {@link LogTypeDeprecated}.
    */
-  type: LogType;
+  type: LogTypeDeprecated;
 
   /**
    * A string tag to categorize or identify the log message, overridden if necessary.

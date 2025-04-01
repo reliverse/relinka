@@ -1,5 +1,6 @@
-.exe
-.dll
+*.log
+*.exe
+*.dll
 .venv/
 dist-jsr/
 dist-npm/

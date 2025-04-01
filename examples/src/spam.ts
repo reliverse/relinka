@@ -1,4 +1,4 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-impl/deprecated/components/relinka-deprecated/mod.js";
 
 function waitFor(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,7 +7,7 @@ function waitFor(ms) {
 async function spam({ count, delay }) {
   for (let i = 0; i < count; i++) {
     await waitFor(delay);
-    relinkaInstance.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
+    relinkaInstanceDeprecated.log(`Spam (Count: ${count} Delay: ${delay} ms)`);
   }
 }
 

@@ -1,9 +1,9 @@
-import { relinkaInstance } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/libs/core/core-main.js";
 
 function main() {
-  relinkaInstance.box("I am the default banner");
+  relinkaInstanceDeprecated.box("I am the default banner");
 
-  relinkaInstance.box({
+  relinkaInstanceDeprecated.box({
     title: "Box with options",
     message: "I am a banner with different options",
     style: {
@@ -13,7 +13,7 @@ function main() {
     },
   });
 
-  relinkaInstance.box({
+  relinkaInstanceDeprecated.box({
     title: "Update available for `relinka`",
     message: "`v1.0.2` → `v2.0.0`\n\nRun `npm install -g relinka` to update",
     style: {

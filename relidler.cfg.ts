@@ -42,18 +42,19 @@ export default defineConfig({
   // Publish specific dirs as separate packages
   // This feature is experimental at the moment
   // Please commit your changes before using it
-  libsActMode: "main-project-only",
+  libsActMode: "main-and-libs",
   libsDirDist: "dist-libs",
   libsDirSrc: "src/libs",
   libsList: {
-    // "@acme/cli-libName": {
-    //   libDeclarations: true,
-    //   libDescription: "@acme/cli defineConfig",
-    //   libDirName: "libName",
-    //   libMainFile: "libName/libName-main.ts",
-    //   libPkgKeepDeps: true,
-    //   libTranspileMinify: true,
-    // },
+    "@reliverse/relinka-core": {
+      libDeclarations: true,
+      libDescription:
+        "@reliverse/relinka is a powerful logger for your terminal.",
+      libDirName: "core",
+      libMainFile: "core/core-main.ts",
+      libPkgKeepDeps: true,
+      libTranspileMinify: true,
+    },
   },
 
   // Logger setup

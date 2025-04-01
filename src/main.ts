@@ -1,1 +1,1 @@
-export * from "./deprecated/depd-main.js";
+export * from "./libs/core/core-main.js";

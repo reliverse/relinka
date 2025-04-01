@@ -7,19 +7,19 @@
 
 <body>
   Open developer tools to see the magic!
-  <script src="../dist/relinkaInstance.browser.js"></script>
+  <script src="../dist/relinkaInstanceDeprecated.browser.js"></script>
   <script>
-    relinkaInstance.level = 5;
+    relinkaInstanceDeprecated.level = 5;
 
-    relinkaInstance.wrapAll();
+    relinkaInstanceDeprecated.wrapAll();
 
-    for (let type of Object.keys(relinkaInstance.options.types).sort()) {
+    for (let type of Object.keys(relinkaInstanceDeprecated.options.types).sort()) {
       relinka[type]("Open developer tools to see the magic!");
     }
 
-    relinkaInstance.withTag("customTag").info("Im from custom world!");
+    relinkaInstanceDeprecated.withTag("customTag").info("Im from custom world!");
 
-    relinkaInstance.error(new Error("Whoo Haha"));
+    relinkaInstanceDeprecated.error(new Error("Whoo Haha"));
   </script>
 </body>
 

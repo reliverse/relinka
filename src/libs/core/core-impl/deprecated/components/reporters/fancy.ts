@@ -2,18 +2,21 @@ import { isUnicodeSupported } from "@reliverse/runtime";
 import stringWidth from "string-width";
 
 import type {
-  LogLevel,
-  LogType,
-} from "~/deprecated/components/levels/levels.js";
-import type { FormatOptions, LogObject } from "~/main.js";
+  LogLevelDeprecated,
+  LogTypeDeprecated,
+} from "~/libs/core/core-impl/deprecated/components/levels/levels.js";
+import type { FormatOptions, LogObject } from "~/libs/core/core-types.js";
 
-import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
-import { box, type BoxOpts } from "~/deprecated/utils/box.js";
-import { colors } from "~/deprecated/utils/deprecatedColors.js";
-import { parseStack } from "~/deprecated/utils/error.js";
-import { stripAnsi } from "~/deprecated/utils/string.js";
+import { BasicReporter } from "~/libs/core/core-impl/deprecated/components/reporters/basic.js";
+import {
+  box,
+  type BoxOpts,
+} from "~/libs/core/core-impl/deprecated/utils/box.js";
+import { colors } from "~/libs/core/core-impl/deprecated/utils/deprecatedColors.js";
+import { parseStack } from "~/libs/core/core-impl/deprecated/utils/error.js";
+import { stripAnsi } from "~/libs/core/core-impl/deprecated/utils/string.js";
 
-export const TYPE_COLOR_MAP: Partial<Record<LogType, string>> = {
+export const TYPE_COLOR_MAP: Partial<Record<LogTypeDeprecated, string>> = {
   info: "cyan",
   fail: "red",
   success: "green",
@@ -21,14 +24,14 @@ export const TYPE_COLOR_MAP: Partial<Record<LogType, string>> = {
   start: "magenta",
 };
 
-export const LEVEL_COLOR_MAP: Partial<Record<LogLevel, string>> = {
+export const LEVEL_COLOR_MAP: Partial<Record<LogLevelDeprecated, string>> = {
   0: "red",
   1: "yellow",
 };
 
 const unicode = isUnicodeSupported();
 const s = (c: string, fallback: string) => (unicode ? c : fallback);
-const TYPE_ICONS: Partial<Record<LogType, string>> = {
+const TYPE_ICONS: Partial<Record<LogTypeDeprecated, string>> = {
   error: s("✖", "×"),
   fatal: s("✖", "×"),
   ready: s("✔", "√"),
