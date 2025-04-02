@@ -69,7 +69,7 @@ export type {
 } from "./relinka-impl/deprecated/utils/tree.js";
 export { formatTree } from "./relinka-impl/deprecated/utils/tree.js";
 export {
-  configPromise,
+  relinkaConfig,
   relinka,
   relinkaAsync,
   defineConfig,

@@ -1,8 +1,8 @@
 {
   "name": "@reliverse/relinka-cli",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "type": "module",
-  "description": "@reliverse/relinka is a powerful logger for your terminal.",
+  "description": "@reliverse/relinka is your next favorite logging library — built to make your terminal (and browser console — soon) output look good, stay clean, and be actually helpful. It’s styled, structured, and smart. Oh, and it works with configs, files, and colors out of the box.",
   "scripts": {
     "dev": "bun examples/e-main.ts",
     "latest": "bun update --latest && bun check",
@@ -12,7 +12,7 @@
     "vi": "vitest"
   },
   "dependencies": {
-    "@reliverse/relico": "^1.0.2",
+    "@reliverse/relico": "^1.1.0",
     "@reliverse/runtime": "^1.0.3",
     "c12": "^3.0.2",
     "defu": "^6.1.4",
@@ -34,7 +34,7 @@
     "@types/sentencer": "^0.2.3",
     "eslint": "^9.23.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
-    "eslint-plugin-perfectionist": "^4.10.1",
+    "eslint-plugin-perfectionist": "^4.11.0",
     "jiti": "^2.4.2",
     "knip": "^5.46.4",
     "sentencer": "^0.2.1",

@@ -1,116 +1,154 @@
-# Relidler: Reliverse Bundler
+# Relinka: Stylish Logging Made Simple
 
 [💖 GitHub Sponsors](https://github.com/sponsors/blefnk) • [💬 Discord](https://discord.gg/Pb8uKbwpsJ) • [✨ Repo](https://github.com/reliverse/relinka-logger) • [📦 NPM](https://npmjs.com/@reliverse/relinka) • [📚 Docs](https://docs.reliverse.org)
 
-**@reliverse/relinka** is your next powerful logger, which allows you to style your terminal or browser console like never before.
+**@reliverse/relinka** is your next favorite logging library — built to make your terminal (and browser console — soon) output look good, stay clean, and be actually helpful. It’s styled, structured, and smart. Oh, and it works with configs, files, and colors out of the box.
 
-## Features
+## 🌟 Features
 
-- 😘 Drop-in replacement for `consola`
-- ⚡ `relinka` works via CLI and SDK
-- 📦 Automated NPM/JSR publishing
-- ✅ Ensures reliable JS/TS builds
-- 🔄 Handles automatic version bumps
-- 🔧 Eliminates `package.json` headaches
-- 🎯 Optimized for speed and modern workflows
-- 🛠️ Converts TypeScript aliases to relative paths
-- ✨ Packed with powerful features under the hood
-- 📝 Highly configurable flow via a configuration file
-- 🔌 Plugin system with one built-in plugin included
+- 🧙 Drop-in replacement for `node:console` and `consola`
+- 💬 `relinka` supports: `info`, `warn`, `success`, `error`, `verbose`
+- 🎨 Beautiful, color-coded logs in the terminal
+- 🧠 Auto-formats messages, objects, and errors
+- 📁 Save logs to file (with daily logs, cleanup, and rotation)
+- 📦 Use it programmatically or through CLI-compatible tools
+- ⚙️ Smart customization via config
+- ✨ Extensible and future-proof
 
-## Getting Started
+## 🚀 Getting Started
 
-Ensure [Git](https://git-scm.com/downloads), [Node.js](https://nodejs.org), and a package manager ([bun](https://bun.sh)/[pnpm](https://pnpm.io)/[yarn](https://yarnpkg.com)/[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)) are installed. Then follow these steps:
+### 1. Install
 
-### Example Playground
-
-Want to test Relinka before integrating it into your project? Clone the repo and launch the example:
-
-```sh
-git clone https://github.com/reliverse/relinka-logger.git
-cd relinka-logger
-bun i
-bun dev # bun examples/e-main.ts
+```bash
+bun add @reliverse/relinka
 ```
 
-### Relidler Usage
+And, optionally, install the CLI globally to manage your config:
 
-1. **Install globally**:
-
-    ```sh
-    bun i -g @reliverse/relidler
-    ```
-
-    **Or update as needed**:
-
-    ```sh
-    bun -g update --latest
-    ```
-
-2. **Prepare your project**:
-
-    a. **Configure `.gitignore`**:
-
-    ```sh
-    echo "*.log" >> .gitignore
-    echo "dist-npm" >> .gitignore
-    echo "dist-jsr" >> .gitignore
-    echo "dist-libs" >> .gitignore
-    ```
-
-    b. **Install config intellisense**:
-
-    ```sh
-    bun add -D @reliverse/relidler-cfg
-    ```
-
-    c. **Initialize `relidler.cfg.ts`**:
-
-    ```sh
-    relidler
-    ```
-
-    - The `relidler.cfg.ts` file is created automatically on the first run.
-    - **It's recommended to customize this file according to your needs.**
-    - Supported names: `relidler.cfg.ts` • `relidler.config.ts` • `build.pub.ts` • `build.cfg.ts`.
-
-3. **Run and enjoy**:
-
-    ```sh
-    relidler
-    ```
-
-## Plugins & SDK
-
-Relidler includes a plugin system, with the following official built-in plugin already available:
-
-- **`libraries-relidler-plugin`**: Builds and publishes specified subdirectories of your main project as separate packages.
-
-### API (for advanced users)
-
-The SDK allows you to create new Relidler plugins and even extend your own CLI functionality.
-
-```sh
-bun add -D @reliverse/relidler-sdk
+```bash
+bun i -g @reliverse/relinka-cli
 ```
 
-## TODO
+### 2. Basic Usage
 
-- [x] ~~Implement stable `regular` build and publish~~
-- [ ] Implement stable `library` build and publish
-- [ ] Allow to minify dist with comments preserved
-- [ ] Achieve full drop-in replacement for `unbuild`
-- [ ] Support auto migration from `build.config.ts`
-- [ ] Allow plugins to extend Relidler's `defineConfig`
-- [ ] Support configuration via `reliverse.{ts,jsonc}`
-- [ ] Make config file optional with sensible defaults
+```ts
+import { relinkaConfig, relinka } from "@reliverse/relinka";
+export async function main() {
+  await relinkaConfig;
+  relinka(
+    "verbose",
+    "This message can be seen only if config was loaded AND debug is enabled",
+  );
+  relinka("info", "Everything is running smoothly");
+  relinka("warn", "This might be a problem");
+  relinka("error", "Uh oh, something broke");
+  relinka("success", "Thanks for using Relinka! 👋");
+}
+await main();
+```
 
-## Related
+## 🧪 Advanced Usage
 
-Kudos to the following project that made Relinka possible:
+Want a clean blank line?
+
+```ts
+relinka("info", ""); // Just prints a newline
+```
+
+🔜 Use the async logger if you want some advanced features (like typing text animation - soon):
+
+```ts
+import { relinkaAsync } from "@reliverse/relinka";
+
+await relinkaAsync("info", "Something happened", { animate: true });
+```
+
+## ⚙️ Configuration
+
+Create a `relinka.config.ts` file with a content like:
+
+```ts
+import { defineConfig } from "@reliverse/relinka";
+export default defineConfig({
+  // Enable debug to see verbose logs
+  debug: true,
+  // Show timestamp in each log message
+  withTimestamp: false,
+  // Control whether logs are saved to a file
+  saveLogsToFile: true,
+  // Disable colors in the console
+  disableColors: false,
+  // Log file path
+  logFilePath: "relinka.log",
+  // Directory settings
+  dirs: {
+    dailyLogs: true,
+    logDir: ".reliverse/logs", // store logs in a custom folder
+    maxLogFiles: 5, // keep only the 5 most recent log files
+    specialDirs: {
+      distDirNames: [],
+      useParentConfigInDist: true,
+    },
+  },
+});
+```
+
+Supported config file names:
+
+- `relinka.config.ts`
+- 🔜 `.relinka.config.js`
+- 🔜 `.relinkarc`
+- 🔜 or any other supported by c12
+
+## 📁 Log Files
+
+- Stored in `.reliverse/logs/` by default
+- Filename: `relinka.log` or `YYYY-MM-DD-relinka.log` if daily logs are enabled
+- Auto-rotates based on `maxLogFiles`
+
+## 📚 API Summary
+
+### relinka(level, message, ...args)
+
+Logs synchronously. Skips debug logs if `debug: false`.
+
+### relinkaAsync(level, message, ...args)
+
+Async logger that waits for config automatically, and provides some additional advanced features.
+
+### defineConfig(config)
+
+Helper to define typed config in `relinka.config.ts`
+
+## 🧰 Utilities
+
+✅ Timestamping  
+✅ Log file rotation  
+✅ File-safe formatting  
+✅ ANSI color support  
+✅ Error object handling
+
+## 💡 Tips
+
+- Want `@ts-expect-error` auto-injection? Check out [`@reliverse/reinject`](https://npmjs.com/@reliverse/reinject).
+- Using this in a CLI tool? Combine with [`@reliverse/prompts`](https://npmjs.com/@reliverse/prompts).
+
+## ✅ TODO
+
+- [x] File-based logging
+- [x] Timestamp support
+- [x] Daily logs
+- [x] Smart config
+- [x] Log rotation
+- [ ] CLI interface (optional)
+- [ ] Plugin support (custom formatters, log levels, etc)
+
+## 🙌 Shoutout
+
+Relinka was inspired by this gem:
 
 - [unjs/consola](https://github.com/unjs/consola#readme)
 
-## License
+## 📄 License
 
-🩷 [MIT](./LICENSE) © [blefnk Nazar Kornienko](https://github.com/blefnk)
+💖 MIT © [blefnk (Nazar Kornienko)](https://github.com/blefnk)

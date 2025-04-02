@@ -1,26 +1,25 @@
-import type { ResolvedConfig, LoadConfigOptions } from "c12";
-
 import { re } from "@reliverse/relico";
-import { loadConfig } from "c12";
+import { loadConfig, type ResolvedConfig } from "c12";
 import fs from "fs-extra";
-import { createJiti } from "jiti";
 import path from "pathe";
 
 import type {
+  RelinkaConfig,
   LogFileInfo,
   LogLevel,
-  RelinkaConfig,
 } from "~/libs/relinka/relinka-types.js";
 
-// ========================================
-// Defaults and Constants
-// ========================================
+const DEV_VERBOSE = false;
 
+/**
+ * Default configuration object.
+ * c12 will merge this with a config file.
+ */
 const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
   debug: false,
   dirs: {
     dailyLogs: false,
-    logDir: ".reliverse",
+    logDir: ".reliverse/logs",
     maxLogFiles: 0,
     specialDirs: {
       distDirNames: ["dist", "dist-jsr", "dist-npm", "dist-libs"],
@@ -33,341 +32,155 @@ const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
   withTimestamp: false,
 };
 
-const SUPPORTED_EXTENSIONS = [".ts", ".js", ".mjs", ".cjs", ".json"];
-
-// ========================================
-// Helper Functions for Default Fallback
-// ========================================
-
 /**
- * Returns whether the debug mode is enabled.
+ * At the moment of call, the current, fully merged config.
  */
-function isDebugEnabled(config: Partial<RelinkaConfig>): boolean {
-  return config?.debug ?? DEFAULT_RELINKA_CONFIG.debug;
-}
-
-/**
- * Returns whether we should colorize logs.
- */
-function isColorEnabled(config: Partial<RelinkaConfig>): boolean {
-  return !(config?.disableColors ?? DEFAULT_RELINKA_CONFIG.disableColors);
-}
-
-/**
- * Returns the "logDir" (logs directory) from the config.
- */
-function getLogDir(config: Partial<RelinkaConfig>): string {
-  return config?.dirs?.logDir ?? DEFAULT_RELINKA_CONFIG.dirs.logDir;
-}
-
-/**
- * Returns whether daily logs are enabled.
- */
-function isDailyLogsEnabled(config: Partial<RelinkaConfig>): boolean {
-  return config?.dirs?.dailyLogs ?? DEFAULT_RELINKA_CONFIG.dirs.dailyLogs;
-}
-
-/**
- * Returns the value of "saveLogsToFile" in the config.
- */
-function shouldSaveLogs(config: Partial<RelinkaConfig>): boolean {
-  return config?.saveLogsToFile ?? DEFAULT_RELINKA_CONFIG.saveLogsToFile;
-}
-
-/**
- * Returns the maximum allowed log files before cleanup.
- */
-function getMaxLogFiles(config: Partial<RelinkaConfig>): number {
-  return config?.dirs?.maxLogFiles ?? DEFAULT_RELINKA_CONFIG.dirs.maxLogFiles;
-}
-
-/**
- * Returns the configured log file base path or a default fallback.
- */
-function getBaseLogName(config: Partial<RelinkaConfig>): string {
-  return config?.logFilePath ?? DEFAULT_RELINKA_CONFIG.logFilePath;
-}
-
-// ========================================
-// Environment Variable Parsing Utilities
-// ========================================
-
-const getEnvBoolean = (envVarName: string): boolean | undefined => {
-  const value = process.env[envVarName];
-  if (value === undefined || value === "") return undefined;
-  const lowerValue = value.toLowerCase().trim();
-  return !["0", "false"].includes(lowerValue);
-};
-
-const getEnvString = (envVarName: string): string | undefined => {
-  return process.env[envVarName] || undefined;
-};
-
-const getEnvNumber = (envVarName: string): number | undefined => {
-  const value = process.env[envVarName];
-  if (value === undefined) return undefined;
-  const parsed = Number.parseInt(value, 10);
-  return Number.isNaN(parsed) ? undefined : parsed;
-};
-
-/**
- * Gathers environment variable overrides (e.g., RELINKA_DEBUG, RELINKA_LOG_FILE, etc.)
- * and returns them as a partial config object.
- */
-const getEnvOverrides = (): Partial<RelinkaConfig> => {
-  const overrides: Partial<RelinkaConfig> = {};
-  const dirsOverride: Partial<RelinkaConfig["dirs"]> = {};
-  const specialDirsOverride: Partial<RelinkaConfig["dirs"]["specialDirs"]> = {};
-
-  const debug = getEnvBoolean("RELINKA_DEBUG");
-  if (debug !== undefined) overrides.debug = debug;
-
-  const withTimestamp = getEnvBoolean("RELINKA_TIMESTAMP");
-  if (withTimestamp !== undefined) overrides.withTimestamp = withTimestamp;
-
-  const disableColors = getEnvBoolean("RELINKA_DISABLE_COLORS");
-  if (disableColors !== undefined) overrides.disableColors = disableColors;
-
-  const saveLogsToFile = getEnvBoolean("RELINKA_SAVE_LOGS");
-  if (saveLogsToFile !== undefined) overrides.saveLogsToFile = saveLogsToFile;
-
-  const logFilePath = getEnvString("RELINKA_LOG_FILE");
-  if (logFilePath !== undefined) overrides.logFilePath = logFilePath;
-
-  const logDir = getEnvString("RELINKA_LOG_DIR");
-  if (logDir !== undefined) dirsOverride.logDir = logDir;
-
-  const dailyLogs = getEnvBoolean("RELINKA_DAILY_LOGS");
-  if (dailyLogs !== undefined) dirsOverride.dailyLogs = dailyLogs;
-
-  const maxLogFiles = getEnvNumber("RELINKA_MAX_LOG_FILES");
-  if (maxLogFiles !== undefined) dirsOverride.maxLogFiles = maxLogFiles;
-
-  const useParentConfig = getEnvBoolean("RELINKA_USE_PARENT_CONFIG");
-  if (useParentConfig !== undefined) {
-    specialDirsOverride.useParentConfigInDist = useParentConfig;
-  }
-
-  if (Object.keys(specialDirsOverride).length > 0) {
-    dirsOverride.specialDirs =
-      specialDirsOverride as RelinkaConfig["dirs"]["specialDirs"];
-  }
-
-  if (Object.keys(dirsOverride).length > 0) {
-    overrides.dirs = dirsOverride as RelinkaConfig["dirs"];
-  }
-
-  return overrides;
-};
-
-// ========================================
-// Configuration State and Initialization
-// ========================================
-
 let currentConfig: RelinkaConfig = { ...DEFAULT_RELINKA_CONFIG };
 let isConfigInitialized = false;
-let resolveConfigPromise: ((config: RelinkaConfig) => void) | undefined;
+let resolveRelinkaConfig: ((config: RelinkaConfig) => void) | undefined;
 
 /**
- * Promise that resolves when the Relinka config has been loaded and merged
- * from defaults, environment variables, and optionally config files.
+ * Promise that resolves once c12 loads and merges the config.
  */
-export const configPromise = new Promise<RelinkaConfig>((resolve) => {
-  resolveConfigPromise = resolve;
+export const relinkaConfig = new Promise<RelinkaConfig>((resolve) => {
+  resolveRelinkaConfig = resolve;
 });
 
 /**
- * Helper to find the first existing config file with supported extensions.
+ * Kick off c12 to load the config from:
+ *  - Defaults (the object above)
+ *  - A local relinka.config.* (if present)
  */
-const findConfigFile = (basePath: string): string | undefined => {
-  for (const ext of SUPPORTED_EXTENSIONS) {
-    const filePath = basePath + ext;
-    if (fs.existsSync(filePath)) {
-      return filePath;
-    }
-  }
-  return undefined;
-};
-
-/**
- * Initializes the logger configuration using c12, environment variables,
- * and any discovered config file. Updates `currentConfig`.
- */
-const initializeConfig = async (): Promise<RelinkaConfig> => {
+async function initializeConfig() {
   try {
-    const envOverrides = getEnvOverrides();
-    const projectRoot = process.cwd();
-    const reliverseDir = path.resolve(projectRoot, ".reliverse");
-    const configName = "relinka";
-
-    const resolveConfig = async (
-      id: string,
-      options: LoadConfigOptions<RelinkaConfig>,
-    ): Promise<ResolvedConfig<RelinkaConfig> | null | undefined> => {
-      if (id !== configName) {
-        return null;
-      }
-
-      const effectiveCwd = options.cwd || projectRoot;
-      const _jitiRequire = createJiti(effectiveCwd, options.jitiOptions);
-
-      const loadAndExtract = async (
-        filePath: string,
-      ): Promise<RelinkaConfig | null> => {
-        try {
-          const loadedModule = await _jitiRequire.import(filePath);
-          const configData =
-            (loadedModule as Record<string, unknown>).default || loadedModule;
-          return configData as RelinkaConfig;
-        } catch (error) {
-          console.error(
-            `[Relinka Config Error] Failed to load or parse config from ${filePath}: ${
-              error instanceof Error ? error.message : String(error)
-            }`,
-          );
-          return null;
-        }
-      };
-
-      // First, check .reliverse/relinka.*
-      const reliverseBasePath = path.resolve(reliverseDir, configName);
-      const reliverseConfigFile = findConfigFile(reliverseBasePath);
-      if (reliverseConfigFile) {
-        const config = await loadAndExtract(reliverseConfigFile);
-        if (config !== null) {
-          return { config, source: reliverseConfigFile };
-        }
-      }
-
-      // Then, check root for relinka.*
-      const rootBasePath = path.resolve(effectiveCwd, configName);
-      const rootConfigFile = findConfigFile(rootBasePath);
-      if (rootConfigFile) {
-        const config = await loadAndExtract(rootConfigFile);
-        if (config !== null) {
-          return { config, source: rootConfigFile };
-        }
-      }
-
-      return null;
-    };
-
-    const loadedConfigResult: ResolvedConfig<RelinkaConfig> =
+    // c12 merges in ascending order:
+    //  1) defaultConfig -> extends -> configFile -> rcFile -> package.json -> .env -> overrides
+    const result: ResolvedConfig<RelinkaConfig> =
       await loadConfig<RelinkaConfig>({
-        name: configName,
-        cwd: projectRoot,
-        resolve: resolveConfig,
-        packageJson: "relinka",
-        dotenv: true,
-        defaults: DEFAULT_RELINKA_CONFIG,
-        overrides: envOverrides as RelinkaConfig,
+        name: "relinka", // base name => tries relinka.config.*, .relinkarc, etc.
+        cwd: process.cwd(), // working directory
+        dotenv: false,
+        packageJson: false,
+        rcFile: false,
+        globalRc: false,
+        defaults: DEFAULT_RELINKA_CONFIG, // lowest priority
+        // overrides: {},       // highest priority if we would need to forcibly override
       });
 
-    currentConfig = loadedConfigResult.config ?? { ...DEFAULT_RELINKA_CONFIG };
+    // c12 merges everything into result.config
+    currentConfig = result.config;
     isConfigInitialized = true;
 
-    const customResolvedLayer = loadedConfigResult.layers?.find((layer) =>
-      layer.source?.includes(configName),
-    );
-
-    if (customResolvedLayer?.source) {
+    // Log config details if debug is true
+    if (DEV_VERBOSE) {
+      // Log which file was used:
       console.log(
-        `[Relinka Config] Loaded main configuration from: ${path.relative(
-          projectRoot,
-          customResolvedLayer.source,
-        )}`,
+        "[Relinka Config Debug] Config file used:",
+        result.configFile,
       );
-    } else {
-      const pkgJsonLayer = loadedConfigResult.layers?.find((layer) =>
-        layer.source?.endsWith("package.json"),
-      );
-      if (pkgJsonLayer?.config) {
-        console.log("[Relinka Config] Loaded configuration from package.json.");
-      } else {
-        console.log(
-          "[Relinka Config] No config file or package.json entry found. Using defaults and environment variables.",
-        );
-      }
+      console.log("[Relinka Config Debug] All merged layers:", result.layers);
+      // Log final config
+      console.log("[Relinka Config Debug] Final configuration:", currentConfig);
     }
 
-    // Debug logging
-    if (isDebugEnabled(currentConfig)) {
-      console.log(
-        "[Relinka Config Debug] Final configuration object:",
-        JSON.stringify(currentConfig, null, 2),
-      );
-      console.log(
-        "[Relinka Config Debug] Resolved layers:",
-        loadedConfigResult.layers?.map((l) => ({
-          config: l.config ? "[Object]" : null,
-          source: l.source ? path.relative(projectRoot, l.source) : undefined,
-          meta: l.meta,
-        })),
-      );
+    // Resolve relinkaConfig so `relinkaAsync` can proceed
+    if (resolveRelinkaConfig) {
+      resolveRelinkaConfig(currentConfig);
     }
-
-    if (resolveConfigPromise) {
-      resolveConfigPromise(currentConfig);
-    }
-    return currentConfig;
-  } catch (error) {
+  } catch (err) {
     console.error(
-      `[Relinka Config Error] Failed during configuration loading process: ${
-        error instanceof Error ? error.message : String(error)
+      `[Relinka Config Error] Failed to load config: ${
+        err instanceof Error ? err.message : String(err)
       }`,
     );
+    // We fallback to defaults if there's an error
     currentConfig = { ...DEFAULT_RELINKA_CONFIG };
     isConfigInitialized = true;
-    if (resolveConfigPromise) {
-      resolveConfigPromise(currentConfig);
+    if (resolveRelinkaConfig) {
+      resolveRelinkaConfig(currentConfig);
     }
-    return currentConfig;
   }
-};
+}
 
-// Start config initialization
+// Kick off the async config load
 initializeConfig().catch((err) => {
   console.error(
-    `[Relinka Config Error] Unhandled error during initial configuration load: ${
+    `[Relinka Config Error] Unhandled error: ${
       err instanceof Error ? err.message : String(err)
     }`,
   );
   if (!isConfigInitialized) {
     currentConfig = { ...DEFAULT_RELINKA_CONFIG };
     isConfigInitialized = true;
-    if (resolveConfigPromise) {
-      resolveConfigPromise(currentConfig);
+    if (resolveRelinkaConfig) {
+      resolveRelinkaConfig(currentConfig);
     }
   }
 });
 
-// ========================================
-// Logging Helper Functions
-// ========================================
+/* ------------------------------------------------------
+   HELPER FUNCTIONS
+-------------------------------------------------------- */
+
+/** Returns whether the debug mode is enabled. */
+function isDebugEnabled(config: Partial<RelinkaConfig>): boolean {
+  return config.debug ?? DEFAULT_RELINKA_CONFIG.debug;
+}
+
+/** Returns whether we should colorize logs. */
+function isColorEnabled(config: Partial<RelinkaConfig>): boolean {
+  return !(config.disableColors ?? DEFAULT_RELINKA_CONFIG.disableColors);
+}
+
+/** Returns the "logDir" from the config. */
+function getLogDir(config: Partial<RelinkaConfig>): string {
+  return config.dirs?.logDir ?? DEFAULT_RELINKA_CONFIG.dirs.logDir;
+}
+
+/** Returns whether daily logs are enabled. */
+function isDailyLogsEnabled(config: Partial<RelinkaConfig>): boolean {
+  return config.dirs?.dailyLogs ?? DEFAULT_RELINKA_CONFIG.dirs.dailyLogs;
+}
+
+/** Returns whether logs should be written to file. */
+function shouldSaveLogs(config: Partial<RelinkaConfig>): boolean {
+  return config.saveLogsToFile ?? DEFAULT_RELINKA_CONFIG.saveLogsToFile;
+}
+
+/** Returns the maximum allowed log files before cleanup. */
+function getMaxLogFiles(config: Partial<RelinkaConfig>): number {
+  return config.dirs?.maxLogFiles ?? DEFAULT_RELINKA_CONFIG.dirs.maxLogFiles;
+}
+
+/** Returns the configured log filename or a default fallback. */
+function getBaseLogName(config: Partial<RelinkaConfig>): string {
+  return config.logFilePath ?? DEFAULT_RELINKA_CONFIG.logFilePath;
+}
+
+/* ------------------------------------------------------
+   FILE + LOGGING UTILITIES
+-------------------------------------------------------- */
 
 /**
  * Returns a timestamp string if `withTimestamp` is enabled.
  */
-const getTimestamp = (config: RelinkaConfig): string => {
-  if (!config?.withTimestamp) return "";
+function getTimestamp(config: RelinkaConfig): string {
+  if (!config.withTimestamp) return "";
   const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-    2,
-    "0",
-  )}-${String(now.getDate()).padStart(2, "0")} ${String(
-    now.getHours(),
-  ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
-    2,
-    "0",
-  )}:${String(now.getSeconds()).padStart(2, "0")}.${String(
-    now.getMilliseconds(),
-  ).padStart(3, "0")}`;
-};
+  return (
+    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}` +
+    `-${String(now.getDate()).padStart(2, "0")} ` +
+    `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes(),
+    ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+    `.${String(now.getMilliseconds()).padStart(3, "0")}`
+  );
+}
 
 /**
  * Returns the absolute log file path based on config and date.
  */
-const getLogFilePath = (config: RelinkaConfig): string => {
+function getLogFilePath(config: RelinkaConfig): string {
   const logDir = getLogDir(config);
   const daily = isDailyLogsEnabled(config);
   let finalLogName = getBaseLogName(config);
@@ -384,20 +197,19 @@ const getLogFilePath = (config: RelinkaConfig): string => {
     finalLogName += ".log";
   }
 
-  // Fallback if base name was somehow empty
   const effectiveLogName = finalLogName || "relinka.log";
   return path.resolve(process.cwd(), logDir, effectiveLogName);
-};
+}
 
 /**
- * Formats the log message with optional details.
+ * Formats a log message with optional details.
  */
-const formatLogMessage = (
+function formatLogMessage(
   config: RelinkaConfig,
   level: string,
   msg: string,
   details?: unknown,
-): string => {
+): string {
   const timestamp = getTimestamp(config);
   let detailsStr = "";
 
@@ -419,85 +231,81 @@ const formatLogMessage = (
   return timestamp
     ? `[${timestamp}] ${paddedLevel} ${msg}${detailsStr}`
     : `${paddedLevel} ${msg}${detailsStr}`;
-};
+}
 
 /**
  * Logs a message to console, colorizing if enabled.
  */
-const logToConsole = (
+function logToConsole(
   config: RelinkaConfig,
   level: "ERROR" | "WARN" | "SUCCESS" | "INFO" | "DEBUG",
   formattedMessage: string,
-): void => {
+): void {
+  // ANSI code that resets all colors
+  const COLOR_RESET = "\x1b[0m";
+
   if (!isColorEnabled(config)) {
     // No color
-    switch (level) {
-      case "ERROR":
-        console.error(formattedMessage);
-        break;
-      default:
-        console.log(formattedMessage);
+    if (level === "ERROR") {
+      console.error(formattedMessage);
+    } else {
+      console.log(formattedMessage);
     }
   } else {
-    // Colorized
+    // Colorized output + manual reset at the end
     switch (level) {
       case "ERROR":
-        console.error(re.redBright(formattedMessage));
+        console.error(re.redBright(formattedMessage) + COLOR_RESET);
         break;
       case "WARN":
-        console.warn(re.yellowBright(formattedMessage));
+        console.warn(re.yellowBright(formattedMessage) + COLOR_RESET);
         break;
       case "SUCCESS":
-        console.log(re.greenBright(formattedMessage));
+        console.log(re.greenBright(formattedMessage) + COLOR_RESET);
         break;
       case "INFO":
-        console.log(re.cyanBright(formattedMessage));
+        console.log(re.cyanBright(formattedMessage) + COLOR_RESET);
         break;
       default:
-        console.log(re.dim(formattedMessage));
+        console.log(re.dim(formattedMessage) + COLOR_RESET);
     }
   }
-};
+}
 
-// ========================================
-// File System Helper Functions
-// ========================================
 /**
  * Returns an array of .log files in descending order of modification time.
  */
-const getLogFilesSortedByDate = async (
+async function getLogFilesSortedByDate(
   config: RelinkaConfig,
-): Promise<LogFileInfo[]> => {
+): Promise<LogFileInfo[]> {
   const logDirectoryPath = path.resolve(process.cwd(), getLogDir(config));
-  const debugEnabled = isDebugEnabled(config);
+  if (!(await fs.pathExists(logDirectoryPath))) {
+    if (isDebugEnabled(config)) {
+      console.log(
+        `[Relinka FS Debug] Log directory not found: ${logDirectoryPath}`,
+      );
+    }
+    return [];
+  }
 
   try {
-    if (!(await fs.pathExists(logDirectoryPath))) {
-      if (debugEnabled) {
-        console.log(
-          `[Relinka FS Debug] Log directory does not exist: ${logDirectoryPath}`,
-        );
-      }
-      return [];
-    }
     const files = await fs.readdir(logDirectoryPath);
 
     const logFilesPromises = files
-      .filter((file) => file.endsWith(".log"))
-      .map(async (file): Promise<LogFileInfo | null> => {
-        const filePath = path.join(logDirectoryPath, file);
+      .filter((f) => f.endsWith(".log"))
+      .map(async (f): Promise<LogFileInfo | null> => {
+        const filePath = path.join(logDirectoryPath, f);
         try {
           const stats = await fs.stat(filePath);
-          return stats.isFile()
-            ? { path: filePath, mtime: stats.mtime.getTime() }
-            : null;
-        } catch (statError) {
-          if (debugEnabled) {
+          if (stats.isFile()) {
+            return { path: filePath, mtime: stats.mtime.getTime() };
+          }
+          return null;
+        } catch (err) {
+          if (isDebugEnabled(config)) {
             console.error(
-              `[Relinka FS Debug] Error stating file ${filePath}: ${
-                statError instanceof Error
-                  ? statError.message
-                  : String(statError)
+              `[Relinka FS Debug] Error reading stats for ${filePath}: ${
+                err instanceof Error ? err.message : String(err)
               }`,
             );
           }
@@ -506,67 +314,60 @@ const getLogFilesSortedByDate = async (
       });
 
     const logFiles = (await Promise.all(logFilesPromises)).filter(
-      (fileInfo): fileInfo is LogFileInfo => Boolean(fileInfo),
+      (f): f is LogFileInfo => Boolean(f),
     );
     return logFiles.sort((a, b) => b.mtime - a.mtime);
-  } catch (readDirError) {
-    if (debugEnabled) {
+  } catch (readErr) {
+    if (isDebugEnabled(config)) {
       console.error(
-        `[Relinka FS Error] Error reading log directory ${logDirectoryPath}: ${
-          readDirError instanceof Error
-            ? readDirError.message
-            : String(readDirError)
+        `[Relinka FS Error] Failed reading log directory ${logDirectoryPath}: ${
+          readErr instanceof Error ? readErr.message : String(readErr)
         }`,
       );
     }
     return [];
   }
-};
+}
 
 /**
- * Deletes the array of specified file paths.
+ * Deletes the specified file paths.
  */
-const deleteFiles = async (
+async function deleteFiles(
   filePaths: string[],
   config: RelinkaConfig,
-): Promise<void> => {
-  const debugEnabled = isDebugEnabled(config);
-
-  const deletePromises = filePaths.map(async (filePath) => {
-    try {
-      await fs.unlink(filePath);
-    } catch (unlinkErr) {
-      if (debugEnabled) {
-        console.error(
-          `[Relinka FS Error] Failed to delete log file ${filePath}: ${
-            unlinkErr instanceof Error ? unlinkErr.message : String(unlinkErr)
-          }`,
-        );
+): Promise<void> {
+  await Promise.all(
+    filePaths.map(async (filePath) => {
+      try {
+        await fs.unlink(filePath);
+      } catch (err) {
+        if (isDebugEnabled(config)) {
+          console.error(
+            `[Relinka FS Error] Failed to delete log file ${filePath}: ${
+              err instanceof Error ? err.message : String(err)
+            }`,
+          );
+        }
       }
-    }
-  });
-
-  await Promise.all(deletePromises);
-};
+    }),
+  );
+}
 
 /**
  * Cleans up old log files if `maxLogFiles` is exceeded.
  */
-const cleanupOldLogFiles = async (config: RelinkaConfig): Promise<void> => {
-  const maxFiles = getMaxLogFiles(config);
-  const debugEnabled = isDebugEnabled(config);
-
-  // We only clean up if the user wants logs in files AND has a positive max files
-  if (!shouldSaveLogs(config) || maxFiles <= 0) return;
+async function cleanupOldLogFiles(config: RelinkaConfig): Promise<void> {
+  if (!shouldSaveLogs(config) || getMaxLogFiles(config) <= 0) return;
 
   try {
     const sortedLogFiles = await getLogFilesSortedByDate(config);
+    const maxFiles = getMaxLogFiles(config);
 
     if (sortedLogFiles.length > maxFiles) {
       const filesToDelete = sortedLogFiles.slice(maxFiles).map((f) => f.path);
       if (filesToDelete.length > 0) {
         await deleteFiles(filesToDelete, config);
-        if (debugEnabled) {
+        if (isDebugEnabled(config)) {
           console.log(
             `[Relinka Cleanup] Deleted ${filesToDelete.length} old log file(s). Kept ${maxFiles}.`,
           );
@@ -574,7 +375,7 @@ const cleanupOldLogFiles = async (config: RelinkaConfig): Promise<void> => {
       }
     }
   } catch (err) {
-    if (debugEnabled) {
+    if (isDebugEnabled(config)) {
       console.error(
         `[Relinka Cleanup Error] Failed during log cleanup: ${
           err instanceof Error ? err.message : String(err)
@@ -582,22 +383,21 @@ const cleanupOldLogFiles = async (config: RelinkaConfig): Promise<void> => {
       );
     }
   }
-};
+}
 
 /**
  * Ensures the directory for the log file exists and appends a log line.
  */
-const appendToLogFile = async (
+async function appendToLogFile(
   config: RelinkaConfig,
   absoluteLogFilePath: string,
   logMessage: string,
-): Promise<void> => {
-  const debugEnabled = isDebugEnabled(config);
+): Promise<void> {
   try {
     await fs.ensureDir(path.dirname(absoluteLogFilePath));
     await fs.appendFile(absoluteLogFilePath, `${logMessage}\n`);
   } catch (err) {
-    if (debugEnabled) {
+    if (isDebugEnabled(config)) {
       console.error(
         `[Relinka File Error] Failed to write to log file ${absoluteLogFilePath}: ${
           err instanceof Error ? err.message : String(err)
@@ -605,22 +405,21 @@ const appendToLogFile = async (
       );
     }
   }
-};
+}
 
-// ========================================
-// Synchronous Logging Function
-// ========================================
+/* ------------------------------------------------------
+   PUBLIC LOGGING FUNCTIONS
+-------------------------------------------------------- */
 
 /**
  * Logs a message synchronously using the current config.
- * Skips debug-level logs unless `debug` is set to true in the config.
+ * Skips debug-level logs unless `debug` is true in the config.
  */
-export const relinka = (
+export function relinka(
   type: LogLevel,
   message: string,
   ...args: unknown[]
-): void => {
-  const configToUse = currentConfig;
+): void {
   if (message === "") {
     console.log();
     return;
@@ -635,42 +434,37 @@ export const relinka = (
     | "DEBUG";
 
   // Skip debug if debug is not enabled
-  if (logLevelLabel === "DEBUG" && !isDebugEnabled(configToUse)) {
+  if (logLevelLabel === "DEBUG" && !isDebugEnabled(currentConfig)) {
     return;
   }
 
-  const details =
-    args.length > 0 ? (args.length === 1 ? args[0] : args) : undefined;
-
-  const formattedMessage = formatLogMessage(
-    configToUse,
+  const details = args.length > 1 ? args : args[0];
+  const formatted = formatLogMessage(
+    currentConfig,
     logLevelLabel,
     message,
     details,
   );
-
-  logToConsole(configToUse, logLevelLabel, formattedMessage);
-};
-
-// ========================================
-// Asynchronous Logging Function
-// ========================================
+  logToConsole(currentConfig, logLevelLabel, formatted);
+}
 
 /**
  * Logs a message asynchronously, waiting for the config to be fully loaded.
- * Also handles file writing and log cleanup if enabled in the config.
+ * Also handles file writing and log cleanup if enabled.
  */
-export const relinkaAsync = async (
+export async function relinkaAsync(
   type: LogLevel,
   message: string,
   ...args: unknown[]
-): Promise<void> => {
-  const loadedConfig = await configPromise;
+): Promise<void> {
+  await relinkaConfig;
+
   if (message === "") {
     console.log();
     return;
   }
 
+  // Convert "verbose" to "DEBUG"
   const logLevelLabel = (type === "verbose" ? "DEBUG" : type.toUpperCase()) as
     | "ERROR"
     | "WARN"
@@ -678,54 +472,42 @@ export const relinkaAsync = async (
     | "INFO"
     | "DEBUG";
 
-  if (logLevelLabel === "DEBUG" && !isDebugEnabled(loadedConfig)) {
+  if (logLevelLabel === "DEBUG" && !isDebugEnabled(currentConfig)) {
     return;
   }
 
-  const details =
-    args.length > 0 ? (args.length === 1 ? args[0] : args) : undefined;
-
-  const formattedMessage = formatLogMessage(
-    loadedConfig,
+  const details = args.length > 1 ? args : args[0];
+  const formatted = formatLogMessage(
+    currentConfig,
     logLevelLabel,
     message,
     details,
   );
+  logToConsole(currentConfig, logLevelLabel, formatted);
 
-  logToConsole(loadedConfig, logLevelLabel, formattedMessage);
-
-  // If saving to file is enabled, append log message and clean up
-  if (shouldSaveLogs(loadedConfig)) {
-    const absoluteLogFilePath = getLogFilePath(loadedConfig);
+  // If saving logs to file, do so
+  if (shouldSaveLogs(currentConfig)) {
+    const absoluteLogFilePath = getLogFilePath(currentConfig);
     try {
-      await appendToLogFile(
-        loadedConfig,
-        absoluteLogFilePath,
-        formattedMessage,
-      );
-      await cleanupOldLogFiles(loadedConfig);
+      await appendToLogFile(currentConfig, absoluteLogFilePath, formatted);
+      await cleanupOldLogFiles(currentConfig);
     } catch (err) {
-      if (isDebugEnabled(loadedConfig)) {
+      if (isDebugEnabled(currentConfig)) {
         console.error(
-          `[Relinka File Async Error] Error during file logging/cleanup process: ${
+          `[Relinka File Async Error] Error during file logging/cleanup: ${
             err instanceof Error ? err.message : String(err)
           }`,
         );
       }
     }
   }
-};
-
-// ========================================
-// defineConfig Helper
-// ========================================
+}
 
 /**
- * Type helper for defining configuration in `relinka.config.ts` (or similar).
- * Provides autocompletion and type checking for the configuration object.
+ * Type helper for user config files.
  */
-export const defineConfig = (
+export function defineConfig(
   config: Partial<RelinkaConfig>,
-): Partial<RelinkaConfig> => {
+): Partial<RelinkaConfig> {
   return config;
-};
+}

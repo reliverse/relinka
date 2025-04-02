@@ -7,7 +7,7 @@ import { defineConfig } from "@reliverse/relidler-cfg";
  */
 export default defineConfig({
   // Bump configuration
-  bumpDisable: true,
+  bumpDisable: false,
   bumpFilter: ["package.json", "reliverse.ts"],
   bumpMode: "autoPatch",
 
@@ -17,10 +17,10 @@ export default defineConfig({
   commonVerbose: false,
 
   // Core configuration
-  coreDeclarations: true,
+  coreDeclarations: false,
   coreEntryFile: "main.ts",
   coreEntrySrcDir: "src",
-  coreIsCLI: false,
+  coreIsCLI: true,
 
   // JSR-only config
   distJsrAllowDirty: true,
@@ -49,7 +49,7 @@ export default defineConfig({
     "@reliverse/relinka": {
       libDeclarations: true,
       libDescription:
-        "@reliverse/relinka is a powerful logger for your terminal.",
+        "@reliverse/relinka is your next favorite logging library — built to make your terminal (and browser console — soon) output look good, stay clean, and be actually helpful. It’s styled, structured, and smart. Oh, and it works with configs, files, and colors out of the box.",
       libDirName: "relinka",
       libMainFile: "relinka/relinka-main.ts",
       libPkgKeepDeps: true,

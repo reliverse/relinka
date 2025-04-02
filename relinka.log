@@ -1,3 +1,5 @@
+INFO    Auto-incrementing version from 1.3.6 using "autoPatch"
+SUCCESS Updated version from 1.3.6 to 1.3.7 in 1 file(s)
 INFO    Initializing build process for main project to both NPM and JSR...
 INFO    Building JSR distribution...
 INFO    Using JSR builder: jsr
@@ -5,65 +7,41 @@ INFO    Starting regular_bundleUsingJsr: C:/B/L/relinka/src -> C:/B/L/relinka/di
 SUCCESS Completed regular JSR bundling
 INFO    Paths replacement in C:/B/L/relinka/dist-jsr/bin folder...
 INFO    Generating distribution package.json and tsconfig.json (isJsr=true)...
-SUCCESS [C:/B/L/relinka/dist-jsr] Successfully created regular distribution: "dist-jsr" (C:/B/L/relinka/dist-jsr/bin/main.ts) with (23 files (91.3 kB))
+SUCCESS [C:/B/L/relinka/dist-jsr] Successfully created regular distribution: "dist-jsr" (C:/B/L/relinka/dist-jsr/bin/main.ts) with (23 files (85.8 kB))
 INFO    Building NPM distribution...
 INFO    Using NPM builder: mkdist
 SUCCESS Build succeeded for default
-INFO      dist-npm/bin (total size: 88 kB)
+INFO      dist-npm/bin (total size: 46.5 kB)
   └─ dist-npm/bin/main.js (76 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/format.js (590 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/box.d.ts (2.75 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/levels/levels.js (1.1 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/log.js (305 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/shared.d.ts (183 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/levels/levels.d.ts (809 B)
-  └─ dist-npm/bin/libs/relinka/relinka-main.d.ts (2.27 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.d.ts (12 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/fancy.d.ts (673 B)
-  └─ dist-npm/bin/libs/relinka/relinka-main.js (1.86 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/logger.js (117 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/box.js (3.81 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/string.d.ts (2.85 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/basic.js (1.53 kB)
   └─ dist-npm/bin/types.js
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/string.js (1.39 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/impl-mod.d.ts (966 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/shared.js (130 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/browser.d.ts (1.2 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/mod.d.ts (1.24 kB)
   └─ dist-npm/bin/libs/relinka/relinka-types.js (32 B)
-  └─ dist-npm/bin/types.d.ts (6.5 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-main.js (1.86 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/impl-mod.js (10.2 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/box.js (3.81 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/format.js (590 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/stream.js (129 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/deprecatedColors.js (2.92 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/string.js (1.39 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/logger.js (117 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/tree.js (1.02 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/browser.js (594 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/levels/levels.js (1.1 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/fancy.js (3.71 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/log.js (305 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/error.js (228 B)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/shared.js (130 B)
   └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/browser.js (1.42 kB)
   └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/basic.js (898 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/browser.js (594 B)
-  └─ dist-npm/bin/libs/relinka/relinka-types.d.ts (33 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/modes/basic.d.ts (1.05 kB)
-  └─ dist-npm/bin/main.d.ts (78 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/logger.d.ts (285 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/deprecatedColors.d.ts (3.81 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/log.d.ts (671 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/impl-mod.js (15.4 kB)
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/basic.js (1.53 kB)
   └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/mod.js (1.32 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/basic.d.ts (571 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/fancy.js (3.71 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/format.d.ts (730 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/error.js (228 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/reporters/browser.d.ts (346 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.d.ts (6.43 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.js (11.6 kB)
   └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.js (1.53 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/error.d.ts (328 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/stream.d.ts (993 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/stream.js (129 B)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/tree.d.ts (1.46 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/tree.js (1.02 kB)
-  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/utils/deprecatedColors.js (2.92 kB)
-INFO    Σ Total dist size: 88 kB (build time: 1.6 seconds)
-SUCCESS Regular bundle completed in 1.7 seconds using mkdist builder
+  └─ dist-npm/bin/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.js (11.6 kB)
+INFO    Σ Total dist size: 46.5 kB (build time: 77 milliseconds)
+SUCCESS Regular bundle completed in 211 milliseconds using mkdist builder
 INFO    Paths replacement in C:/B/L/relinka/dist-npm/bin folder...
 INFO    Generating distribution package.json and tsconfig.json (isJsr=false)...
-SUCCESS NPM distribution built successfully (46 files, 91.3 kB)
-SUCCESS [C:/B/L/relinka/dist-npm] Successfully created regular distribution: "dist-npm" (C:/B/L/relinka/dist-npm/bin/main.js) with (46 files (91.3 kB))
+SUCCESS NPM distribution built successfully (23 files, 51.3 kB)
+SUCCESS [C:/B/L/relinka/dist-npm] Successfully created regular distribution: "dist-npm" (C:/B/L/relinka/dist-npm/bin/main.js) with (23 files (51.3 kB))
 INFO    Publishing to JSR...
 INFO    Publishing to NPM...
 INFO    Running pre-build replacements for @reliverse/relinka...
@@ -71,57 +49,57 @@ INFO    Applied pre-build replacement in src/libs/relinka/relinka-types.ts
 INFO    Building lib @reliverse/relinka for NPM and JSR...
 INFO    [dist-npm] Building NPM dist for lib: @reliverse/relinka...
 SUCCESS Build succeeded for default
-INFO      dist-libs/relinka/npm/bin (total size: 87.7 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/tree.d.ts (1.46 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/mod.d.ts (1.24 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/fancy.js (3.71 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/basic.d.ts (1.05 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/fancy.d.ts (673 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/impl-mod.d.ts (966 B)
-  └─ dist-libs/relinka/npm/bin/relinka-types.d.ts (6.5 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/tree.js (1.02 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/levels/levels.js (1.1 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/impl-mod.js (15.4 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/logger.js (117 B)
+INFO      dist-libs/relinka/npm/bin (total size: 82.4 kB)
   └─ dist-libs/relinka/npm/bin/relinka-main.d.ts (2.27 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-main.js (1.86 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/error.d.ts (328 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/impl-mod.d.ts (840 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/impl-mod.js (10.2 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-types.d.ts (6.5 kB)
   └─ dist-libs/relinka/npm/bin/relinka-types.js
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/box.js (3.81 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/browser.d.ts (346 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/log.js (305 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.js (11.6 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/browser.js (594 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/mod.js (1.32 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.d.ts (6.43 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/deprecatedColors.d.ts (3.81 kB)
   └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/levels/levels.d.ts (809 B)
+  └─ dist-libs/relinka/npm/bin/relinka-main.js (1.86 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/fancy.d.ts (673 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/basic.d.ts (1.05 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/basic.js (1.53 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/browser.js (594 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/shared.d.ts (183 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/browser.d.ts (346 B)
   └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/box.d.ts (2.75 kB)
   └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/browser.d.ts (1.2 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/logger.d.ts (285 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/browser.js (1.42 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/shared.d.ts (183 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/basic.d.ts (571 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.d.ts (12 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/basic.js (1.53 kB)
   └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/stream.js (129 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/shared.js (130 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/basic.js (898 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.js (1.53 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.d.ts (6.43 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/mod.js (1.32 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/format.js (590 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/deprecatedColors.d.ts (3.81 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/string.d.ts (2.85 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/string.js (1.39 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/deprecatedColors.js (2.92 kB)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/error.js (228 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/format.d.ts (730 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/stream.d.ts (993 B)
   └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/log.d.ts (671 B)
-  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/error.d.ts (328 B)
-INFO    Σ Total dist size: 87.7 kB (build time: 1.3 seconds)
-SUCCESS Library bundle completed in 3.20s using mkdist builder.
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/browser.js (1.42 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/logger.d.ts (285 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/basic.js (898 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/format.d.ts (730 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/log.js (305 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.d.ts (12 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/modes/shared.js (130 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/stream.d.ts (993 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/tree.js (1.02 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/box.js (3.81 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/levels/levels.js (1.1 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/fancy.js (3.71 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/reporters/basic.d.ts (571 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.js (11.6 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/mod.d.ts (1.24 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/relinka.test.js (1.53 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/components/relinka-deprecated/logger.js (117 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/error.js (228 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/tree.d.ts (1.46 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/format.js (590 B)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/string.js (1.39 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/string.d.ts (2.85 kB)
+  └─ dist-libs/relinka/npm/bin/relinka-impl/deprecated/utils/deprecatedColors.js (2.92 kB)
+INFO    Σ Total dist size: 82.4 kB (build time: 1.8 seconds)
+SUCCESS Library bundle completed in 2.16s using mkdist builder.
 INFO    Preserving all dependencies for lib @reliverse/relinka
 INFO    Paths replacement in C:/B/L/relinka/dist-libs/relinka/npm/bin folder...
 INFO    Renamed entry file to C:/B/L/relinka/dist-libs/relinka/npm/bin/main.js
-SUCCESS [C:/B/L/relinka/dist-libs/relinka/npm] Successfully created library distribution: @reliverse/relinka (C:/B/L/relinka/dist-libs/relinka/npm/main.js) with (44 files, 91.9 kB)
+SUCCESS [C:/B/L/relinka/dist-libs/relinka/npm] Successfully created library distribution: @reliverse/relinka (C:/B/L/relinka/dist-libs/relinka/npm/main.js) with (44 files, 87.6 kB)
 INFO    Building JSR distribution...
 INFO    Using JSR builder: jsr
 INFO    Starting library JSR bundle: C:/B/L/relinka/src/libs/relinka -> C:/B/L/relinka/dist-libs/relinka/jsr/bin
@@ -129,10 +107,8 @@ SUCCESS Completed library JSR bundling
 INFO    Preserving all dependencies for lib @reliverse/relinka
 INFO    Paths replacement in C:/B/L/relinka/dist-libs/relinka/jsr/bin folder...
 INFO    Renamed entry file to C:/B/L/relinka/dist-libs/relinka/jsr/bin/main.ts
-SUCCESS JSR distribution built successfully (21 files, 90.4 kB)
-SUCCESS [C:/B/L/relinka/dist-libs/relinka/jsr] Successfully created library distribution: @reliverse/relinka (C:/B/L/relinka/dist-libs/relinka/jsr/bin/main.ts) with (21 files, 90.4 kB)
+SUCCESS JSR distribution built successfully (21 files, 84.8 kB)
+SUCCESS [C:/B/L/relinka/dist-libs/relinka/jsr] Successfully created library distribution: @reliverse/relinka (C:/B/L/relinka/dist-libs/relinka/jsr/bin/main.ts) with (21 files, 84.8 kB)
 INFO    Publishing lib @reliverse/relinka to both NPM and JSR...
-ERROR   Failed to publish lib @reliverse/relinka to JSR ExecaError: Command failed with exit code 1: bun x jsr publish --allow-dirty --allow-slow-types
-ERROR   Failed to process library @reliverse/relinka: Command failed with exit code 1: bun x jsr publish --allow-dirty --allow-slow-types
-ERROR   Library processing stopped due to an error.
-ERROR   An unexpected error occurred after 3.3 seconds: ExecaError: Command failed with exit code 1: bun x jsr publish --allow-dirty --allow-slow-types
+SUCCESS Distribution folders removed successfully
+SUCCESS 🎉 Build and publishing completed successfully (in 2.3 seconds)
