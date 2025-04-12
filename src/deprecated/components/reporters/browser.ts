@@ -1,4 +1,4 @@
-import type { LogObject } from "~/libs/relinka/relinka-types.js";
+import type { LogObject } from "~/deprecated/types.js";
 
 export class BrowserReporter {
   options: any;

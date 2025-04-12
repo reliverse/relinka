@@ -17,10 +17,10 @@ export default defineConfig({
   commonVerbose: false,
 
   // Core configuration
-  coreDeclarations: false,
+  coreDeclarations: true,
   coreEntryFile: "main.ts",
   coreEntrySrcDir: "src",
-  coreIsCLI: true,
+  coreIsCLI: false,
 
   // JSR-only config
   distJsrAllowDirty: true,
@@ -42,23 +42,34 @@ export default defineConfig({
   // Publish specific dirs as separate packages
   // This feature is experimental at the moment
   // Please commit your changes before using it
-  libsActMode: "main-and-libs",
+  libsActMode: "main-project-only",
   libsDirDist: "dist-libs",
   libsDirSrc: "src/libs",
   libsList: {
-    "@reliverse/relinka": {
-      libDeclarations: true,
-      libDescription:
-        "@reliverse/relinka is your next favorite logging library — built to make your terminal (and browser console — soon) output look good, stay clean, and be actually helpful. It’s styled, structured, and smart. Oh, and it works with configs, files, and colors out of the box.",
-      libDirName: "relinka",
-      libMainFile: "relinka/relinka-main.ts",
-      libPkgKeepDeps: true,
-      libTranspileMinify: true,
-    },
+    // TODO: Uncomment when relinka-web will be implemented
+    // "@reliverse/relinka-web": {
+    //   libDeclarations: true,
+    //   libDescription:
+    //     "@reliverse/relinka-web is a modern, minimal browser logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, browser-ready logging.",
+    //   libDirName: "web",
+    //   libMainFile: "web/web-main.ts",
+    //   libPkgKeepDeps: true,
+    //   libTranspileMinify: true,
+    // },
+    // TODO: Move code from the src/* to the src/libs/core/*
+    // "@reliverse/relinka-core": {
+    //   libDeclarations: true,
+    //   libDescription:
+    //     "@reliverse/relinka is a modern, minimal logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
+    //   libDirName: "core",
+    //   libMainFile: "core/core-main.ts",
+    //   libPkgKeepDeps: true,
+    //   libTranspileMinify: true,
+    // },
   },
 
   // Logger setup
-  logsFileName: "relinka.log",
+  logsFileName: "relinka.log", // TODO: fix relidler's implementation, e.g. "logs/relinka.log" doesn't work here
   logsFreshFile: true,
 
   // Dependency filtering

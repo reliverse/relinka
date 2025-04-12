@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/libs/relinka/relinka-main.js";
+import { relinkaInstanceDeprecated } from "~/main.js";
 
 async function main() {
   relinkaInstanceDeprecated.start("Creating project...");

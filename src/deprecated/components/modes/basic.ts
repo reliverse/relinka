@@ -1,12 +1,12 @@
-import type { RelinkaInstanceDeprecated } from "~/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.js";
+import type { RelinkaInstanceDeprecated } from "~/deprecated/components/relinka-deprecated/relinka.js";
 import type {
   LogLevelDeprecated,
   RelinkaOptionsDeprecated,
-} from "~/libs/relinka/relinka-types.js";
+} from "~/deprecated/types.js";
 
-import { LogLevelsDeprecated } from "~/libs/relinka/relinka-impl/deprecated/components/levels/levels.js";
-import { createRelinkaDeprecated as _createRelinkaDeprecated } from "~/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.js";
-import { BasicReporter } from "~/libs/relinka/relinka-impl/deprecated/components/reporters/basic.js";
+import { LogLevelsDeprecated } from "~/deprecated/components/levels/levels.js";
+import { createRelinkaDeprecated as _createRelinkaDeprecated } from "~/deprecated/components/relinka-deprecated/relinka.js";
+import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
 
 export * from "./shared.js";
 

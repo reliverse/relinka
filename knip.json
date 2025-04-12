@@ -7,6 +7,14 @@
     "src/**/*-main.ts",
     "examples/**/*.ts"
   ],
-  "ignore": ["node_modules", "dist-jsr", "dist-npm", "dist-libs"],
+  "ignore": [
+    "node_modules",
+    "dist-jsr",
+    "dist-npm",
+    "dist-libs",
+    "src/types.ts",
+    "tests/relinka.test.ts",
+    "src/deprecated/impl-old.ts"
+  ],
   "ignoreBinaries": ["relidler"]
 }

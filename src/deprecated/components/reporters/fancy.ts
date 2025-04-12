@@ -4,17 +4,14 @@ import stringWidth from "string-width";
 import type {
   LogLevelDeprecated,
   LogTypeDeprecated,
-} from "~/libs/relinka/relinka-types.js";
-import type { FormatOptions, LogObject } from "~/libs/relinka/relinka-types.js";
+} from "~/deprecated/types.js";
+import type { FormatOptions, LogObject } from "~/deprecated/types.js";
 
-import { BasicReporter } from "~/libs/relinka/relinka-impl/deprecated/components/reporters/basic.js";
-import {
-  box,
-  type BoxOpts,
-} from "~/libs/relinka/relinka-impl/deprecated/utils/box.js";
-import { colors } from "~/libs/relinka/relinka-impl/deprecated/utils/deprecatedColors.js";
-import { parseStack } from "~/libs/relinka/relinka-impl/deprecated/utils/error.js";
-import { stripAnsi } from "~/libs/relinka/relinka-impl/deprecated/utils/string.js";
+import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
+import { box, type BoxOpts } from "~/deprecated/utils/box.js";
+import { colors } from "~/deprecated/utils/deprecatedColors.js";
+import { parseStack } from "~/deprecated/utils/error.js";
+import { stripAnsi } from "~/deprecated/utils/string.js";
 
 export const TYPE_COLOR_MAP: Partial<Record<LogTypeDeprecated, string>> = {
   info: "cyan",

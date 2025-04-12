@@ -1,20 +1,20 @@
 import { isDebug, isTest, isCI } from "std-env";
 
-import type { LogLevelDeprecated } from "~/libs/relinka/relinka-types.js";
+import type { LogLevelDeprecated } from "~/deprecated/types.js";
 import type {
   RelinkaOptionsDeprecated,
   RelinkaReporterDeprecated,
-} from "~/libs/relinka/relinka-types.js";
+} from "~/deprecated/types.js";
 
-import { LogLevelsDeprecated } from "~/libs/relinka/relinka-impl/deprecated/components/levels/levels.js";
-import { BasicReporter } from "~/libs/relinka/relinka-impl/deprecated/components/reporters/basic.js";
-import { FancyReporter } from "~/libs/relinka/relinka-impl/deprecated/components/reporters/fancy.js";
+import { LogLevelsDeprecated } from "~/deprecated/components/levels/levels.js";
+import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
+import { FancyReporter } from "~/deprecated/components/reporters/fancy.js";
 
 import type { RelinkaInstanceDeprecated } from "./relinka.js";
 
 import { createRelinkaDeprecated as _createRelinkaDeprecated } from "./relinka.js";
 
-export * from "~/libs/relinka/relinka-impl/deprecated/components/modes/shared.js";
+export * from "~/deprecated/components/modes/shared.js";
 
 /**
  * Factory function to create a new Relinka instance tailored for use in different environments.

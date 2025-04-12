@@ -1,4 +1,4 @@
-import { createRelinkaDeprecated } from "~/libs/relinka/relinka-main.js";
+import { createRelinkaDeprecated } from "~/main.js";
 
 const relinkaWrapper = createRelinkaDeprecated({
   reporters: [

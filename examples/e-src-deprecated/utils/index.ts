@@ -1,6 +1,6 @@
-import type { RelinkaOptionsDeprecated } from "~/libs/relinka/relinka-types.js";
+import type { RelinkaOptionsDeprecated } from "~/deprecated/types.js";
 
-import { createRelinkaDeprecated } from "~/libs/relinka/relinka-impl/deprecated/components/relinka-deprecated/relinka.js";
+import { createRelinkaDeprecated } from "~/deprecated/components/relinka-deprecated/relinka.js";
 import { relinkaInstanceDeprecated } from "~/main.js";
 
 import { randomSentence } from "./sentence.js";
