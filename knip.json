@@ -2,10 +2,12 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "project": ["**/*.{ts,js}"],
   "entry": [
+    ".config/**/*.ts",
+    ".tests/**/*.ts",
     "*.{config,cfg}.{ts,js}",
-    "src/main.ts",
-    "src/**/*-main.ts",
-    "examples/**/*.ts"
+    "src/mod.ts",
+    "src/**/*-mod.ts",
+    "example/**/*.ts"
   ],
   "ignore": [
     "node_modules",
@@ -14,7 +16,9 @@
     "dist-libs",
     "src/types.ts",
     "tests/relinka.test.ts",
-    "src/deprecated/impl-old.ts"
+    "src/deprecated/impl-old.ts",
+    "src/libs/reprint/types.ts",
+    "src/deprecated/utils/format-new.ts"
   ],
-  "ignoreBinaries": ["relidler"]
+  "ignoreBinaries": ["dler"]
 }

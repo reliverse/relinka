@@ -1,12 +1,10 @@
 *.log
 *.exe
 *.dll
-.venv/
-logs/
-dist-jsr/
-dist-npm/
-dist-libs/
+.venv
+log*
+dist*
 .DS_Store
 merged.txt
 .eslintcache
-node_modules/
+node_modules

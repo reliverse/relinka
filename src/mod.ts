@@ -48,8 +48,8 @@ export {
 } from "./deprecated/utils/deprecatedColors.js";
 export { parseStack } from "./deprecated/utils/error.js";
 export {
-  compileFormat,
-  formatString,
+  compileFormatCompat,
+  formatStringCompat,
 } from "./deprecated/utils/format.js";
 export { isPlainObject, isLogObj } from "./deprecated/utils/log.js";
 export { writeStream } from "./deprecated/utils/stream.js";

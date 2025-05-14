@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/mod.js";
 
 function main() {
   relinkaInstanceDeprecated.box("I am the default banner");

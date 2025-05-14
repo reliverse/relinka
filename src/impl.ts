@@ -7,12 +7,18 @@ import fs from "fs-extra";
 import os from "node:os";
 import path from "pathe";
 
+/* -------------------------------------------------- *
+ *                     CONSTANTS                      *
+ * -------------------------------------------------- */
+
 const ENABLE_DEV_DEBUG = false;
 
-/**
- * Active timers that need to be cleared on shutdown
- */
-const activeTimers: NodeJS.Timeout[] = [];
+/* single flag that survives multiple imports  */
+const EXIT_GUARD = Symbol.for("relinka.exitHandlersRegistered");
+
+/* -------------------------------------------------- *
+ *                 TYPE DECLARATIONS                  *
+ * -------------------------------------------------- */
 
 /** Configuration for special directory handling. */
 export type RelinkaSpecialDirsConfig = {
@@ -63,7 +69,8 @@ export type LogLevel =
   | "success"
   | "verbose"
   | "warn"
-  | "log";
+  | "log"
+  | "null";
 
 /**
  * Configuration options for the Relinka logger.
@@ -149,6 +156,10 @@ export type LogFileInfo = {
   mtime: number;
 };
 
+/* -------------------------------------------------- *
+ *            DEFAULT CONFIG & UNICODE CHECK          *
+ * -------------------------------------------------- */
+
 /**
  * Default configuration object.
  * `reconf` will merge this with a config file.
@@ -184,7 +195,7 @@ const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
       spacing: 3,
     },
     info: {
-      symbol: "⯎",
+      symbol: "◈",
       fallbackSymbol: "[i]",
       color: "cyanBright",
       spacing: 3,
@@ -208,20 +219,18 @@ const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
       spacing: 3,
     },
     verbose: {
-      symbol: "✧",
+      symbol: "✱",
       fallbackSymbol: "[VERBOSE]",
       color: "gray",
       spacing: 3,
     },
     log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },
+    null: { symbol: "", fallbackSymbol: "", color: "dim", spacing: 0 },
   },
 };
 
-/**
- * Enhanced Unicode support detection with more reliable indicators
- */
 function isUnicodeSupported(): boolean {
-  // Easy wins: modern terminals and environments that definitely support Unicode
+  // modern terminals and environments that definitely support Unicode
   if (
     process.env.TERM_PROGRAM === "vscode" ||
     process.env.WT_SESSION ||
@@ -256,30 +265,37 @@ function isUnicodeSupported(): boolean {
   return true;
 }
 
+/* -------------------------------------------------- *
+ *                CONFIGURATION LOADING               *
+ * -------------------------------------------------- */
+
 // Config state management
 let currentConfig: RelinkaConfig = { ...DEFAULT_RELINKA_CONFIG };
 let isConfigInitialized = false;
 let resolveRelinkaConfig: ((config: RelinkaConfig) => void) | undefined;
 
-/**
- * Promise that resolves once `reconf` loads and merges the config.
- */
-export const relinkaConfig = new Promise<RelinkaConfig>((resolve) => {
-  resolveRelinkaConfig = resolve;
+/** Promise resolved once the user's config (if any) is merged. */
+export const relinkaConfig = new Promise<RelinkaConfig>((res) => {
+  resolveRelinkaConfig = res;
 });
 
-// Log buffer management
+/* --------------  log-buffer state ----------------- */
+
 type LogBuffer = {
   filePath: string;
   entries: string[];
   size: number;
   lastFlush: number;
 };
-
 const logBuffers = new Map<string, LogBuffer>();
+const activeTimers: NodeJS.Timeout[] = [];
+let bufferFlushTimer: NodeJS.Timeout | null = null;
 let lastCleanupTime = 0;
 let cleanupScheduled = false;
-let bufferFlushTimer: NodeJS.Timeout | null = null;
+
+/* -------------------------------------------------- *
+ *                  CONFIG INITIALISER                *
+ * -------------------------------------------------- */
 
 /**
  * Load and initialize configuration
@@ -299,78 +315,56 @@ async function initializeConfig(): Promise<void> {
 
     currentConfig = result.config;
     isConfigInitialized = true;
+    resolveRelinkaConfig?.(currentConfig);
+    resolveRelinkaConfig = undefined;
 
     if (ENABLE_DEV_DEBUG) {
       console.log("[Dev Debug] Config file used:", result.configFile);
       console.log("[Dev Debug] All merged layers:", result.layers);
       console.log("[Dev Debug] Final configuration:", currentConfig);
     }
-
-    if (resolveRelinkaConfig) {
-      resolveRelinkaConfig(currentConfig);
-      resolveRelinkaConfig = undefined; // Prevent memory leaks
-    }
-
-    // Set up timer for age-based buffer flushing
-    setupBufferFlushTimer();
   } catch (err) {
     console.error(
       `[Relinka Config Error] Failed to load config: ${
         err instanceof Error ? err.message : String(err)
       }`,
     );
-
     currentConfig = { ...DEFAULT_RELINKA_CONFIG };
     isConfigInitialized = true;
-
-    if (resolveRelinkaConfig) {
-      resolveRelinkaConfig(currentConfig);
-      resolveRelinkaConfig = undefined; // Prevent memory leaks
-    }
-
+    resolveRelinkaConfig?.(currentConfig);
+    resolveRelinkaConfig = undefined;
+  } finally {
     // Set up timer for age-based buffer flushing with default config
     setupBufferFlushTimer();
   }
 }
 
+/* -------------------------------------------------- *
+ *           BUFFER FLUSH TIMER (setup / reset)       *
+ * -------------------------------------------------- */
+
 /**
  * Sets up a timer to periodically flush log buffers based on their age
  */
 function setupBufferFlushTimer(): void {
-  // Clear existing timer if it exists
   if (bufferFlushTimer) {
     clearInterval(bufferFlushTimer);
-    const index = activeTimers.indexOf(bufferFlushTimer);
-    if (index !== -1) {
-      activeTimers.splice(index, 1);
-    }
+    activeTimers.splice(activeTimers.indexOf(bufferFlushTimer), 1);
   }
 
-  // Create new timer
-  const maxBufferAge = getMaxBufferAge(currentConfig);
-  bufferFlushTimer = setInterval(
-    () => {
-      // Check all buffers and flush any that are older than maxBufferAge
-      const now = Date.now();
-      for (const [filePath, buffer] of logBuffers.entries()) {
-        if (
-          buffer.entries.length > 0 &&
-          now - buffer.lastFlush >= maxBufferAge
-        ) {
-          flushLogBuffer(currentConfig, filePath).catch((err) => {
-            console.error(
-              `[Relinka Buffer Flush Error] Failed to flush aged buffer: ${
-                err instanceof Error ? err.message : String(err)
-              }`,
-            );
-          });
-        }
-      }
-    },
-    Math.min(maxBufferAge / 2, 2500), // Check at least every 2.5 seconds or half the max age
-  );
-
+  const maxAge = getMaxBufferAge(currentConfig);
+  bufferFlushTimer = setInterval(flushDueBuffers, Math.min(maxAge / 2, 2500));
+  bufferFlushTimer.unref();
   activeTimers.push(bufferFlushTimer);
+
+  function flushDueBuffers() {
+    const now = Date.now();
+    for (const [fp, buf] of logBuffers) {
+      if (buf.entries.length && now - buf.lastFlush >= maxAge) {
+        flushLogBuffer(currentConfig, fp).catch(console.error);
+      }
+    }
+  }
 }
 
 // Start initialization process
@@ -387,7 +381,7 @@ initializeConfig().catch((err) => {
 
     if (resolveRelinkaConfig) {
       resolveRelinkaConfig(currentConfig);
-      resolveRelinkaConfig = undefined; // Prevent memory leaks
+      resolveRelinkaConfig = undefined;
     }
 
     // Set up timer for age-based buffer flushing with default config
@@ -523,6 +517,15 @@ function getLevelStyle(config: RelinkaConfig, level: string) {
     };
   }
 
+  // Special case for null level - no symbol or spacing
+  if (level === "null") {
+    return {
+      symbol: "",
+      color: levelConfig.color,
+      spacing: 0,
+    };
+  }
+
   const { symbol, fallbackSymbol, color, spacing } = levelConfig;
   const effectiveSymbol = isUnicodeSupported()
     ? symbol
@@ -589,6 +592,7 @@ const consoleMethodMap: Record<string, (msg?: any) => void> = {
   success: console.log,
   verbose: console.log,
   log: console.log,
+  null: console.log,
 };
 
 /**
@@ -712,6 +716,10 @@ async function deleteFiles(
   }
 }
 
+// Signal handler references for clean shutdown
+let sigintHandler: (() => void) | undefined;
+let sigtermHandler: (() => void) | undefined;
+
 /**
  * Shuts down the logger, flushing all buffers and clearing timers.
  * As Relinka user - call this at the end of your program to prevent hanging.
@@ -723,6 +731,10 @@ export async function relinkaShutdown(): Promise<void> {
 
   // Make sure cleanupScheduled is reset
   cleanupScheduled = false;
+
+  // Remove signal handlers so Node can exit
+  if (sigintHandler) process.off("SIGINT", sigintHandler);
+  if (sigtermHandler) process.off("SIGTERM", sigtermHandler);
 
   // Flush all log buffers to disk
   await flushAllLogBuffers();
@@ -764,6 +776,7 @@ async function cleanupOldLogFiles(config: RelinkaConfig): Promise<void> {
           }
         });
       }, delay);
+      timer.unref();
 
       // Add to active timers list
       activeTimers.push(timer);
@@ -978,8 +991,38 @@ export function casesHandled(unexpectedCase: never): never {
   );
 }
 
+/* -------------------------------------------------- *
+ *              PROCESS-EXIT HANDLER GUARD            *
+ * -------------------------------------------------- */
+
+/**
+ * Ensures we attach exit handlers only once per process,
+ * no matter how many times the module is imported.
+ */
+function registerExitHandlers(): void {
+  if ((globalThis as any)[EXIT_GUARD]) return; // already done
+  (globalThis as any)[EXIT_GUARD] = true;
+
+  // beforeExit is safe – it doesn't block exit
+  process.once("beforeExit", () => {
+    void flushAllLogBuffers();
+  });
+
+  // Named handler functions for SIGINT/SIGTERM
+  sigintHandler = () => {
+    void flushAllLogBuffers().finally(() => process.exit(0));
+  };
+  sigtermHandler = () => {
+    void flushAllLogBuffers().finally(() => process.exit(0));
+  };
+  process.once("SIGINT", sigintHandler);
+  process.once("SIGTERM", sigtermHandler);
+}
+
+registerExitHandlers(); // <-- called exactly once
+
 /* ------------------------------------------------------
-   PUBLIC LOGGING FUNCTIONS
+   PUBLIC API: LOGGING FUNCTIONS
 -------------------------------------------------------- */
 
 /**
@@ -1036,7 +1079,7 @@ export function relinka(
       },
     );
 
-    // Schedule cleanup if needed
+    // Schedule cleanup
     if (getMaxLogFiles(currentConfig) > 0) {
       cleanupOldLogFiles(currentConfig).catch((err) => {
         if (isVerboseEnabled(currentConfig)) {
@@ -1094,7 +1137,7 @@ export async function relinkaAsync(
     try {
       await queueLogWrite(currentConfig, absoluteLogFilePath, formatted);
 
-      // Only perform cleanup if needed and not too frequent
+      // Cleanup old files
       if (getMaxLogFiles(currentConfig) > 0) {
         await cleanupOldLogFiles(currentConfig);
       }
@@ -1110,6 +1153,10 @@ export async function relinkaAsync(
   }
 }
 
+/* -------------------------------------------------- *
+ *           DEFINE CONFIG & EXIT HANDLERS            *
+ * -------------------------------------------------- */
+
 /**
  * Type helper for user config files.
  */
@@ -1118,33 +1165,3 @@ export function defineConfig(
 ): Partial<RelinkaConfig> {
   return config;
 }
-
-/**
- * Register process exit handlers to flush logs
- */
-process.on("beforeExit", () => {
-  flushAllLogBuffers().catch(() => {
-    // Silent catch - we're exiting anyway
-  });
-});
-
-process.on("SIGINT", () => {
-  flushAllLogBuffers()
-    .catch(() => {
-      // Silent catch - we're exiting anyway
-    })
-    .finally(() => {
-      process.exit(0);
-    });
-});
-
-// Also handle SIGTERM for container environments
-process.on("SIGTERM", () => {
-  flushAllLogBuffers()
-    .catch(() => {
-      // Silent catch - we're exiting anyway
-    })
-    .finally(() => {
-      process.exit(0);
-    });
-});

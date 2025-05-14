@@ -10,7 +10,7 @@ import tseslint from "typescript-eslint";
 
 /** @type {import("typescript-eslint").Config} */
 const config = tseslint.config(
-  { ignores: ["**/{node_modules,dist-jsr,dist-npm,dist-libs,tests-runtime}/"] },
+  { ignores: ["**/{dist*,tests-runtime}/"] },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/mod.js";
 
 function mockFn(type) {
   if (type === "info") {

@@ -3,7 +3,7 @@ import { defineConfig } from "@reliverse/relidler-cfg";
 /**
  * Reliverse Bundler Configuration
  * Hover over a field to see more details
- * @see https://github.com/reliverse/relidler
+ * @see https://github.com/reliverse/dler
  */
 export default defineConfig({
   // Bump configuration
@@ -18,7 +18,7 @@ export default defineConfig({
 
   // Core configuration
   coreDeclarations: true,
-  coreEntryFile: "main.ts",
+  coreEntryFile: "mod.ts",
   coreEntrySrcDir: "src",
   coreIsCLI: false,
 
@@ -38,11 +38,11 @@ export default defineConfig({
   distNpmDirName: "dist-npm",
   distNpmOutFilesExt: "js",
 
-  // Libraries Relidler Plugin
+  // Libraries Dler Plugin
   // Publish specific dirs as separate packages
   // This feature is experimental at the moment
   // Please commit your changes before using it
-  libsActMode: "main-project-only",
+  libsActMode: "main-project-only", // TODO: change to "main-and-libs" when separate packages will be implemented
   libsDirDist: "dist-libs",
   libsDirSrc: "src/libs",
   libsList: {
@@ -52,7 +52,7 @@ export default defineConfig({
     //   libDescription:
     //     "@reliverse/relinka-web is a modern, minimal browser logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, browser-ready logging.",
     //   libDirName: "web",
-    //   libMainFile: "web/web-main.ts",
+    //   libMainFile: "web/web-mod.ts",
     //   libPkgKeepDeps: true,
     //   libTranspileMinify: true,
     // },
@@ -62,14 +62,14 @@ export default defineConfig({
     //   libDescription:
     //     "@reliverse/relinka is a modern, minimal logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
     //   libDirName: "core",
-    //   libMainFile: "core/core-main.ts",
+    //   libMainFile: "core/core-mod.ts",
     //   libPkgKeepDeps: true,
     //   libTranspileMinify: true,
     // },
   },
 
   // Logger setup
-  logsFileName: "relinka.log", // TODO: fix relidler's implementation, e.g. "logs/relinka.log" doesn't work here
+  logsFileName: "logs/relinka.log", // TODO: fix dler's implementation, e.g. "logs/relinka.log" doesn't work here
   logsFreshFile: true,
 
   // Dependency filtering

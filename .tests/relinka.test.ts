@@ -2,7 +2,7 @@
 
 import { test, describe, afterAll } from "bun:test";
 
-import { relinka, relinkaShutdown, flushAllLogBuffers } from "../src/main.js";
+import { relinka, relinkaShutdown, flushAllLogBuffers } from "../src/mod.js";
 
 // Clean up after all tests
 afterAll(async () => {

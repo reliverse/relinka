@@ -1,4 +1,4 @@
-import { vsprintf } from "printj";
+import { vsprintf } from "@reliverse/repris";
 
 // Predefined rules for replacing format arguments
 const FORMAT_ARGS = [
@@ -19,7 +19,7 @@ const _compileCache: any = {};
  * @param {string} format - The format string containing the placeholders to replace.
  * @returns {string} The compiled format string with placeholders replaced by positional indices.
  */
-export function compileFormat(format: string) {
+export function compileFormatCompat(format: string): string {
   if (_compileCache[format]) {
     return _compileCache[format];
   }
@@ -42,6 +42,6 @@ export function compileFormat(format: string) {
  * @param {any[]} argv - The arguments to format into the string.
  * @returns {string} The formatted string.
  */
-export function formatString(format: string, argv: any) {
-  return vsprintf(compileFormat(format), argv);
+export function formatStringCompat(format: string, argv: any): string {
+  return vsprintf(compileFormatCompat(format), argv);
 }

@@ -3,7 +3,7 @@ import {
   relinkaAsync,
   relinkaConfig,
   relinkaShutdown,
-} from "~/main.js";
+} from "~/mod.js";
 
 export async function main() {
   await relinkaAsync(
@@ -24,6 +24,12 @@ export async function main() {
     "error", // non-fatal issue level can be recovered
     "Uh oh, something broke",
   );
+
+  relinka(
+    "null",
+    "'null' level has a special handling case: no symbol or spacing",
+  );
+
   // relinka(
   //   "fatal",
   //   "We should never reach this code! This should never happen! (see <anonymous> line)",
@@ -33,6 +39,12 @@ export async function main() {
   // Make sure to shut down the logger at the end of your program
   // This is important to flush all buffers and close file handles
   await relinkaShutdown();
+
+  // Make sure to exit the program after your CLI is done
+  // It's not required for Bun-only apps, but recommended
+  // for other terminal runtimes like Node.js (incl. `tsx`)
+  // It's also not required for @reliverse/rempts `runMain()`
+  process.exit(0);
 }
 
 await main();

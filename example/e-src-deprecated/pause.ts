@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/mod.js";
 
 const c1 = relinkaInstanceDeprecated.withTag("foo");
 const c2 = relinkaInstanceDeprecated.withTag("bar");

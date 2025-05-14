@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "paths": { "~/*": ["./src/*"], "@/*": ["./examples/*"] },
+    "paths": {
+      "~/*": ["./src/*"],
+      "@/*": ["example/*"]
+    },
+
     "baseUrl": ".",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -27,11 +31,6 @@
     "strictNullChecks": false
   },
 
-  "include": [
-    "**/*.ts",
-    "reset.d.ts",
-    "eslint.config.js",
-    ".reliverse/**/*.ts"
-  ],
-  "exclude": ["node_modules", "dist-npm", "dist-jsr", "dist-libs"]
+  "include": [".*/**/*.ts", "**/*.ts", "**/*.js"],
+  "exclude": ["node_modules", "dist*"]
 }

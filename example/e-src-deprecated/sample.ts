@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/main.js";
+import { relinkaInstanceDeprecated } from "~/mod.js";
 
 async function main() {
   relinkaInstanceDeprecated.warn(

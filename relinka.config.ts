@@ -8,7 +8,7 @@ import { defineConfig } from "~/impl.js";
  */
 export default defineConfig({
   // Enable to see verbose logs
-  verbose: false,
+  verbose: true,
 
   // Timestamp configuration
   timestamp: {

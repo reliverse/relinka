@@ -1,8 +1,8 @@
 # Relinka: Logging that Actually Feels Good
 
-[💖 GitHub Sponsors](https://github.com/sponsors/blefnk) • [💬 Discord](https://discord.gg/Pb8uKbwpsJ) • [✨ Repo](https://github.com/reliverse/relinka-logger) • [📦 NPM](https://npmjs.com/@reliverse/relinka)
+> **@reliverse/relinka** is a modern, minimal logging library that actually *feels* right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a `fatal` mode built for developers who care about correctness. Whether you're building CLI tools, SDKs, or full-stack apps — Relinka helps you log with intention.
 
-**@reliverse/relinka** is a modern, minimal logging library that actually *feels* right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a `fatal` mode built for developers who care about correctness. Whether you're building CLI tools, SDKs, or full-stack apps — Relinka helps you log with intention.
+[sponsor](https://github.com/sponsors/blefnk) — [discord](https://discord.gg/Pb8uKbwpsJ) — [repo](https://github.com/reliverse/relinka) — [npm](https://npmjs.com/@reliverse/relinka)
 
 ## Why Relinka
 
@@ -17,10 +17,19 @@
 
 ## Getting Started
 
+Make sure you have git, node.js, and bun/pnpm/yarn/npm installed.
+
 ### 1. Install
 
 ```bash
 bun add @reliverse/relinka
+```
+
+**Coming soon**:
+
+```bash
+bun i -g @reliverse/dler
+dler relinka --console-to-relinka
 ```
 
 ### 2. Use It
@@ -48,6 +57,7 @@ import {
   relinkaConfig,
   relinkaShutdown,
 } from "@reliverse/relinka";
+
 export async function main() {
   await relinkaAsync(
     // this automatically loads the config
@@ -67,15 +77,29 @@ export async function main() {
     "error", // non-fatal issue level can be recovered
     "Uh oh, something broke",
   );
+
+  relinka(
+    "null",
+    "'null' level has a special handling case: no symbol or spacing",
+  );
+
   // relinka(
   //   "fatal",
   //   "We should never reach this code! This should never happen! (see <anonymous> line)",
   // ); // fatal level throws error and halts execution
   relinka("success", "Thanks for using Relinka!");
+
   // Make sure to shut down the logger at the end of your program
   // This is important to flush all buffers and close file handles
   await relinkaShutdown();
+
+  // Make sure to exit the program after your CLI is done
+  // It's not required for Bun-only apps, but recommended
+  // for other terminal runtimes like Node.js (incl. `tsx`)
+  // It's also not required for @reliverse/rempts `runMain()`
+  process.exit(0);
 }
+
 await main();
 ```
 
@@ -255,7 +279,7 @@ defineConfig({ ... }) // helper for relinka.config.ts
 
 - Building CLIs? Use with [`@reliverse/prompts`](https://npmjs.com/@reliverse/prompts)
 - Want type-safe injections? Try [`@reliverse/reinject`](https://npmjs.com/@reliverse/reinject)
-- For advanced bundling? Pair with [`@reliverse/relidler`](https://npmjs.com/@reliverse/relidler)
+- For advanced bundling? Pair with [`@reliverse/dler`](https://npmjs.com/@reliverse/dler)
 
 ## Roadmap
 
