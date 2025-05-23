@@ -1,8 +1,8 @@
-import type { TreeItem } from "~/deprecated/utils/tree.js";
+import type { TreeItem } from "deprecated/utils/tree.js";
 
-import { relinkaInstanceDeprecated } from "~/deprecated/components/relinka-deprecated/mod.js";
-import { createRelinkaDeprecated } from "~/deprecated/components/relinka-deprecated/relinka.js";
-import { formatTree } from "~/mod.js";
+import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
+import { createRelinkaDeprecated } from "deprecated/components/relinka-deprecated/relinka.js";
+import { formatTree } from "deprecated/utils/tree.js";
 
 import { reporterDemo } from "./e-src-deprecated/utils/index.js";
 

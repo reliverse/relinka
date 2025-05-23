@@ -1,17 +1,16 @@
-import { isUnicodeSupported } from "@reliverse/runtime";
-import stringWidth from "string-width";
-
 import type {
   LogLevelDeprecated,
   LogTypeDeprecated,
-} from "~/deprecated/types.js";
-import type { FormatOptions, LogObject } from "~/deprecated/types.js";
+} from "deprecated/types.js";
+import type { FormatOptions, LogObject } from "deprecated/types.js";
 
-import { BasicReporter } from "~/deprecated/components/reporters/basic.js";
-import { box, type BoxOpts } from "~/deprecated/utils/box.js";
-import { colors } from "~/deprecated/utils/deprecatedColors.js";
-import { parseStack } from "~/deprecated/utils/error.js";
-import { stripAnsi } from "~/deprecated/utils/string.js";
+import { isUnicodeSupported } from "@reliverse/runtime";
+import { BasicReporter } from "deprecated/components/reporters/basic.js";
+import { box, type BoxOpts } from "deprecated/utils/box.js";
+import { colors } from "deprecated/utils/deprecatedColors.js";
+import { parseStack } from "deprecated/utils/error.js";
+import { stripAnsi } from "deprecated/utils/string.js";
+import stringWidth from "string-width";
 
 export const TYPE_COLOR_MAP: Partial<Record<LogTypeDeprecated, string>> = {
   info: "cyan",

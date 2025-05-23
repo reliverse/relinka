@@ -1,11 +1,11 @@
 /* eslint-disable no-debugger */
 import type { DefaultColorKeys } from "@reliverse/relico";
 
+import path from "@reliverse/pathkit";
 import { re } from "@reliverse/relico";
+import fs from "@reliverse/relifso";
 import { loadConfig, type ResolvedConfig } from "c12";
-import fs from "fs-extra";
 import os from "node:os";
-import path from "pathe";
 
 /* -------------------------------------------------- *
  *                     CONSTANTS                      *
@@ -70,6 +70,7 @@ export type LogLevel =
   | "verbose"
   | "warn"
   | "log"
+  | "internal"
   | "null";
 
 /**
@@ -222,6 +223,12 @@ const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
       symbol: "✱",
       fallbackSymbol: "[VERBOSE]",
       color: "gray",
+      spacing: 3,
+    },
+    internal: {
+      symbol: "⚙",
+      fallbackSymbol: "[INTERNAL]",
+      color: "magentaBright",
       spacing: 3,
     },
     log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },

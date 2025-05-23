@@ -1,7 +1,7 @@
-import type { TreeItem } from "~/deprecated/utils/tree.js";
+import type { TreeItem } from "deprecated/utils/tree.js";
 
-import { relinkaInstanceDeprecated } from "~/deprecated/components/relinka-deprecated/mod.js";
-import { formatTree } from "~/deprecated/utils/tree.js";
+import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
+import { formatTree } from "deprecated/utils/tree.js";
 
 function main() {
   const keywords = [

@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/deprecated/components/relinka-deprecated/mod.js";
+import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
 
 relinkaInstanceDeprecated.log(
   'relinkaInstanceDeprecated.log({ message: "hello" })',

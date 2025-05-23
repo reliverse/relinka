@@ -1,4 +1,4 @@
-import { createRelinkaDeprecated } from "~/mod.js";
+import { createRelinkaDeprecated } from "deprecated/components/relinka-deprecated/relinka.js";
 
 function main() {
   const relinkaWrapper = createRelinkaDeprecated({

@@ -1,18 +1,17 @@
-import { defu } from "defu";
-
 import type {
   LogLevelDeprecated,
   LogTypeDeprecated,
-} from "~/deprecated/types.js";
+} from "deprecated/types.js";
 import type {
   InputLogObject,
   LogObject,
   RelinkaOptionsDeprecated,
   RelinkaReporterDeprecated,
-} from "~/deprecated/types.js";
+} from "deprecated/types.js";
 
-import { LogTypesDeprecated } from "~/deprecated/components/modes/shared.js";
-import { isLogObj } from "~/deprecated/utils/log.js";
+import { defu } from "defu";
+import { LogTypesDeprecated } from "deprecated/components/modes/shared.js";
+import { isLogObj } from "deprecated/utils/log.js";
 
 /**
  * Relinka class for logging management with support for pause/resume, mocking and customizable reporting.

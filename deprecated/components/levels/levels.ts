@@ -1,4 +1,4 @@
-import type { LogObject, LogTypeDeprecated } from "~/deprecated/types.js";
+import type { LogObject, LogTypeDeprecated } from "deprecated/types.js";
 
 /**
  * A mapping of `LogTypeDeprecated` to its corresponding numeric log level.

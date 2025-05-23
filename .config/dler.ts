@@ -1,4 +1,4 @@
-import { defineConfig } from "@reliverse/relidler-cfg";
+import { defineConfig } from "@reliverse/dler";
 
 /**
  * Reliverse Bundler Configuration
@@ -9,7 +9,7 @@ export default defineConfig({
   // Bump configuration
   bumpDisable: false,
   bumpFilter: ["package.json", "reliverse.ts"],
-  bumpMode: "autoPatch",
+  bumpMode: "patch",
 
   // Common configuration
   commonPubPause: false,
@@ -20,7 +20,10 @@ export default defineConfig({
   coreDeclarations: true,
   coreEntryFile: "mod.ts",
   coreEntrySrcDir: "src",
-  coreIsCLI: false,
+  coreIsCLI: {
+    enabled: false,
+    scripts: {},
+  },
 
   // JSR-only config
   distJsrAllowDirty: true,

@@ -62,6 +62,12 @@ export default defineConfig({
       color: "gray",
       spacing: 3,
     },
+    internal: {
+      symbol: "⚙",
+      fallbackSymbol: "[INTERNAL]",
+      color: "magentaBright",
+      spacing: 3,
+    },
     log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },
   },
 

@@ -1,4 +1,4 @@
-import { relinkaInstanceDeprecated } from "~/deprecated/components/relinka-deprecated/mod.js";
+import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
 
 function waitFor(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

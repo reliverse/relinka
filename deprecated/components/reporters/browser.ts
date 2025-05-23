@@ -1,4 +1,4 @@
-import type { LogObject } from "~/deprecated/types.js";
+import type { LogObject } from "deprecated/types.js";
 
 export class BrowserReporter {
   options: any;

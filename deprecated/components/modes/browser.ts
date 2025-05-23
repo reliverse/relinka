@@ -1,10 +1,10 @@
-import type { RelinkaOptionsDeprecated } from "~/deprecated/types.js";
+import type { RelinkaOptionsDeprecated } from "deprecated/types.js";
 
 import {
   createRelinkaDeprecated as _createRelinkaDeprecated,
   type RelinkaInstanceDeprecated,
-} from "~/deprecated/components/relinka-deprecated/relinka.js";
-import { BrowserReporter } from "~/deprecated/components/reporters/browser.js";
+} from "deprecated/components/relinka-deprecated/relinka.js";
+import { BrowserReporter } from "deprecated/components/reporters/browser.js";
 
 export * from "./shared.js";
 

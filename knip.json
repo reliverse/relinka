@@ -7,6 +7,7 @@
     "*.{config,cfg}.{ts,js}",
     "src/mod.ts",
     "src/**/*-mod.ts",
+    "deprecated/**/*.ts",
     "example/**/*.ts"
   ],
   "ignore": [
@@ -16,9 +17,8 @@
     "dist-libs",
     "src/types.ts",
     "tests/relinka.test.ts",
-    "src/deprecated/impl-old.ts",
     "src/libs/reprint/types.ts",
-    "src/deprecated/utils/format-new.ts"
-  ],
-  "ignoreBinaries": ["dler"]
+    "deprecated/**/*.ts",
+    "example/**/*.ts"
+  ]
 }

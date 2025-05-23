@@ -1,14 +1,13 @@
-import { formatWithOptions } from "node:util";
-
 import type {
   LogObject,
   RelinkaReporterDeprecated,
   FormatOptions,
   RelinkaOptionsDeprecated,
-} from "~/deprecated/types.js";
+} from "deprecated/types.js";
 
-import { parseStack } from "~/deprecated/utils/error.js";
-import { writeStream } from "~/deprecated/utils/stream.js";
+import { parseStack } from "deprecated/utils/error.js";
+import { writeStream } from "deprecated/utils/stream.js";
+import { formatWithOptions } from "node:util";
 
 const bracket = (x: string) => (x ? `[${x}]` : "");
 
