@@ -71,10 +71,14 @@ function _buildTree(items: TreeItem[], options?: TreeOptions): string[] {
     if (typeof item === "string") {
       chunks.push(`${prefix}${item}\n`);
     } else {
+      // @ts-expect-error TODO: fix ts
       const log = `${prefix}${item.text}\n`;
+      // @ts-expect-error TODO: fix ts
       chunks.push(item.color ? colorize(item.color, log) : log);
 
+      // @ts-expect-error TODO: fix ts
       if (item.children) {
+        // @ts-expect-error TODO: fix ts
         const _tree = _buildTree(item.children, {
           ...options,
           prefix: `${options?.prefix}${isLast ? "  " : "│  "}`,

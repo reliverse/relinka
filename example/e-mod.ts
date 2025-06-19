@@ -16,6 +16,21 @@ export async function main() {
     "verbose",
     "This SYNC verbose message can be seen only if verbose=true (in user config) AND config was loaded ",
   );
+
+  // --- BOX LEVEL EXAMPLES ---
+  relinka("box", "This is a boxed message using direct syntax!");
+  relinka.box("This is a boxed message using method syntax!");
+
+  // --- MESSAGE LEVEL EXAMPLES ---
+  relinka("message", "This is a message using direct syntax!");
+  relinka.message("This is a message using method syntax!");
+
+  // --- STEP LEVEL EXAMPLES ---
+  relinka("step", "Step 1: Initialize application");
+  relinka.step("Step 2: Load configuration");
+  relinka.step("Step 3: Start services");
+
+  // --- LOG LEVEL EXAMPLES ---
   relinka("log", "Hello! 👋");
   relinka("log", "Great to see you here!");
   relinka("info", "Everything is running smoothly");

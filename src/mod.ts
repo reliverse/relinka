@@ -1,3 +1,5 @@
+// AUTO-GENERATED AGGREGATOR START (via `dler agg`)
+export { message, step, log, logger } from "./alias.js";
 export type {
   RelinkaSpecialDirsConfig,
   RelinkaDirsConfig,
@@ -6,6 +8,7 @@ export type {
   LogLevel,
   RelinkaConfig,
   LogFileInfo,
+  RelinkaFunction,
 } from "./impl.js";
 export {
   relinkaConfig,
@@ -17,4 +20,6 @@ export {
   relinka,
   relinkaAsync,
   defineConfig,
+  formatBox,
 } from "./impl.js";
+// AUTO-GENERATED AGGREGATOR END

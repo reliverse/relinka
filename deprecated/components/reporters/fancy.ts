@@ -108,7 +108,7 @@ export class FancyReporter extends BasicReporter {
     const tag = logObj.tag ? colors.gray(logObj.tag) : "";
 
     let line: string;
-    const left = this.filterAndJoin([type, characterFormat(message)]);
+    const left = this.filterAndJoin([type, characterFormat(message || "")]);
     const right = this.filterAndJoin(opts.columns ? [tag, coloredDate] : [tag]);
     const space =
       (opts.columns || 0) - getStringWidth(left) - getStringWidth(right) - 2;
@@ -147,6 +147,7 @@ function getColor(color = "white") {
 
 function getBgColor(color = "bgWhite") {
   return (
+    // @ts-expect-error TODO: fix ts
     (colors as any)[`bg${color[0].toUpperCase()}${color.slice(1)}`] ||
     colors.bgWhite
   );

@@ -1,6 +1,6 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.4.7",
+  "version": "1.5.2",
   "type": "module",
   "description": "@reliverse/relinka is a modern, minimal logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
   "scripts": {
@@ -11,35 +11,36 @@
     "check": "tsc --noEmit && eslint --cache --fix . && biome check --fix --unsafe . && knip"
   },
   "dependencies": {
-    "@reliverse/pathkit": "^1.1.5",
+    "@reliverse/pathkit": "^1.3.4",
     "@reliverse/relico": "^1.1.2",
-    "@reliverse/relifso": "^1.3.0",
+    "@reliverse/relifso": "^1.4.5",
     "c12": "^3.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@eslint/js": "^9.27.0",
-    "@reliverse/dler": "^1.4.7",
+    "@biomejs/biome": "2.0.0",
+    "@eslint/js": "^9.29.0",
+    "@reliverse/cfg": "^1.7.56",
+    "@reliverse/dler": "^1.7.56",
     "@reliverse/repris": "^1.0.0",
     "@reliverse/runtime": "^1.0.3",
-    "@stylistic/eslint-plugin": "^4.2.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@total-typescript/ts-reset": "^0.6.1",
-    "@types/bun": "^1.2.14",
-    "@types/node": "^22.15.21",
+    "@types/bun": "^1.2.16",
+    "@types/node": "^24.0.3",
     "@types/sentencer": "^0.2.3",
     "defu": "^6.1.4",
-    "eslint": "^9.27.0",
+    "eslint": "^9.29.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
-    "eslint-plugin-perfectionist": "^4.13.0",
+    "eslint-plugin-perfectionist": "^4.15.0",
     "jiti": "^2.4.2",
-    "knip": "^5.57.2",
+    "knip": "^5.61.2",
     "pathe": "^2.0.3",
     "sentencer": "^0.2.1",
     "std-env": "^3.9.0",
     "string-width": "^7.2.0",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.1"
+    "typescript-eslint": "^8.34.1"
   },
   "keywords": [
     "logger",

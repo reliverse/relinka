@@ -71,7 +71,10 @@ export type LogLevel =
   | "warn"
   | "log"
   | "internal"
-  | "null";
+  | "null"
+  | "step"
+  | "box"
+  | "message";
 
 /**
  * Configuration options for the Relinka logger.
@@ -232,6 +235,24 @@ const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
       spacing: 3,
     },
     log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },
+    step: {
+      symbol: "→",
+      fallbackSymbol: "[STEP]",
+      color: "blueBright",
+      spacing: 3,
+    },
+    box: {
+      symbol: "■",
+      fallbackSymbol: "[BOX]",
+      color: "whiteBright",
+      spacing: 1,
+    },
+    message: {
+      symbol: "🞠",
+      fallbackSymbol: "[MSG]",
+      color: "cyan",
+      spacing: 3,
+    },
     null: { symbol: "", fallbackSymbol: "", color: "dim", spacing: 0 },
   },
 };
@@ -256,7 +277,7 @@ function isUnicodeSupported(): boolean {
     const osRelease = os.release();
     const match = /(\d+)\.(\d+)/.exec(osRelease);
 
-    if (match && Number.parseInt(match[1], 10) >= 10) {
+    if (match && Number.parseInt(match[1] ?? "0", 10) >= 10) {
       return true;
     }
 
@@ -402,7 +423,7 @@ initializeConfig().catch((err) => {
 
 /** Returns whether verbose (aka debug) mode is enabled. */
 function isVerboseEnabled(config: Partial<RelinkaConfig>): boolean {
-  return config.verbose ?? DEFAULT_RELINKA_CONFIG.verbose;
+  return config.verbose ?? DEFAULT_RELINKA_CONFIG.verbose ?? false;
 }
 
 /** Returns whether to colorize logs. */
@@ -412,42 +433,52 @@ function isColorEnabled(config: Partial<RelinkaConfig>): boolean {
 
 /** Returns the "logDir" from config. */
 function getLogDir(config: Partial<RelinkaConfig>): string {
-  return config.dirs?.logDir ?? DEFAULT_RELINKA_CONFIG.dirs.logDir;
+  return config.dirs?.logDir ?? DEFAULT_RELINKA_CONFIG.dirs?.logDir ?? "logs";
 }
 
 /** Returns whether daily logs are enabled. */
 function isDailyLogsEnabled(config: Partial<RelinkaConfig>): boolean {
-  return config.dirs?.dailyLogs ?? DEFAULT_RELINKA_CONFIG.dirs.dailyLogs;
+  return (
+    config.dirs?.dailyLogs ?? DEFAULT_RELINKA_CONFIG.dirs?.dailyLogs ?? false
+  );
 }
 
 /** Returns whether logs should be written to file. */
 function shouldSaveLogs(config: Partial<RelinkaConfig>): boolean {
-  return config.saveLogsToFile ?? DEFAULT_RELINKA_CONFIG.saveLogsToFile;
+  return (
+    config.saveLogsToFile ?? DEFAULT_RELINKA_CONFIG.saveLogsToFile ?? false
+  );
 }
 
 /** Returns the maximum allowed log files before cleanup. */
 function getMaxLogFiles(config: Partial<RelinkaConfig>): number {
-  return config.dirs?.maxLogFiles ?? DEFAULT_RELINKA_CONFIG.dirs.maxLogFiles;
+  return (
+    config.dirs?.maxLogFiles ?? DEFAULT_RELINKA_CONFIG.dirs?.maxLogFiles ?? 0
+  );
 }
 
 /** Returns the configured log filename or a default fallback. */
 function getBaseLogName(config: Partial<RelinkaConfig>): string {
-  return config.logFilePath ?? DEFAULT_RELINKA_CONFIG.logFilePath;
+  return (
+    config.logFilePath ?? DEFAULT_RELINKA_CONFIG.logFilePath ?? "relinka.log"
+  );
 }
 
 /** Returns the configured buffer size for log writes */
 function getBufferSize(config: Partial<RelinkaConfig>): number {
-  return config.bufferSize ?? DEFAULT_RELINKA_CONFIG.bufferSize;
+  return config.bufferSize ?? DEFAULT_RELINKA_CONFIG.bufferSize ?? 4096;
 }
 
 /** Returns the configured maximum age for buffered logs before forced flush */
 function getMaxBufferAge(config: Partial<RelinkaConfig>): number {
-  return config.maxBufferAge ?? DEFAULT_RELINKA_CONFIG.maxBufferAge;
+  return config.maxBufferAge ?? DEFAULT_RELINKA_CONFIG.maxBufferAge ?? 5000;
 }
 
 /** Returns the configured cleanup interval in milliseconds */
 function getCleanupInterval(config: Partial<RelinkaConfig>): number {
-  return config.cleanupInterval ?? DEFAULT_RELINKA_CONFIG.cleanupInterval;
+  return (
+    config.cleanupInterval ?? DEFAULT_RELINKA_CONFIG.cleanupInterval ?? 10000
+  );
 }
 
 /** Quick dev environment check. */
@@ -581,7 +612,13 @@ function formatLogMessage(
   const symbolWithSpaces = symbol ? `${symbol}${" ".repeat(spacing)}` : "";
   const prefix = timestamp ? `[${timestamp}] ` : "";
 
-  return `${prefix}${symbolWithSpaces}${msg}${detailsStr}`;
+  let content = `${prefix}${symbolWithSpaces}${msg}${detailsStr}`;
+
+  if (level === "box") {
+    content = formatBox(content);
+  }
+
+  return content;
 }
 
 /* ------------------------------------------------------
@@ -599,6 +636,10 @@ const consoleMethodMap: Record<string, (msg?: any) => void> = {
   success: console.log,
   verbose: console.log,
   log: console.log,
+  internal: console.log,
+  step: console.log,
+  box: console.log,
+  message: console.log,
   null: console.log,
 };
 
@@ -1033,14 +1074,45 @@ registerExitHandlers(); // <-- called exactly once
 -------------------------------------------------------- */
 
 /**
+ * Enhanced relinka function type that supports both traditional and method syntax
+ */
+export type RelinkaFunction = {
+  // Traditional function signature
+  (
+    type: LogLevel | "clear",
+    message: string,
+    ...args: unknown[]
+  ): undefined | never;
+
+  // Method properties for each log level
+  error(message: string, ...args: unknown[]): void;
+  fatal(message: string, ...args: unknown[]): never;
+  info(message: string, ...args: unknown[]): void;
+  success(message: string, ...args: unknown[]): void;
+  verbose(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  log(message: string, ...args: unknown[]): void;
+  internal(message: string, ...args: unknown[]): void;
+  null(message: string, ...args: unknown[]): void;
+  step(message: string, ...args: unknown[]): void;
+  box(message: string, ...args: unknown[]): void;
+  message(message: string, ...args: unknown[]): void;
+  clear(): void;
+};
+
+/**
  * Logs a message synchronously using the current config.
  * If type === "fatal", logs a fatal error and throws (never returns).
+ *
+ * Can be used in two ways:
+ * - relinka("level", message, ...args) - traditional syntax
+ * - relinka.level(message, ...args) - method syntax
  */
-export function relinka(
+export const relinka = ((
   type: LogLevel | "clear",
   message: string,
   ...args: unknown[]
-): undefined | never {
+): undefined | never => {
   if (type === "clear") {
     console.clear();
     return;
@@ -1099,7 +1171,34 @@ export function relinka(
       });
     }
   }
-}
+}) as RelinkaFunction;
+
+// Add method properties for each log level
+relinka.error = (message: string, ...args: unknown[]) =>
+  relinka("error", message, ...args);
+relinka.fatal = (message: string, ...args: unknown[]): never =>
+  relinka("fatal", message, ...args) as never;
+relinka.info = (message: string, ...args: unknown[]) =>
+  relinka("info", message, ...args);
+relinka.success = (message: string, ...args: unknown[]) =>
+  relinka("success", message, ...args);
+relinka.verbose = (message: string, ...args: unknown[]) =>
+  relinka("verbose", message, ...args);
+relinka.warn = (message: string, ...args: unknown[]) =>
+  relinka("warn", message, ...args);
+relinka.log = (message: string, ...args: unknown[]) =>
+  relinka("log", message, ...args);
+relinka.internal = (message: string, ...args: unknown[]) =>
+  relinka("internal", message, ...args);
+relinka.null = (message: string, ...args: unknown[]) =>
+  relinka("null", message, ...args);
+relinka.step = (message: string, ...args: unknown[]) =>
+  relinka("step", message, ...args);
+relinka.box = (message: string, ...args: unknown[]) =>
+  relinka("box", message, ...args);
+relinka.clear = () => relinka("clear", "");
+relinka.message = (message: string, ...args: unknown[]) =>
+  relinka("message", message, ...args);
 
 /**
  * Logs a message asynchronously, waiting for the config to be fully loaded.
@@ -1171,4 +1270,25 @@ export function defineConfig(
   config: Partial<RelinkaConfig>,
 ): Partial<RelinkaConfig> {
   return config;
+}
+
+/**
+ * Simple box formatting function
+ */
+export function formatBox(text: string): string {
+  const lines = text.split("\n");
+  const maxWidth = Math.max(...lines.map((line) => line.length));
+  const width = maxWidth + 4; // 2 spaces padding on each side
+
+  const top = `┌${"─".repeat(width)}┐`;
+  const bottom = `└${"─".repeat(width)}┘`;
+
+  const content = lines
+    .map((line) => {
+      const padding = width - line.length;
+      return `│  ${line}${" ".repeat(padding)}│`;
+    })
+    .join("\n");
+
+  return `${top}\n${content}\n${bottom}`;
 }

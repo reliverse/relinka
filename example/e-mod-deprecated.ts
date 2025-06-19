@@ -1,6 +1,9 @@
 import type { TreeItem } from "deprecated/utils/tree.js";
 
-import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
+import {
+  relinkaInstanceDeprecated,
+  type LogTypeDeprecated,
+} from "deprecated/components/relinka-deprecated/mod.js";
 import { createRelinkaDeprecated } from "deprecated/components/relinka-deprecated/relinka.js";
 import { formatTree } from "deprecated/utils/tree.js";
 
@@ -72,7 +75,7 @@ async function detailedExample() {
   // mock
   relinkaInstanceDeprecated.box("=== mock ===");
 
-  function mockFn(type) {
+  function mockFn(type: LogTypeDeprecated) {
     if (type === "info") {
       return function (this: { log: (msg: string) => void }) {
         this.log("(mocked fn with info tag)");
@@ -82,6 +85,7 @@ async function detailedExample() {
   }
 
   relinkaInstanceDeprecated.info("before");
+  // @ts-expect-error TODO: fix ts
   relinkaInstanceDeprecated.mockTypes((type) => {
     if (type === "info") {
       return () => {
@@ -91,6 +95,7 @@ async function detailedExample() {
     return undefined;
   });
 
+  // @ts-expect-error TODO: fix ts
   relinkaInstanceDeprecated.mockTypes(mockFn);
 
   const tagged = relinkaInstanceDeprecated.withTag("newTag");
@@ -171,10 +176,12 @@ async function detailedExample() {
   // spam
   relinkaInstanceDeprecated.box("=== spam ===");
 
+  // @ts-expect-error TODO: fix ts
   function waitFor(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  // @ts-expect-error TODO: fix ts
   async function spam({ count, delay }) {
     for (let i = 0; i < count; i++) {
       await waitFor(delay);

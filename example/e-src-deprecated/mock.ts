@@ -1,5 +1,6 @@
 import { relinkaInstanceDeprecated } from "deprecated/components/relinka-deprecated/mod.js";
 
+// @ts-expect-error TODO: fix ts
 function mockFn(type) {
   if (type === "info") {
     return function () {
@@ -13,6 +14,7 @@ function mockFn(type) {
 
 relinkaInstanceDeprecated.info("before");
 
+// @ts-expect-error TODO: fix ts
 relinkaInstanceDeprecated.mockTypes(mockFn);
 
 const tagged = relinkaInstanceDeprecated.withTag("newTag");

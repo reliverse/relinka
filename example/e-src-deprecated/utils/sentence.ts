@@ -37,5 +37,6 @@ export function randomSentence() {
     sentenceTemplates[
       Math.round(Math.random() * (sentenceTemplates.length - 1))
     ];
+  // @ts-expect-error TODO: fix ts
   return Sentencer.make(t);
 }

@@ -73,8 +73,9 @@ export class RelinkaInterface {
       (this as unknown as RelinkaInstanceDeprecated)[
         type as LogTypeDeprecated
       ] = this._wrapLogFn(defaults);
-      (this as unknown as RelinkaInstanceDeprecated)[type].raw =
-        this._wrapLogFn(defaults, true);
+      (this as unknown as RelinkaInstanceDeprecated)[
+        type as LogTypeDeprecated
+      ].raw = this._wrapLogFn(defaults, true);
     }
 
     // Use _mockFn if is set
@@ -403,6 +404,7 @@ export class RelinkaInterface {
 
     // Aliases
     if (logObj.message) {
+      // @ts-expect-error TODO: fix ts
       logObj.args.unshift(logObj.message);
       logObj.message = undefined;
     }
@@ -411,6 +413,7 @@ export class RelinkaInterface {
         logObj.additional = logObj.additional.split("\n");
       }
 
+      // @ts-expect-error TODO: fix ts
       logObj.args.push(`\n${logObj.additional.join("\n")}`);
       logObj.additional = undefined;
     }

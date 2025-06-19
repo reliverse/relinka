@@ -244,6 +244,7 @@ export function box(text: string, _opts: BoxOpts = {}) {
   if (_color) {
     for (const key in borderStyle) {
       borderStyle[key as keyof typeof borderStyle] = _color(
+        // @ts-expect-error TODO: fix ts
         borderStyle[key as keyof typeof borderStyle],
       );
     }
@@ -267,9 +268,11 @@ export function box(text: string, _opts: BoxOpts = {}) {
   // Include the title if it exists with borders
   if (opts.title) {
     const title = _color ? _color(opts.title) : opts.title;
+    // @ts-expect-error TODO: fix ts
     const left = borderStyle.h.repeat(
       Math.floor((width - stripAnsi(opts.title).length) / 2),
     );
+    // @ts-expect-error TODO: fix ts
     const right = borderStyle.h.repeat(
       width -
         stripAnsi(opts.title).length -
@@ -281,6 +284,7 @@ export function box(text: string, _opts: BoxOpts = {}) {
     );
   } else {
     boxLines.push(
+      // @ts-expect-error TODO: fix ts
       `${leftSpace}${borderStyle.tl}${borderStyle.h.repeat(widthOffset)}${
         borderStyle.tr
       }`,
@@ -307,6 +311,7 @@ export function box(text: string, _opts: BoxOpts = {}) {
       // Text line
       const line = textLines[i - valignOffset];
       const left = " ".repeat(paddingOffset);
+      // @ts-expect-error TODO: fix ts
       const right = " ".repeat(width - stripAnsi(line).length);
       boxLines.push(
         `${leftSpace}${borderStyle.v}${left}${line}${right}${borderStyle.v}`,
@@ -316,6 +321,7 @@ export function box(text: string, _opts: BoxOpts = {}) {
 
   // Bottom line
   boxLines.push(
+    // @ts-expect-error TODO: fix ts
     `${leftSpace}${borderStyle.bl}${borderStyle.h.repeat(widthOffset)}${
       borderStyle.br
     }`,

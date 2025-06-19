@@ -6,7 +6,6 @@
     ".tests/**/*.ts",
     "*.{config,cfg}.{ts,js}",
     "src/mod.ts",
-    "src/**/*-mod.ts",
     "deprecated/**/*.ts",
     "example/**/*.ts"
   ],

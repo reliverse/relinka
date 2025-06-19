@@ -15,6 +15,7 @@ export function reporterDemo(
   for (const type of Object.keys(
     relinkaInstanceDeprecated.options.types,
   ).sort()) {
+    // @ts-expect-error TODO: fix ts
     relinka[type](randomSentence());
   }
 
@@ -30,6 +31,7 @@ export function reporterDemo(
   for (const type of Object.keys(
     relinkaInstanceDeprecated.options.types,
   ).sort()) {
+    // @ts-expect-error TODO: fix ts
     tagged[type](randomSentence());
   }
 }

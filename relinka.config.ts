@@ -69,6 +69,12 @@ export default defineConfig({
       spacing: 3,
     },
     log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },
+    message: {
+      symbol: "🞠",
+      fallbackSymbol: "[MSG]",
+      color: "cyan",
+      spacing: 3,
+    },
   },
 
   // Directory settings
