@@ -1,23 +1,23 @@
 # Relinka: Logging that Actually Feels Good
 
-> **@reliverse/relinka** is a modern, minimal logging library that actually *feels* right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a `fatal` mode built for developers who care about correctness. Whether you're building CLI tools, SDKs, or full-stack apps — Relinka helps you log with intention.
-
 [sponsor](https://github.com/sponsors/blefnk) — [discord](https://discord.gg/Pb8uKbwpsJ) — [repo](https://github.com/reliverse/relinka) — [npm](https://npmjs.com/@reliverse/relinka)
+
+> **@reliverse/relinka** is a modern logging library that actually *feels* right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a `fatal` mode built for developers who care about correctness. Whether you're building CLI tools, SDKs, or full-stack apps — Relinka helps you log with intention.
 
 ## Why Relinka
 
-- 🧙 Drop-in replacement for `node:console`, `consola`, or your internal logger
-- 💬 Supports: `info`, `warn`, `success`, `error`, `verbose`, `fatal`, `clear`
-- 🎨 Terminal output that *pops*, with automatic color handling
-- 📁 Save logs to file (with daily rotation, cleanup, and max-file limits)
-- 🧠 Structured message formatting (objects, errors, stacks — handled!)
-- ⚙️ Runtime config via `relinka.config.ts` (powered by `reconf`)
-- 🚨 `fatal` logs halt execution and trigger `debugger` in dev
-- 🧩 Sync-first, async, & CLI-friendly thanks to buffer flushing
+- 🧙 **Drop-in replacement** for `node:console`, `consola`, or your internal logger
+- 💬 **12 log levels**: `info`, `warn`, `success`, `error`, `verbose`, `fatal`, `log`, `step`, `box`, `message`, `internal`, `null`
+- 🎨 **Beautiful terminal output** with automatic color handling and Unicode support
+- 📁 **Smart file logging** with buffering, rotation, cleanup, and date-based naming
+- 🧠 **Structured formatting** for objects, errors, and stack traces
+- ⚙️ **Runtime configuration** via `.config/relinka.ts` or `relinka.config.ts`
+- 🚨 **Fatal logging** that halts execution and triggers debugger in development
+- 🧩 **Dual syntax support** - both function calls (`relinka("info", "Hello world")`) and method chaining (`relinka.info("Hello world")`)
+- ⚡ **Performance optimized** with intelligent buffering and async support
+- 🛎️ **Dler-ready** - if you use `dler build`, all `internal`-level logs will be removed from the built dist
 
-## Getting Started
-
-Make sure you have git, node.js, and bun/pnpm/yarn/npm installed.
+## Quick Start
 
 ### 1. Install
 
@@ -25,158 +25,173 @@ Make sure you have git, node.js, and bun/pnpm/yarn/npm installed.
 bun add @reliverse/relinka
 ```
 
-**Coming soon**:
-
-```bash
-bun i -g @reliverse/dler
-dler relinka --console-to-relinka
-```
-
-### 2. Use It
-
-#### Direct Method (Recommended)
-
-- Place this **at the START** of your app's main function:
+### 2. Basic Usage
 
 ```ts
-await relinkaConfig;
+import { relinka, relinkaConfig, relinkaShutdown } from "@reliverse/relinka";
+
+async function main() {
+  // Load configuration (required at start)
+  await relinkaConfig();
+  
+  // Log with different levels
+  relinka("info", "Application started");
+  relinka("success", "Configuration loaded successfully");
+  relinka("warn", "This is a warning");
+  relinka("error", "Something went wrong");
+  
+  // Use method syntax (also supported)
+  relinka.info("Another info message");
+  relinka.success("Another success message");
+  
+  // Clean shutdown (required at end)
+  await relinkaShutdown();
+}
+
+main();
 ```
 
-- Place this **at the END** of your app's main function:
+## Log Levels
+
+Relinka supports 12 different log levels, each with customizable symbols and colors:
+
+| Level | Symbol | Description |
+|-------|--------|-------------|
+| `info` | ◈ | General information |
+| `success` | ✓ | Success messages |
+| `warn` | ⚠ | Warnings |
+| `error` | ✖ | Non-fatal errors |
+| `fatal` | ‼ | Fatal errors + error throwing |
+| `verbose` | ✱ | Debug information |
+| `log` | │ | General logging |
+| `step` | → | Progress steps |
+| `box` | ■ | Boxed messages |
+| `message` | 🞠 | General messages |
+| `internal` | ⚙ | Internal system logs |
+| `null` | (none) | No symbol or spacing |
+
+## API Reference
+
+### Core Functions
+
+#### `relinka(level, message, ...args)`
+
+Main logging function with dual syntax support.
+
+```ts
+// Function syntax
+relinka("info", "Hello world");
+relinka("error", "Something broke", { error: "details" });
+
+// Method syntax
+relinka.info("Hello world");
+relinka.error("Something broke", { error: "details" });
+```
+
+#### `relinkaAsync(level, message, ...args)`
+
+Async version that waits for configuration to load.
+
+```ts
+await relinkaAsync("info", "Async message");
+await relinkaAsync("success", "Operation completed");
+```
+
+#### `relinkaConfig(options?)`
+
+Load configuration with optional fresh log file support.
+
+```ts
+// Basic config loading
+await relinkaConfig();
+
+// With fresh log file (clears existing log file)
+await relinkaConfig({ supportFreshLogFile: true });
+```
+
+#### `relinkaShutdown()`
+
+Flush all buffers and clean up resources. **Always call this at the end of your program.**
 
 ```ts
 await relinkaShutdown();
 ```
 
-**Usage example**:
+### Utility Functions
+
+#### `log`, `logger`
+
+Aliases for the main `relinka` function.
 
 ```ts
-import {
-  relinka,
-  relinkaAsync,
-  relinkaConfig,
-  relinkaShutdown,
-} from "@reliverse/relinka";
+import { log, logger } from "@reliverse/relinka";
 
-export async function main() {
-  await relinkaAsync(
-    // this automatically loads the config
-    "verbose",
-    "This ASYNC verbose message can be seen only if verbose=true (in user config)",
-  );
-  await relinkaConfig; // place this at your main function or just at the top of your entry file
-  relinka(
-    "verbose",
-    "This SYNC verbose message can be seen only if verbose=true (in user config) AND config was loaded ",
-  );
-
-  // --- BOX LEVEL EXAMPLES ---
-  relinka("box", "This is a boxed message using direct syntax!");
-  relinka.box("This is a boxed message using method syntax!");
-
-  // --- MESSAGE LEVEL EXAMPLES ---
-  relinka("message", "This is a message using direct syntax!");
-  relinka.message("This is a message using method syntax!");
-
-  // --- STEP LEVEL EXAMPLES ---
-  relinka("step", "Step 1: Initialize application");
-  relinka.step("Step 2: Load configuration");
-  relinka.step("Step 3: Start services");
-
-  // --- LOG LEVEL EXAMPLES ---
-  relinka("log", "Hello! 👋");
-  relinka("log", "Great to see you here!");
-  relinka("info", "Everything is running smoothly");
-  relinka("warn", "This might be a problem");
-  relinka(
-    "error", // non-fatal issue level can be recovered
-    "Uh oh, something broke",
-  );
-
-  relinka(
-    "null",
-    "'null' level has a special handling case: no symbol or spacing",
-  );
-
-  // relinka(
-  //   "fatal",
-  //   "We should never reach this code! This should never happen! (see <anonymous> line)",
-  // ); // fatal level throws error and halts execution
-  relinka("success", "Thanks for using Relinka!");
-
-  // Make sure to shut down the logger at the end of your program
-  // This is important to flush all buffers and close file handles
-  await relinkaShutdown();
-
-  // Make sure to exit the program after your CLI is done
-  // It's not required for Bun-only apps, but recommended
-  // for other terminal runtimes like Node.js (incl. `tsx`)
-  // It's also not required for @reliverse/rempts `runMain()`
-  process.exit(0);
-}
-
-await main();
+log("info", "Using alias");
+logger.success("Another alias");
 ```
 
-#### [🔜 Soon] Singleton Method
+#### `message(msg, ...args)`
+
+Convenience function for general messages.
 
 ```ts
-const logger = initRelinkaInstance({/* per-project config */}); 
-logger("info", "Looks great!");
+import { message } from "@reliverse/relinka";
+message("This is a general message");
 ```
 
-#### [🔜 Soon] Object Method
+#### `step(msg, ...args)`
+
+Convenience function for progress steps.
 
 ```ts
-await relinkaConfig;
-relinka.info("Looks great!");
+import { step } from "@reliverse/relinka";
+step("Step 1: Initialize");
+step("Step 2: Load config");
 ```
 
-## Advanced Usage
+## Configuration
 
-```ts
-// Clear terminal:
-relinka("clear", "");
-// Blank line:
-relinka("info", "");
-// Async variant:
-import { relinkaAsync } from "@reliverse/relinka";
-await relinkaAsync("info", "Logged from async context");
-// Coming soon:
-await relinkaAsync("info", "Something happened", { animate: true });
-```
+Create a configuration file to customize Relinka's behavior:
 
-## Config
+### File Locations (in order of priority)
 
-Create `relinka.config.ts`:
+1. `relinka.config.ts` (project root) - **highest priority**
+2. `.config/relinka.ts` - **lower priority**
+
+### Configuration Example
 
 ```ts
 import { defineConfig } from "@reliverse/relinka";
-/**
- * RELINKA CONFIGURATION FILE
- * - Hover over a field to see the information
- * - Use intellisense to see available options
- * @see https://github.com/reliverse/relinka
- */
+
 export default defineConfig({
-  // Enable to see verbose logs
+  // Enable verbose logging
   verbose: false,
 
   // Timestamp configuration
   timestamp: {
-    enabled: false,
-    format: "HH:mm:ss",
+    enabled: true,
+    format: "YYYY-MM-DD HH:mm:ss.SSS",
   },
 
-  // Control whether logs are saved to a file
+  // File logging
   saveLogsToFile: true,
+  logFile: {
+    outputPath: "logs/app.log",
+    nameWithDate: "append-before", // "disable" | "append-before" | "append-after"
+    freshLogFile: true, // Clear log file on each run
+  },
 
-  // Disable colors in the console
-  disableColors: false,
+  // Log rotation
+  dirs: {
+    maxLogFiles: 10, // Keep only the 10 most recent log files
+  },
 
-  // Log file path
-  logFilePath: "relinka.log",
+  // Performance tuning
+  bufferSize: 4096, // 4KB buffer before flushing
+  maxBufferAge: 5000, // 5 seconds max buffer age
+  cleanupInterval: 10000, // 10 seconds between cleanups
 
+  // Customize log levels
   levels: {
     success: {
       symbol: "✓",
@@ -185,138 +200,208 @@ export default defineConfig({
       spacing: 3,
     },
     info: {
-      symbol: "i",
+      symbol: "◈",
       fallbackSymbol: "[i]",
       color: "cyanBright",
       spacing: 3,
     },
-    error: {
-      symbol: "✖",
-      fallbackSymbol: "[ERR]",
-      color: "redBright",
-      spacing: 3,
-    },
-    warn: {
-      symbol: "⚠",
-      fallbackSymbol: "[WARN]",
-      color: "yellowBright",
-      spacing: 3,
-    },
-    fatal: {
-      symbol: "‼",
-      fallbackSymbol: "[FATAL]",
-      color: "redBright",
-      spacing: 3,
-    },
-    verbose: {
-      symbol: "✧",
-      fallbackSymbol: "[VERBOSE]",
-      color: "gray",
-      spacing: 3,
-    },
-    log: { symbol: "│", fallbackSymbol: "|", color: "dim", spacing: 3 },
-  },
-
-  // Directory settings
-  dirs: {
-    dailyLogs: true,
-    logDir: "logs", // store logs in a custom folder
-    maxLogFiles: 5, // keep only the 5 most recent log files
-    specialDirs: {
-      distDirNames: [],
-      useParentConfigInDist: true,
-    },
+    // ... customize other levels
   },
 });
 ```
 
-Supported files:
+### Configuration Options
 
-- `relinka.config.ts`
-- 🔜 other formats, supported by `reconf`, are coming soon
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `verbose` | `boolean` | `false` | Enable verbose logging |
+| `saveLogsToFile` | `boolean` | `false` | Save logs to file |
+| `disableColors` | `boolean` | `false` | Disable color output |
+| `timestamp.enabled` | `boolean` | `false` | Add timestamps to logs |
+| `timestamp.format` | `string` | `"YYYY-MM-DD HH:mm:ss.SSS"` | Timestamp format |
+| `logFile.outputPath` | `string` | `"logs.log"` | Log file path |
+| `logFile.nameWithDate` | `string` | `"disable"` | Date handling in filename |
+| `logFile.freshLogFile` | `boolean` | `true` | Clear log file on startup |
+| `dirs.maxLogFiles` | `number` | `0` | Maximum log files to keep |
+| `bufferSize` | `number` | `4096` | Buffer size in bytes |
+| `maxBufferAge` | `number` | `5000` | Max buffer age in ms |
+| `cleanupInterval` | `number` | `10000` | Cleanup interval in ms |
 
-## Log Files
+## File Logging
 
-- Default: `logs/relinka.log`
-- Daily mode: `2025-04-11-relinka.log`
-- Auto-cleanup: keep latest N logs
+### File Naming Patterns
 
-## API Summary
+- **Default**: `logs.log`
+- **With subdirectory**: `logs/app.log`
+- **With date prefix**: `2025-01-15-logs.log`
+- **With date suffix**: `logs-2025-01-15.log`
+- **Combined**: `logs/2025-01-15-app.log`
+
+### Automatic Cleanup
+
+When `maxLogFiles` is set, Relinka automatically:
+
+- Keeps only the N most recent log files
+- Deletes older files during cleanup
+- Runs cleanup periodically and on shutdown
+
+## Advanced Usage
+
+### Fatal Logging
+
+Fatal logs throw errors and halt execution:
 
 ```ts
-relinka("info", "message", optionalDetails);
-relinka("fatal", "something broke"); // throws
-relinka("clear", ""); // clears terminal
-
-await relinkaAsync("warn", "something async");
+// This will throw an error and trigger debugger in development
+relinka("fatal", "Critical system failure");
+// or
+relinka.fatal("Critical system failure");
 ```
+
+### Box Formatting
+
+Create visually appealing boxed messages:
 
 ```ts
-defineConfig({ ... }) // helper for relinka.config.ts
+relinka("box", "This message will be displayed in a box");
+relinka.box("This also works with method syntax");
 ```
 
-## Built-in Utilities
+### Async Context
 
-- ✅ Timestamping
-- ✅ File-safe formatting
-- ✅ Log rotation
-- ✅ Fatal logging (with debugger)
-- ✅ Colorized terminal output
+Use `relinkaAsync` when you need to ensure configuration is loaded:
+
+```ts
+await relinkaAsync("info", "This waits for config to load");
+```
+
+### Clear Terminal
+
+Clear the terminal output:
+
+```ts
+relinka("clear", "");
+// or
+relinka.clear();
+```
+
+### Empty Lines
+
+Add blank lines to output:
+
+```ts
+relinka("info", "");
+```
+
+## Best Practices
+
+### 1. Always Initialize and Shutdown
+
+```ts
+async function main() {
+  await relinkaConfig(); // At the start
+  
+  // Your application logic
+  relinka("info", "App running");
+  
+  await relinkaShutdown(); // At the end
+}
+```
+
+### 2. Use Appropriate Log Levels
+
+```ts
+relinka("info", "User logged in"); // General info
+relinka("success", "Payment processed"); // Success events
+relinka("warn", "High memory usage"); // Warnings
+relinka("error", "Database connection failed"); // Recoverable errors
+relinka("fatal", "Critical system failure"); // Unrecoverable errors
+```
+
+### 3. Leverage Verbose Logging
+
+```ts
+relinka("verbose", "Debug information"); // Only shown when verbose=true
+```
+
+### 4. Structure Complex Data
+
+```ts
+relinka("error", "API request failed", {
+  endpoint: "/api/users",
+  statusCode: 500,
+  error: error.message
+});
+```
+
+## Performance Features
+
+- **Intelligent Buffering**: Logs are buffered and flushed efficiently
+- **Async File Operations**: Non-blocking file writes
+- **Memory Management**: Automatic cleanup of old log files
+- **Unicode Detection**: Automatic fallback for non-Unicode terminals
 
 ## FAQ
 
-### Why `relinka.config.ts` doesn't works for me?
+### Why does my terminal hang after logging?
 
-→ You forget to load user's config by using `await relinkaConfig;` **at the START** of your app's main function.
+→ You forgot to call `await relinkaShutdown()` at the end of your program. This is required to flush buffers.
 
-### Why my terminal stucks after last relinka() usage?
+### Why isn't my configuration loading?
 
-→ You forget to flush the buffer. Place `await relinkaShutdown();` **at the END** of your app's main function.
+→ Make sure you call `await relinkaConfig()` at the start of your application.
 
-### Why does TS linter tells that something wrong with `relinka("info", args)`?
+### Does `fatal` always throw?
 
-→ Add empty string: `relinka("info", "", args)`
+→ Yes, `fatal` logs always throw errors and halt execution. In development mode, they also trigger the debugger.
 
-### Does `fatal` throw?
+### How do I disable colors?
 
-→ Yes, always. It will halt execution and trigger `debugger` in dev mode.
+→ Set `disableColors: true` in your configuration or use `NO_COLOR=1` environment variable.
 
-### What's coming next?
+### Can I use Relinka in both sync and async contexts?
 
-- Relinka is designed to be used in the different ways:
-- Use `relinka(level, message, ...args)` (recommended).
-- 🔜 Or, just `relinka.level(message, ...args)`
-- 🔜 Both designed to work with both sync (default) and async/await.
-- 🔜 Both designed to work with both direct and wrapper methods.
-- 🔜 Use the async logger if you want some advanced features (like typing text streaming animation).
+→ Yes! Use `relinka()` for sync operations and `relinkaAsync()` when you need to use some advanced features (like typing text streaming animation).
 
-## Tips
+### What's the difference between `log` and `message` levels?
 
-- Building CLIs? Use with [`@reliverse/prompts`](https://npmjs.com/@reliverse/prompts)
-- Want type-safe injections? Try [`@reliverse/reinject`](https://npmjs.com/@reliverse/reinject)
-- For advanced bundling? Pair with [`@reliverse/dler`](https://npmjs.com/@reliverse/dler)
+→ `log` uses a pipe symbol (│) and is for general logging, while `message` uses a different symbol (🞠) and is for general messages.
+
+## Ecosystem
+
+Relinka works great with other Reliverse tools:
+
+- **CLI Development**: [`@reliverse/prompts`](https://npmjs.com/@reliverse/prompts)
+- **Bundling**: [`@reliverse/dler`](https://npmjs.com/@reliverse/dler)
 
 ## Roadmap
 
-- [x] File logging
-- [x] Timestamps
-- [x] Daily logs
-- [x] Log rotation
-- [x] `fatal` type
-- [x] Runtime config
-- [ ] Implement per-project config redefinition
-- [ ] Plugin support (custom formatters, hooks)
-- [ ] CLI interface (to manage logs, config, etc)
+- [x] File logging with rotation
+- [x] Timestamp support
+- [x] Date-based file naming
+- [x] Automatic cleanup
+- [x] Fatal logging with debugger
+- [x] Runtime configuration
+- [x] Dual syntax support
+- [ ] Plugin system
+- [ ] Custom formatters
+- [ ] CLI interface for log management
+- [ ] WebSocket streaming
+- [ ] Structured logging (JSON)
 
-## Shoutouts
+## Contributing
 
-Relinka wouldn't exist without these gems:
-
-- [unjs/consola](https://github.com/unjs/consola#readme)  
-- [winston](https://github.com/winstonjs/winston#readme)  
-- [pino](https://github.com/pinojs/pino#readme)  
-- [node-bunyan](https://github.com/trentm/node-bunyan#readme)
+We welcome contributions! Please see our [contributing guide](CONTRIBUTING.md) for details.
 
 ## License
 
 💖 MIT © 2025 [blefnk Nazar Kornienko](https://github.com/blefnk)
+
+## Acknowledgments
+
+Relinka is inspired by these excellent logging libraries:
+
+- [unjs/consola](https://github.com/unjs/consola) - Console logging for Node.js
+- [winston](https://github.com/winstonjs/winston) - Multi-transport logging
+- [pino](https://github.com/pinojs/pino) - Fast Node.js logger
+- [node-bunyan](https://github.com/trentm/node-bunyan) - JSON logging

@@ -20,18 +20,9 @@ const EXIT_GUARD = Symbol.for("relinka.exitHandlersRegistered");
  *                 TYPE DECLARATIONS                  *
  * -------------------------------------------------- */
 
-/** Configuration for special directory handling. */
-export type RelinkaSpecialDirsConfig = {
-  distDirNames?: string[];
-  useParentConfigInDist?: boolean;
-};
-
 /** Configuration for directory-related settings. */
 export type RelinkaDirsConfig = {
-  dailyLogs?: boolean;
-  logDir?: string;
   maxLogFiles?: number;
-  specialDirs?: RelinkaSpecialDirsConfig;
 };
 
 /** Configuration for a single log level. */
@@ -92,12 +83,7 @@ export type RelinkaConfig = {
 
   /**
    * Configuration for directory-related settings.
-   * - `dailyLogs`: If true, logs will be stored in a daily subdirectory.
-   * - `logDir`: The base directory for logs.
    * - `maxLogFiles`: The maximum number of log files to keep before cleanup.
-   * - `specialDirs`: Configuration for special directory handling.
-   *   - `distDirNames`: An array of directory names to check for special handling.
-   *   - `useParentConfigInDist`: If true, use the parent config in dist directories.
    */
   dirs?: RelinkaDirsConfig;
 
@@ -107,9 +93,26 @@ export type RelinkaConfig = {
   disableColors?: boolean;
 
   /**
-   * Path to the log file.
+   * Configuration for log file output.
    */
-  logFilePath?: string;
+  logFile?: {
+    /**
+     * Path to the log file.
+     */
+    outputPath?: string;
+    /**
+     * How to handle date in the filename.
+     * - `disable`: No date prefix/suffix
+     * - `append-before`: Add date before the filename (e.g., "2024-01-15-log.txt")
+     * - `append-after`: Add date after the filename (e.g., "log-2024-01-15.txt")
+     */
+    nameWithDate?: "disable" | "append-before" | "append-after";
+    /**
+     * If true, clears the log file when relinkaConfig is executed with supportFreshLogFile: true.
+     * This is useful for starting with a clean log file on each run.
+     */
+    freshLogFile?: boolean;
+  };
 
   /**
    * If true, logs will be saved to a file.
@@ -171,16 +174,14 @@ export type LogFileInfo = {
 const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
   verbose: false,
   dirs: {
-    dailyLogs: false,
-    logDir: "logs",
     maxLogFiles: 0,
-    specialDirs: {
-      distDirNames: ["dist", "dist-jsr", "dist-npm", "dist-libs"],
-      useParentConfigInDist: true,
-    },
   },
   disableColors: false,
-  logFilePath: "relinka.log",
+  logFile: {
+    outputPath: "logs.log",
+    nameWithDate: "disable",
+    freshLogFile: true,
+  },
   saveLogsToFile: false,
   timestamp: {
     enabled: false,
@@ -301,11 +302,55 @@ function isUnicodeSupported(): boolean {
 let currentConfig: RelinkaConfig = { ...DEFAULT_RELINKA_CONFIG };
 let isConfigInitialized = false;
 let resolveRelinkaConfig: ((config: RelinkaConfig) => void) | undefined;
+let userTerminalCwd: string | undefined;
+
+/** Options for relinkaConfig */
+export type RelinkaConfigOptions = {
+  supportFreshLogFile?: boolean;
+};
 
 /** Promise resolved once the user's config (if any) is merged. */
-export const relinkaConfig = new Promise<RelinkaConfig>((res) => {
+export const loadRelinkaConfig = new Promise<RelinkaConfig>((res) => {
   resolveRelinkaConfig = res;
 });
+
+/**
+ * Enhanced relinkaConfig function that accepts options
+ */
+export async function relinkaConfig(
+  options: RelinkaConfigOptions = {},
+): Promise<RelinkaConfig> {
+  // Remember the absolute path of user's terminal at the beginning
+  if (!userTerminalCwd) {
+    userTerminalCwd = process.cwd();
+  }
+
+  const config = await loadRelinkaConfig;
+
+  // Handle fresh log file functionality
+  if (options.supportFreshLogFile && isFreshLogFileEnabled(config)) {
+    try {
+      const logFilePath = getLogFilePath(config);
+      // Clear the log file by writing an empty string
+      await fs.ensureDir(path.dirname(logFilePath));
+      await fs.writeFile(logFilePath, "");
+
+      if (isVerboseEnabled(config)) {
+        console.log(`[Relinka Fresh Log] Cleared log file: ${logFilePath}`);
+      }
+    } catch (err) {
+      if (isVerboseEnabled(config)) {
+        console.error(
+          `[Relinka Fresh Log Error] Failed to clear log file: ${
+            err instanceof Error ? err.message : String(err)
+          }`,
+        );
+      }
+    }
+  }
+
+  return config;
+}
 
 /* --------------  log-buffer state ----------------- */
 
@@ -431,18 +476,6 @@ function isColorEnabled(config: Partial<RelinkaConfig>): boolean {
   return !(config.disableColors ?? DEFAULT_RELINKA_CONFIG.disableColors);
 }
 
-/** Returns the "logDir" from config. */
-function getLogDir(config: Partial<RelinkaConfig>): string {
-  return config.dirs?.logDir ?? DEFAULT_RELINKA_CONFIG.dirs?.logDir ?? "logs";
-}
-
-/** Returns whether daily logs are enabled. */
-function isDailyLogsEnabled(config: Partial<RelinkaConfig>): boolean {
-  return (
-    config.dirs?.dailyLogs ?? DEFAULT_RELINKA_CONFIG.dirs?.dailyLogs ?? false
-  );
-}
-
 /** Returns whether logs should be written to file. */
 function shouldSaveLogs(config: Partial<RelinkaConfig>): boolean {
   return (
@@ -452,16 +485,13 @@ function shouldSaveLogs(config: Partial<RelinkaConfig>): boolean {
 
 /** Returns the maximum allowed log files before cleanup. */
 function getMaxLogFiles(config: Partial<RelinkaConfig>): number {
-  return (
-    config.dirs?.maxLogFiles ?? DEFAULT_RELINKA_CONFIG.dirs?.maxLogFiles ?? 0
-  );
+  return config.dirs?.maxLogFiles ?? 0;
 }
 
 /** Returns the configured log filename or a default fallback. */
 function getBaseLogName(config: Partial<RelinkaConfig>): string {
-  return (
-    config.logFilePath ?? DEFAULT_RELINKA_CONFIG.logFilePath ?? "relinka.log"
-  );
+  const logFileConfig = config.logFile || DEFAULT_RELINKA_CONFIG.logFile || {};
+  return logFileConfig.outputPath ?? "logs.log";
 }
 
 /** Returns the configured buffer size for log writes */
@@ -478,6 +508,15 @@ function getMaxBufferAge(config: Partial<RelinkaConfig>): number {
 function getCleanupInterval(config: Partial<RelinkaConfig>): number {
   return (
     config.cleanupInterval ?? DEFAULT_RELINKA_CONFIG.cleanupInterval ?? 10000
+  );
+}
+
+/** Returns whether fresh log file is enabled. */
+function isFreshLogFileEnabled(config: Partial<RelinkaConfig>): boolean {
+  return (
+    config.logFile?.freshLogFile ??
+    DEFAULT_RELINKA_CONFIG.logFile?.freshLogFile ??
+    false
   );
 }
 
@@ -522,21 +561,36 @@ function getTimestamp(config: RelinkaConfig): string {
  * Returns the absolute log file path based on config and date.
  */
 function getLogFilePath(config: RelinkaConfig): string {
-  const logDir = getLogDir(config);
-  const daily = isDailyLogsEnabled(config);
-  let finalLogName = getBaseLogName(config);
+  const logFileConfig = config.logFile || DEFAULT_RELINKA_CONFIG.logFile || {};
+  const nameWithDate = logFileConfig.nameWithDate || "disable";
+  const outputPath = getBaseLogName(config);
 
-  if (daily) {
-    const datePrefix = `${getDateString()}-`;
-    finalLogName = datePrefix + finalLogName;
+  // Separate directory and filename
+  const dir = path.dirname(outputPath);
+  let filename = path.basename(outputPath);
+
+  if (nameWithDate !== "disable") {
+    const dateString = getDateString();
+
+    if (nameWithDate === "append-before") {
+      filename = `${dateString}-${filename}`;
+    } else if (nameWithDate === "append-after") {
+      const nameWithoutExt = filename.replace(/\.log$/, "");
+      filename = `${nameWithoutExt}-${dateString}.log`;
+    }
   }
 
-  if (finalLogName && !finalLogName.endsWith(".log")) {
-    finalLogName += ".log";
+  if (filename && !filename.endsWith(".log")) {
+    filename += ".log";
   }
 
-  const effectiveLogName = finalLogName || "relinka.log";
-  return path.resolve(process.cwd(), logDir, effectiveLogName);
+  const effectiveFilename = filename || "logs.log";
+  const finalPath =
+    dir === "." ? effectiveFilename : path.join(dir, effectiveFilename);
+
+  // Use remembered CWD if available, otherwise fall back to current CWD
+  const baseCwd = userTerminalCwd || process.cwd();
+  return path.resolve(baseCwd, finalPath);
 }
 
 /**
@@ -675,18 +729,53 @@ function logToConsole(
 async function getLogFilesSortedByDate(
   config: RelinkaConfig,
 ): Promise<LogFileInfo[]> {
-  const logDirectoryPath = path.resolve(process.cwd(), getLogDir(config));
+  // Use remembered CWD if available, otherwise fall back to current CWD
+  const logDirectoryPath = userTerminalCwd || process.cwd();
 
   try {
-    if (!(await fs.pathExists(logDirectoryPath))) {
-      if (ENABLE_DEV_DEBUG) {
-        console.log(`[Dev Debug] Log directory not found: ${logDirectoryPath}`);
-      }
-      return [];
-    }
-
     const files = await fs.readdir(logDirectoryPath);
-    const logFiles = files.filter((f) => f.endsWith(".log"));
+    const logFiles: string[] = [];
+
+    // Collect all .log files, including those in subdirectories
+    for (const file of files) {
+      const filePath = path.join(logDirectoryPath, file);
+      try {
+        const stats = await fs.stat(filePath);
+        if (stats.isFile() && file.endsWith(".log")) {
+          logFiles.push(file);
+        } else if (stats.isDirectory()) {
+          // Recursively check subdirectories for .log files
+          try {
+            const subFiles = await fs.readdir(filePath);
+            for (const subFile of subFiles) {
+              if (subFile.endsWith(".log")) {
+                logFiles.push(path.join(file, subFile));
+              }
+            }
+          } catch (subDirErr) {
+            // Skip subdirectories that can't be read
+            if (isVerboseEnabled(config)) {
+              console.error(
+                `[Relinka FS Debug] Error reading subdirectory ${filePath}: ${
+                  subDirErr instanceof Error
+                    ? subDirErr.message
+                    : String(subDirErr)
+                }`,
+              );
+            }
+          }
+        }
+      } catch (err) {
+        // Skip files/directories that can't be accessed
+        if (isVerboseEnabled(config)) {
+          console.error(
+            `[Relinka FS Debug] Error accessing ${filePath}: ${
+              err instanceof Error ? err.message : String(err)
+            }`,
+          );
+        }
+      }
+    }
 
     // Fast path for no log files
     if (logFiles.length === 0) return [];
@@ -721,7 +810,7 @@ async function getLogFilesSortedByDate(
   } catch (readErr) {
     if (isVerboseEnabled(config)) {
       console.error(
-        `[Relinka FS Error] Failed reading log directory ${logDirectoryPath}: ${
+        `[Relinka FS Error] Failed reading directory ${logDirectoryPath}: ${
           readErr instanceof Error ? readErr.message : String(readErr)
         }`,
       );
@@ -1214,8 +1303,8 @@ export async function relinkaAsync(
     return;
   }
 
-  // Wait for configuration to be loaded
-  await relinkaConfig;
+  // Wait for configuration to be loaded (supportFreshLogFile is always false for async)
+  await relinkaConfig({ supportFreshLogFile: false });
 
   const levelName = type.toLowerCase();
 
@@ -1286,7 +1375,8 @@ export function formatBox(text: string): string {
   const content = lines
     .map((line) => {
       const padding = width - line.length;
-      return `│  ${line}${" ".repeat(padding)}│`;
+      // Add -2 spaces before │ symbol (reduce padding by 2)
+      return `│  ${line}${" ".repeat(padding - 2)}│`;
     })
     .join("\n");
 

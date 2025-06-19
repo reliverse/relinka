@@ -1,8 +1,8 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "type": "module",
-  "description": "@reliverse/relinka is a modern, minimal logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
+  "description": "@reliverse/relinka is a modern logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
   "scripts": {
     "pub": "dler pub",
     "dev": "bun example/e-mod.ts",
@@ -19,8 +19,8 @@
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
     "@eslint/js": "^9.29.0",
-    "@reliverse/cfg": "^1.7.56",
-    "@reliverse/dler": "^1.7.56",
+    "@reliverse/cfg": "^1.7.57",
+    "@reliverse/dler": "^1.7.57",
     "@reliverse/repris": "^1.0.0",
     "@reliverse/runtime": "^1.0.3",
     "@stylistic/eslint-plugin": "^4.4.1",

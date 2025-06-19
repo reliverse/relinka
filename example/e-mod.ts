@@ -11,7 +11,7 @@ export async function main() {
     "verbose",
     "This ASYNC verbose message can be seen only if verbose=true (in user config)",
   );
-  await relinkaConfig; // place this at your main function or just at the top of your entry file
+  await relinkaConfig({ supportFreshLogFile: true }); // place this at your main function or just at the top of your entry file
   relinka(
     "verbose",
     "This SYNC verbose message can be seen only if verbose=true (in user config) AND config was loaded ",

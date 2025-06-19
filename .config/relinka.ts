@@ -22,8 +22,17 @@ export default defineConfig({
   // Disable colors in the console
   disableColors: false,
 
-  // Log file path
-  logFilePath: "relinka.log",
+  // Log file configuration
+  logFile: {
+    outputPath: "logs.log",
+    nameWithDate: "disable",
+    freshLogFile: true,
+  },
+
+  // Dirs settings
+  dirs: {
+    maxLogFiles: 5,
+  },
 
   levels: {
     success: {
@@ -74,17 +83,6 @@ export default defineConfig({
       fallbackSymbol: "[MSG]",
       color: "cyan",
       spacing: 3,
-    },
-  },
-
-  // Directory settings
-  dirs: {
-    dailyLogs: true,
-    logDir: "logs", // store logs in a custom folder
-    maxLogFiles: 5, // keep only the 5 most recent log files
-    specialDirs: {
-      distDirNames: [],
-      useParentConfigInDist: true,
     },
   },
 });
