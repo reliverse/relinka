@@ -1,6 +1,6 @@
 {
   "name": "@reliverse/relinka",
-  "version": "1.5.3",
+  "version": "1.5.5",
   "type": "module",
   "description": "@reliverse/relinka is a modern logging library that actually feels right. It's not just pretty output — it's a system: smart formatting, file-safe logging, runtime config support, and a fatal mode built for developers who care about correctness.",
   "scripts": {

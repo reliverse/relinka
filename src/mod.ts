@@ -9,7 +9,7 @@ export type {
   LogFileInfo,
   RelinkaFunction,
   RelinkaConfigOptions,
-} from "./impl.js";
+} from "./setup.js";
 export {
   loadRelinkaConfig,
   relinkaConfig,
