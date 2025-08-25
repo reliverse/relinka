@@ -1,9 +1,4 @@
-import {
-  relinka,
-  relinkaAsync,
-  relinkaConfig,
-  relinkaShutdown,
-} from "~/mod.js";
+import { relinka, relinkaAsync, relinkaConfig, relinkaShutdown } from "~/mod.js";
 
 export async function main() {
   await relinkaAsync(
@@ -40,10 +35,7 @@ export async function main() {
     "Uh oh, something broke",
   );
 
-  relinka(
-    "null",
-    "'null' level has a special handling case: no symbol or spacing",
-  );
+  relinka("null", "'null' level has a special handling case: no symbol or spacing");
 
   // relinka(
   //   "fatal",

@@ -27,6 +27,6 @@
     "noPropertyAccessFromIndexSignature": false,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["**/*.ts", "**/*.js", ".*/**/*.ts"],
+  "include": ["src/**/*.ts", "reliverse.ts", "reltypes.ts"],
   "exclude": ["node_modules", "dist*"]
 }

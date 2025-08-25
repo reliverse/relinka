@@ -1,4 +1,4 @@
-import type { DefaultColorKeys } from "@reliverse/relico";
+import type { DefaultColorKeys } from "./types";
 
 /* -------------------------------------------------- *
  *                     CONSTANTS                      *
@@ -180,7 +180,7 @@ export const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
     enabled: false,
     format: "YYYY-MM-DD HH:mm:ss.SSS",
   },
-  cleanupInterval: 10000, // 10 seconds
+  cleanupInterval: 10_000, // 10 seconds
   bufferSize: 4096, // 4KB
   maxBufferAge: 5000, // 5 seconds
 
@@ -256,11 +256,7 @@ export const DEFAULT_RELINKA_CONFIG: RelinkaConfig = {
  */
 export type RelinkaFunction = {
   // Traditional function signature
-  (
-    type: LogLevel | "clear",
-    message: string,
-    ...args: unknown[]
-  ): undefined | never;
+  (type: LogLevel | "clear", message: string, ...args: unknown[]): undefined | never;
 
   // Method properties for each log level
   error(message: string, ...args: unknown[]): void;

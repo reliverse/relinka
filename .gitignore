@@ -8,3 +8,5 @@ dist*
 merged.txt
 .eslintcache
 node_modules
+dist
+logs

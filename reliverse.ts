@@ -1,13 +1,13 @@
-import { defineConfigDler } from "@reliverse/cfg";
+import { defineConfig } from "./reltypes";
 
 /**
  * Reliverse Bundler Configuration
  * Hover over a field to see more details
  * @see https://github.com/reliverse/dler
  */
-export default defineConfigDler({
+export default defineConfig({
   // Bump configuration
-  bumpDisable: false,
+  bumpDisable: true,
   bumpFilter: ["package.json", ".config/rse.ts"],
   bumpMode: "patch",
 
@@ -157,7 +157,6 @@ export default defineConfigDler({
 
   // Integrated relinka configuration
   // https://github.com/reliverse/relinka
-  // @ts-expect-error - Custom relinka configuration extension
   relinka: {
     // Enable to see verbose logs
     verbose: false,

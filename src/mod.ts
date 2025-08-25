@@ -1,26 +1,26 @@
 // AUTO-GENERATED AGGREGATOR START (via `dler agg`)
-export { message, step, log, logger } from "./alias.js";
-export type {
-  RelinkaDirsConfig,
-  LogLevelConfig,
-  LogLevelsConfig,
-  LogLevel,
-  RelinkaConfig,
-  LogFileInfo,
-  RelinkaFunction,
-  RelinkaConfigOptions,
-} from "./setup.js";
+export { log, logger, message, step } from "./alias.js";
 export {
-  loadRelinkaConfig,
-  relinkaConfig,
-  relinkaShutdown,
-  flushAllLogBuffers,
-  shouldNeverHappen,
-  truncateString,
   casesHandled,
+  defineConfig,
+  flushAllLogBuffers,
+  formatBox,
+  loadRelinkaConfig,
   relinka,
   relinkaAsync,
-  defineConfig,
-  formatBox,
+  relinkaConfig,
+  relinkaShutdown,
+  shouldNeverHappen,
+  truncateString,
 } from "./impl.js";
+export type {
+  LogFileInfo,
+  LogLevel,
+  LogLevelConfig,
+  LogLevelsConfig,
+  RelinkaConfig,
+  RelinkaConfigOptions,
+  RelinkaDirsConfig,
+  RelinkaFunction,
+} from "./setup.js";
 // AUTO-GENERATED AGGREGATOR END
